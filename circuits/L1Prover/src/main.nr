@@ -49,11 +49,12 @@ fn main(
     //relayer:pub Field,
     // fee:pub Field,
     // refund:pub Field,
+    chainId:pub Field,
+    
     nullifierHashPreImage: [u8;32],
     secret: [u8;32],
     hash_path: [[u8;32];TREE_DEPTH],
     hash_path_bools:  [bool; TREE_DEPTH],
-    chainId:pub Field,
     ) {
     // to make sure these are set and cant change
     assert(recipient != 0x0);
