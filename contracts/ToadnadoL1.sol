@@ -39,17 +39,19 @@ contract ToadnadoL1 {
  
     }
 
-    function withdraw(address to, bytes32 nullifier,uint256 chainId, bytes calldata snarkProof) public {
-        bytes32[] memory publicInputs = _formatPublicInputs(to, nullifier, chainId);
+    function withdraw(bytes32 root,  bytes32 nullifier, address recipient, uint256 chainId, bytes calldata snarkProof) public {
+        bytes32[] memory publicInputs = _formatPublicInputs(root, nullifier, recipient, chainId);
         if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
             revert VerificationFailed();
         }
+        require(nullifiers[nullifier] == false, "note already spend");
+        nullifiers[nullifier] = true;
         //TODO send the money to "to"
         //TODO add nullifier
         //TODO checkChainID
     }
 
-    function _formatPublicInputs(address to, bytes32 nullifier,uint256 chainId) private returns(bytes32[] memory) {
+    function _formatPublicInputs(bytes32 root, bytes32 nullifier, address recipient, uint256 chainId) private returns(bytes32[] memory) {
 
     }
 
