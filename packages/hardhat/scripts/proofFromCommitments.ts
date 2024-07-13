@@ -147,8 +147,7 @@ async function generateProof(commitments:string[], nullifierHashPreImage: string
     }
     console.log({inputs, nullifierHashPreImage: inputs.nullifierHashPreImage})
     const snarkProof = await noir.generateProof(inputs)
-    const verified = await noir.verifyProof(snarkProof)
-    console.log({verified})
+    return snarkProof
     
 }
 
@@ -157,19 +156,43 @@ async function main() {
     const treeDepth = 5n
     const ammountCommitments = Number( 2n ** treeDepth)
 
-    const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
+    
     const abiEncoder = new ethers.AbiCoder()
+    
+    // user secrets (should be from crypto.getRandomValues)
     const nullifierHashPreImage = "0x0000000000000000000000000000000000000000000000000000000000000014"
     const secret = "0x0000000000000000000000000000000000000000000000000000000000000014"
+    
+    // user withdraw address
     const recipient = "0x794464c8c91A2bE4aDdAbfdB82b6db7B1Bb1DBC7"
-    const testCommitment  = ethers.keccak256(abiEncoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
-    const commitments = [testCommitment, ...Array(ammountCommitments-1).fill(zeroBytes)]
+
+    // the commitment that is used in the deposit and added to the tree
+    const commitmentHash  = ethers.keccak256(abiEncoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+
+    // make full list of commitments, used to recreate the merkle tree
+    const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
+    const commitments = [commitmentHash, ...Array(ammountCommitments-1).fill(zeroBytes)]
+    
+    // commitmentIndex = 0 = user was the first deposit
     const commitmentIndex = 0
+
+    // build the merkle tree from all commitments and generate a merkle proof (hashPath + hashPathBools)
     const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, commitmentIndex)
-    console.log({hashPath,  hashPathBools: hashPathBools, leaf})//.slice().reverse()})
+    //console.log({hashPath,  hashPathBools: hashPathBools, leaf})//.slice().reverse()})
 
-    await generateProof(commitments,nullifierHashPreImage,secret,recipient,commitmentIndex )
+    const {proof, publicInputs} = await generateProof(commitments,nullifierHashPreImage,secret,recipient,commitmentIndex )
 
+    // verify the proof
+    const backend = new BarretenbergBackend(circuit);
+    const noir = new Noir(circuit, backend)
+    const verified = await noir.verifyProof({proof, publicInputs})
+    console.log({proof, publicInputs})
+    console.log({verified})
+
+
+
+
+    process.exit();
 
     // console.log("\n--------quick way to get inputs for testing inside noir-------\n")
     // console.log(`
@@ -178,7 +201,5 @@ async function main() {
     // let real_root = [${singleBytes32ToNoir(root)}];
     // let hash_path_bools = [${hashPathBools}];
     // `)
-
-    process.exit();
 }
 main()
