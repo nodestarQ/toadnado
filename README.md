@@ -88,3 +88,14 @@ cd packages/hardhat;
 bun run scripts/proofFromCommitments.ts
 ```
 
+## Deploy SCs
+```shell
+##go to the deployment script 00_deploy_your_contract and uncomment the l1 export and comment out the l2 export
+yarn deploy --network sepolia --tags L1
+##after that verify
+yarn verify --network sepolia
+## after this has been finished grab the l1 sc address and replace it with the l1scaddress constant in the deploy script, also uncomment l2 export and commment out l1 export
+yarn deploy --network l1sload --tags L2
+## verification does not work as of yet on scroll devnet  
+```
+

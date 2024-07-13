@@ -14,7 +14,7 @@ constructor(address _l1Address){
     l1Address = _l1Address;
 }
 
-function isKnownL1Root(bytes32 _root) public view returns (bool) {
+function isKnownL2Root(bytes32 _root) public view returns (bool) {
     if (_root == 0) {
       return false;
     }

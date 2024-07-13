@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   2227728: {
     ToadnadoL2: {
-      address: "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4",
+      address: "0x403F9ADd4272c24cf27DC3A5454aEE95B1DD9904",
       abi: [
         {
           inputs: [],

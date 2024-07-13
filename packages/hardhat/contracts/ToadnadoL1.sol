@@ -19,8 +19,8 @@ contract ToadnadoL1 is Toadnado {
   function _processWithdraw(
     address payable _recipient
   ) internal override{
-    //only allow withdrawal on L2 for now 
-    require(block.chainid!=11155111, "withdrawal only allowed on L2");
+    //TODO ADD THIS LATER: only allow withdrawal on L2 for now 
+    //require(block.chainid!=11155111, "withdrawal only allowed on L2");
     // sanity checks
     require(msg.value == 0, "Message value is supposed to be zero for ETH instance");
     (bool success, ) = _recipient.call{ value: denomination }("");

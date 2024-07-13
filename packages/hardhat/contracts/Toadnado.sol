@@ -77,8 +77,7 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
         if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
             revert VerificationFailed();
         }
-        
-
+    
         _processWithdraw(_recipient);
         emit Withdrawal(_recipient, _nullifier);
     }

@@ -6,87 +6,71 @@ import { Contract } from "ethers";
 
 const merkleTreeHeight = 7;
 const denomination = BigInt((10**18)/100); //0.01eth
-const l1Address = "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4";
+let l1Address = "0xcAEfcEBacB7e19BB52B4B97ED70eBCb5b37aFa41";
+let l2Address = "";
 
-/**
- * Deploys a contract named "YourContract" using the deployer account and
- * constructor arguments set to the deployer address
- *
- * @param hre HardhatRuntimeEnvironment object.
- */
-const deployToadnado: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  /*
-    On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
+/*
+1. deploy Plonk on L1
+2. Deploy L1 SC -> add Plonk addy as verifier addy
+3. Deploy Plonk on L2
+4. Deploy L2 SC -> add plonk add as verifier and add l1 addy as L1sload target
+*/
 
-    When deploying to live networks (e.g `yarn deploy --network sepolia`), the deployer account
-    should have sufficient balance to pay for the gas fees for contract creation.
-
-    You can generate a random account with `yarn generate` which will fill DEPLOYER_PRIVATE_KEY
-    with a random private key in the .env file (then used on hardhat.config.ts)
-    You can run the `yarn account` command to check your balance in every network.
-  */
+const deployL1: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  // const UltraVerifier = await deploy("UltraVerifier", {
-  //   from: deployer,
-  //   // Contract constructor arguments
-  //   args: [],
-  //   log: true,
-  //   // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-  //   // automatically mining the contract deployment transaction. There is no effect on live networks.
-  //   autoMine: true,
-  // });
+  const UltraVerifier = await deploy("UltraVerifier", {
+    from: deployer,
+    args: [],
+    log: true,
+    autoMine: true,
+  });
+
+  const ultraVerifier = await hre.ethers.getContract<Contract>("UltraVerifier", deployer);
+  let verifierL1 = await ultraVerifier.getAddress();
 
   await deploy("ToadnadoL1", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer, denomination, merkleTreeHeight],
+    args: [verifierL1, denomination, merkleTreeHeight],
     log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
 
-  // Get the deployed contract to interact with it after deploying.
-  // const yourContract = await hre.ethers.getContract<Contract>("ToadnadoL1", deployer);
-  // console.log("👋 Initial greeting:", await yourContract.greeting());
+  const toadnadoL1 = await hre.ethers.getContract<Contract>("ToadnadoL1", deployer);
+  console.log("ToadnadoL1 Address: "+ await toadnadoL1.getAddress())
 };
 
 const deployL2: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  /*
-    On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
-    When deploying to live networks (e.g `yarn deploy --network sepolia`), the deployer account
-    should have sufficient balance to pay for the gas fees for contract creation.
-
-    You can generate a random account with `yarn generate` which will fill DEPLOYER_PRIVATE_KEY
-    with a random private key in the .env file (then used on hardhat.config.ts)
-    You can run the `yarn account` command to check your balance in every network.
-  */
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
+  const UltraVerifier = await deploy("UltraVerifier", {
+    from: deployer,
+    args: [],
+    log: true,
+    autoMine: true,
+  });
+
+  const ultraVerifier = await hre.ethers.getContract<Contract>("UltraVerifier", deployer);
+  let verifierL2 = await ultraVerifier.getAddress();
+
   await deploy("ToadnadoL2", {
     from: deployer,
-    // Contract constructor arguments
     args: [l1Address],
     log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
   
-
-  // Get the deployed contract to interact with it after deploying.
-  // const yourContract = await hre.ethers.getContract<Contract>("ToadnadoL1", deployer);
-  // console.log("👋 Initial greeting:", await yourContract.greeting());
 };
 
-//export default deployToadnado;
+//export default deployL1;
 export default  deployL2;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
-deployToadnado.tags = ["L1"];
+deployL1.tags = ["L1"];
 deployL2.tags = ["L2"];

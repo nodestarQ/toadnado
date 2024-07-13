@@ -14,6 +14,14 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "ReentrancyGuard",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ReentrancyGuard__factory>;
+    getContractFactory(
+      name: "MerkleTree",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MerkleTree__factory>;
+    getContractFactory(
       name: "BaseUltraVerifier",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BaseUltraVerifier__factory>;
@@ -26,15 +34,37 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IVerifier__factory>;
     getContractFactory(
+      name: "Toadnado",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Toadnado__factory>;
+    getContractFactory(
+      name: "IVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IVerifier__factory>;
+    getContractFactory(
       name: "ToadnadoL1",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ToadnadoL1__factory>;
+    getContractFactory(
+      name: "ToadnadoL2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ToadnadoL2__factory>;
     getContractFactory(
       name: "YourContract",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.YourContract__factory>;
 
     getContractAt(
+      name: "ReentrancyGuard",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ReentrancyGuard>;
+    getContractAt(
+      name: "MerkleTree",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MerkleTree>;
+    getContractAt(
       name: "BaseUltraVerifier",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -50,10 +80,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IVerifier>;
     getContractAt(
+      name: "Toadnado",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Toadnado>;
+    getContractAt(
+      name: "IVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IVerifier>;
+    getContractAt(
       name: "ToadnadoL1",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ToadnadoL1>;
+    getContractAt(
+      name: "ToadnadoL2",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ToadnadoL2>;
     getContractAt(
       name: "YourContract",
       address: string | ethers.Addressable,
@@ -61,6 +106,14 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.YourContract>;
 
     deployContract(
+      name: "ReentrancyGuard",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
+      name: "MerkleTree",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MerkleTree>;
+    deployContract(
       name: "BaseUltraVerifier",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BaseUltraVerifier>;
@@ -73,15 +126,37 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVerifier>;
     deployContract(
+      name: "Toadnado",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Toadnado>;
+    deployContract(
+      name: "IVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IVerifier>;
+    deployContract(
       name: "ToadnadoL1",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ToadnadoL1>;
+    deployContract(
+      name: "ToadnadoL2",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ToadnadoL2>;
     deployContract(
       name: "YourContract",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.YourContract>;
 
     deployContract(
+      name: "ReentrancyGuard",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
+      name: "MerkleTree",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MerkleTree>;
+    deployContract(
       name: "BaseUltraVerifier",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -97,10 +172,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVerifier>;
     deployContract(
+      name: "Toadnado",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Toadnado>;
+    deployContract(
+      name: "IVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IVerifier>;
+    deployContract(
       name: "ToadnadoL1",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ToadnadoL1>;
+    deployContract(
+      name: "ToadnadoL2",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ToadnadoL2>;
     deployContract(
       name: "YourContract",
       args: any[],
