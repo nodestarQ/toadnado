@@ -1336,23 +1336,64 @@
   resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-win32-x64-msvc/-/solidity-analyzer-win32-x64-msvc-0.1.2.tgz#e6363d13b8709ca66f330562337dbc01ce8bbbd9"
   integrity sha512-Fdjli4DCcFHb4Zgsz0uEJXZ2K7VEO+w5KVv7HmT7WO10iODdU9csC2az4jrhEsRtiR9Gfd74FlG0NYlw1BMdyA==
 
-"@nomicfoundation/solidity-analyzer@^0.1.0":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer/-/solidity-analyzer-0.1.2.tgz#8bcea7d300157bf3a770a851d9f5c5e2db34ac55"
-  integrity sha512-q4n32/FNKIhQ3zQGGw5CvPF6GTvDCpYwIf7bEY/dZTZbgfDsHyjJwURxUJf3VQuuJj+fDIFl4+KkBVbw4Ef6jA==
-  optionalDependencies:
-    "@nomicfoundation/solidity-analyzer-darwin-arm64" "0.1.2"
-    "@nomicfoundation/solidity-analyzer-darwin-x64" "0.1.2"
-    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu" "0.1.2"
-    "@nomicfoundation/solidity-analyzer-linux-arm64-musl" "0.1.2"
-    "@nomicfoundation/solidity-analyzer-linux-x64-gnu" "0.1.2"
-    "@nomicfoundation/solidity-analyzer-linux-x64-musl" "0.1.2"
-    "@nomicfoundation/solidity-analyzer-win32-x64-msvc" "0.1.2"
+"@nomicfoundation/solidity-analyzer@npm:^0.1.0":
+  version: 0.1.2
+  resolution: "@nomicfoundation/solidity-analyzer@npm:0.1.2"
+  dependencies:
+    "@nomicfoundation/solidity-analyzer-darwin-arm64": 0.1.2
+    "@nomicfoundation/solidity-analyzer-darwin-x64": 0.1.2
+    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu": 0.1.2
+    "@nomicfoundation/solidity-analyzer-linux-arm64-musl": 0.1.2
+    "@nomicfoundation/solidity-analyzer-linux-x64-gnu": 0.1.2
+    "@nomicfoundation/solidity-analyzer-linux-x64-musl": 0.1.2
+    "@nomicfoundation/solidity-analyzer-win32-x64-msvc": 0.1.2
+  dependenciesMeta:
+    "@nomicfoundation/solidity-analyzer-darwin-arm64":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-darwin-x64":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-arm64-musl":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-x64-gnu":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-linux-x64-musl":
+      optional: true
+    "@nomicfoundation/solidity-analyzer-win32-x64-msvc":
+      optional: true
+  checksum: 0de3a317658345b9012285665bb4c810a98b3668bcf32a118912fda00e5760fa2c77d0a92bce6b687dcc7b4bb34b0a83f8e6748bfa68660a2303d781ca728aef
+  languageName: node
+  linkType: hard
 
-"@openzeppelin/contracts@~4.8.1":
-  version "4.8.3"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.3.tgz#cbef3146bfc570849405f59cba18235da95a252a"
-  integrity sha512-bQHV8R9Me8IaJoJ2vPG4rXcL7seB7YVuskr4f+f5RyOStSZetwzkWtoqDMl5erkBJy0lDRUnIR2WIkPiC0GJlg==
+"@npmcli/agent@npm:^2.0.0":
+  version: 2.2.2
+  resolution: "@npmcli/agent@npm:2.2.2"
+  dependencies:
+    agent-base: ^7.1.0
+    http-proxy-agent: ^7.0.0
+    https-proxy-agent: ^7.0.1
+    lru-cache: ^10.0.1
+    socks-proxy-agent: ^8.0.3
+  checksum: 67de7b88cc627a79743c88bab35e023e23daf13831a8aa4e15f998b92f5507b644d8ffc3788afc8e64423c612e0785a6a92b74782ce368f49a6746084b50d874
+  languageName: node
+  linkType: hard
+
+"@npmcli/fs@npm:^3.1.0":
+  version: 3.1.1
+  resolution: "@npmcli/fs@npm:3.1.1"
+  dependencies:
+    semver: ^7.3.5
+  checksum: d960cab4b93adcb31ce223bfb75c5714edbd55747342efb67dcc2f25e023d930a7af6ece3e75f2f459b6f38fc14d031c766f116cd124fdc937fd33112579e820
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/contracts@npm:~4.8.1":
+  version: 4.8.3
+  resolution: "@openzeppelin/contracts@npm:4.8.3"
+  checksum: aea130d38d46840c5cbe3adbaa9a7ac645e4bd66ad3f3baf2fa78588c408d1a686170b3408c9e2e5e05530fba22ecdc00d7efb6b27852a8b29f91accbc0af255
+  languageName: node
+  linkType: hard
 
 "@parcel/watcher-android-arm64@2.4.1":
   version "2.4.1"

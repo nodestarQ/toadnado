@@ -5,226 +5,69 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
-    YourContract: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "constructor",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "greetingSetter",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
-          ],
-          name: "GreetingChange",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "greeting",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
-            },
-          ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
-      ],
-      inheritedFunctions: {},
-    },
-  },
   2227728: {
-    YourContract: {
-      address: "0xEDEE49Fb8d395A7ABeDbF5E9c1db2a24D96208A9",
+    ToadnadoL2: {
+      address: "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4",
       abi: [
         {
-          inputs: [
+          inputs: [],
+          name: "ROOT_HISTORY_SIZE",
+          outputs: [
             {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
             },
           ],
-          stateMutability: "nonpayable",
-          type: "constructor",
+          stateMutability: "view",
+          type: "function",
         },
         {
-          anonymous: false,
+          inputs: [],
+          name: "currentRootIndex",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
-              indexed: true,
               internalType: "address",
-              name: "greetingSetter",
+              name: "l1_contract",
               type: "address",
             },
             {
-              indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
               internalType: "uint256",
-              name: "value",
+              name: "key",
               type: "uint256",
             },
           ],
-          name: "GreetingChange",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "greeting",
+          name: "getL1Root",
           outputs: [
             {
-              internalType: "string",
+              internalType: "bytes32",
               name: "",
-              type: "string",
+              type: "bytes32",
             },
           ],
           stateMutability: "view",
           type: "function",
         },
         {
-          inputs: [],
-          name: "owner",
-          outputs: [
+          inputs: [
             {
-              internalType: "address",
-              name: "",
-              type: "address",
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
             },
           ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
+          name: "isKnownL1Root",
           outputs: [
             {
               internalType: "bool",
@@ -238,24 +81,17 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
             },
           ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "totalCounter",
+          name: "isKnownRoot",
           outputs: [
             {
-              internalType: "uint256",
+              internalType: "bool",
               name: "",
-              type: "uint256",
+              type: "bool",
             },
           ],
           stateMutability: "view",
@@ -265,31 +101,25 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "",
+              name: "l1_contract",
               type: "address",
             },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
             {
               internalType: "uint256",
-              name: "",
+              name: "slot",
               type: "uint256",
+            },
+          ],
+          name: "readSingleSlot",
+          outputs: [
+            {
+              internalType: "bytes",
+              name: "",
+              type: "bytes",
             },
           ],
           stateMutability: "view",
           type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
         },
       ],
       inheritedFunctions: {},
@@ -297,7 +127,7 @@ const deployedContracts = {
   },
   11155111: {
     ToadnadoL1: {
-      address: "0x40F5D0001859b6D483282295F58616121ABA44BF",
+      address: "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4",
       abi: [
         {
           inputs: [
@@ -306,14 +136,150 @@ const deployedContracts = {
               name: "_verifier",
               type: "address",
             },
+            {
+              internalType: "uint256",
+              name: "_denomination",
+              type: "uint256",
+            },
+            {
+              internalType: "uint32",
+              name: "_merkleTreeHeight",
+              type: "uint32",
+            },
           ],
           stateMutability: "nonpayable",
           type: "constructor",
         },
         {
           inputs: [],
+          name: "ReentrancyGuardReentrantCall",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "VerificationFailed",
           type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "bytes32",
+              name: "commitment",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint32",
+              name: "leafIndex",
+              type: "uint32",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          name: "Deposit",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "nullifier",
+              type: "bytes32",
+            },
+          ],
+          name: "Withdrawal",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "FIELD_SIZE",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "ROOT_HISTORY_SIZE",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "ZERO_VALUE",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "commitmentLeafs",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "commitments",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
         },
         {
           inputs: [
@@ -354,17 +320,251 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "currentRootIndex",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "denomination",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "bytes32",
-              name: "commitment",
+              name: "_commitment",
               type: "bytes32",
             },
           ],
           name: "deposit",
           outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "filledSubtrees",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getLastRoot",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "_left",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "_right",
+              type: "bytes32",
+            },
+          ],
+          name: "hashLeftRight",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
+            },
+          ],
+          name: "isKnownRoot",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "levels",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32[]",
+              name: "_commitmentsTree",
+              type: "bytes32[]",
+            },
+            {
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
+            },
+          ],
+          name: "setCommitmentsTree",
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
+        },
+        {
+          inputs: [],
+          name: "nextIndex",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address payable",
+              name: "_recipient",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "_nullifier",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256",
+              name: "chainId",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes",
+              name: "snarkProof",
+              type: "bytes",
+            },
+          ],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "i",
+              type: "uint256",
+            },
+          ],
+          name: "zeros",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        FIELD_SIZE: "contracts/Toadnado.sol",
+        ROOT_HISTORY_SIZE: "contracts/Toadnado.sol",
+        ZERO_VALUE: "contracts/Toadnado.sol",
+        commitmentLeafs: "contracts/Toadnado.sol",
+        commitments: "contracts/Toadnado.sol",
+        commitmentsTree: "contracts/Toadnado.sol",
+        commitmentsTreeRoots: "contracts/Toadnado.sol",
+        currentRootIndex: "contracts/Toadnado.sol",
+        denomination: "contracts/Toadnado.sol",
+        deposit: "contracts/Toadnado.sol",
+        filledSubtrees: "contracts/Toadnado.sol",
+        getLastRoot: "contracts/Toadnado.sol",
+        hashLeftRight: "contracts/Toadnado.sol",
+        isKnownRoot: "contracts/Toadnado.sol",
+        levels: "contracts/Toadnado.sol",
+        nextIndex: "contracts/Toadnado.sol",
+        nullifiers: "contracts/Toadnado.sol",
+        roots: "contracts/Toadnado.sol",
+        setCommitmentsTree: "contracts/Toadnado.sol",
+        verifier: "contracts/Toadnado.sol",
+        withdraw: "contracts/Toadnado.sol",
+        zeros: "contracts/Toadnado.sol",
+      },
+    },
+  },
+  11155111: {
+    ToadnadoL1: {
+      address: "0x40F5D0001859b6D483282295F58616121ABA44BF",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_verifier",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
         },
         {
           inputs: [
@@ -380,6 +580,56 @@ const deployedContracts = {
               internalType: "bool",
               name: "",
               type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "roots",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32[]",
+              name: "_commitmentsTree",
+              type: "bytes32[]",
+            },
+            {
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
+            },
+          ],
+          name: "setCommitmentsTree",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "verifier",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
             },
           ],
           stateMutability: "view",
@@ -406,45 +656,14 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_verifier",
+              internalType: "address payable",
+              name: "_recipient",
               type: "address",
-            },
-          ],
-          name: "setVerifier",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "verifier",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "bytes32",
-              name: "root",
-              type: "bytes32",
             },
             {
               internalType: "bytes32",
-              name: "nullifier",
+              name: "_nullifier",
               type: "bytes32",
-            },
-            {
-              internalType: "address",
-              name: "recipient",
-              type: "address",
             },
             {
               internalType: "uint256",
@@ -459,74 +678,18 @@ const deployedContracts = {
           ],
           name: "withdraw",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
-        },
-      ],
-      inheritedFunctions: {},
-    },
-    UltraVerifier: {
-      address: "0x4264C45c5aA7DF241ff8BE12a9Fd22d043775AF4",
-      abi: [
-        {
-          inputs: [],
-          name: "INVALID_VERIFICATION_KEY",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "MOD_EXP_FAILURE",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "OPENING_COMMITMENT_FAILED",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "PAIRING_FAILED",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "PAIRING_PREAMBLE_FAILED",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "POINT_NOT_ON_CURVE",
-          type: "error",
         },
         {
           inputs: [
             {
               internalType: "uint256",
-              name: "expected",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "actual",
+              name: "i",
               type: "uint256",
             },
           ],
-          name: "PUBLIC_INPUT_COUNT_INVALID",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "PUBLIC_INPUT_GE_P",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "PUBLIC_INPUT_INVALID_BN128_G1_POINT",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "getVerificationKeyHash",
+          name: "zeros",
           outputs: [
             {
               internalType: "bytes32",
@@ -537,32 +700,31 @@ const deployedContracts = {
           stateMutability: "pure",
           type: "function",
         },
-        {
-          inputs: [
-            {
-              internalType: "bytes",
-              name: "_proof",
-              type: "bytes",
-            },
-            {
-              internalType: "bytes32[]",
-              name: "_publicInputs",
-              type: "bytes32[]",
-            },
-          ],
-          name: "verify",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
       ],
-      inheritedFunctions: {},
+      inheritedFunctions: {
+        FIELD_SIZE: "contracts/Toadnado.sol",
+        ROOT_HISTORY_SIZE: "contracts/Toadnado.sol",
+        ZERO_VALUE: "contracts/Toadnado.sol",
+        commitmentLeafs: "contracts/Toadnado.sol",
+        commitments: "contracts/Toadnado.sol",
+        commitmentsTree: "contracts/Toadnado.sol",
+        commitmentsTreeRoots: "contracts/Toadnado.sol",
+        currentRootIndex: "contracts/Toadnado.sol",
+        denomination: "contracts/Toadnado.sol",
+        deposit: "contracts/Toadnado.sol",
+        filledSubtrees: "contracts/Toadnado.sol",
+        getLastRoot: "contracts/Toadnado.sol",
+        hashLeftRight: "contracts/Toadnado.sol",
+        isKnownRoot: "contracts/Toadnado.sol",
+        levels: "contracts/Toadnado.sol",
+        nextIndex: "contracts/Toadnado.sol",
+        nullifiers: "contracts/Toadnado.sol",
+        roots: "contracts/Toadnado.sol",
+        setCommitmentsTree: "contracts/Toadnado.sol",
+        verifier: "contracts/Toadnado.sol",
+        withdraw: "contracts/Toadnado.sol",
+        zeros: "contracts/Toadnado.sol",
+      },
     },
   },
 } as const;

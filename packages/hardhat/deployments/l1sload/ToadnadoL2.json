@@ -1,0 +1,193 @@
+{
+  "address": "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ROOT_HISTORY_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentRootIndex",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "l1_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "key",
+          "type": "uint256"
+        }
+      ],
+      "name": "getL1Root",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_root",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isKnownL1Root",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_root",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isKnownRoot",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "l1_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slot",
+          "type": "uint256"
+        }
+      ],
+      "name": "readSingleSlot",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x13ae381a13b0c1e28e5c38511e11548ba4877f584776c9cbaedf240088a6a512",
+  "receipt": {
+    "to": null,
+    "from": "0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4",
+    "contractAddress": "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4",
+    "transactionIndex": 0,
+    "gasUsed": "310871",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xb50317424fec7366193c4f755b29ecd9c9d1a10be1d803d99e949d8d65e8cb63",
+    "transactionHash": "0x13ae381a13b0c1e28e5c38511e11548ba4877f584776c9cbaedf240088a6a512",
+    "logs": [],
+    "blockNumber": 57433,
+    "cumulativeGasUsed": "310871",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 6,
+  "solcInputHash": "a6cdd50237c81a9901077064195d0a76",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"ROOT_HISTORY_SIZE\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"currentRootIndex\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"l1_contract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"key\",\"type\":\"uint256\"}],\"name\":\"getL1Root\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_root\",\"type\":\"bytes32\"}],\"name\":\"isKnownL1Root\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_root\",\"type\":\"bytes32\"}],\"name\":\"isKnownRoot\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"l1_contract\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"slot\",\"type\":\"uint256\"}],\"name\":\"readSingleSlot\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ToadnadoL2.sol\":\"ToadnadoL2\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/ToadnadoL2.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.23;\\n\\n\\ncontract ToadnadoL2 {\\n\\nmapping (uint256=>bytes32) l1Roots;\\nuint32 public constant ROOT_HISTORY_SIZE = 30;\\nuint32 public currentRootIndex = 0;\\n\\naddress constant L1Address = 0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4;\\n\\nfunction isKnownL1Root(bytes32 _root) public view returns (bool) {\\n    if (_root == 0) {\\n      return false;\\n    }\\n    uint32 _currentRootIndex = currentRootIndex;\\n    uint32 i = _currentRootIndex;\\n    do {\\n      if (_root == l1Roots[i]) {\\n        return true;\\n      }\\n      if (i == 0) {\\n        i = ROOT_HISTORY_SIZE;\\n      }\\n      i--;\\n    } while (i != _currentRootIndex);\\n    return false;\\n  }\\n\\naddress constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;\\n\\n    function readSingleSlot(address l1_contract, uint256 slot) public view returns (bytes memory) {\\n\\n        bytes memory input = abi.encodePacked(l1_contract, slot);\\n\\n        bool success;\\n        bytes memory result;\\n\\n        (success, result) = L1_SLOAD_ADDRESS.staticcall(input);\\n\\n        if (!success) {\\n            revert(\\\"L1SLOAD failed\\\");\\n        }\\n\\n        return result;\\n\\n    }\\n\\n    // \\n    function getL1Root(address l1_contract, uint256 key) public view returns(bytes32) {\\n        uint slotNumber = 3;\\n        return abi.decode(readSingleSlot(\\n            l1_contract,\\n            uint(keccak256(\\n                abi.encodePacked(key,slotNumber)\\n                )\\n            )\\n            ), (bytes32));\\n    }\\n\\n    function isKnownRoot(bytes32 _root) public view returns (bool) {\\n    if (_root == 0) {\\n      return false;\\n    }\\n    uint32 _currentRootIndex = currentRootIndex;\\n    uint32 i = _currentRootIndex;\\n    do {\\n      if (_root == getL1Root(L1Address, i)) {\\n        return true;\\n      }\\n      if (i == 0) {\\n        i = ROOT_HISTORY_SIZE;\\n      }\\n      i--;\\n    } while (i != _currentRootIndex);\\n    return false;\\n  }\\n\\n    // function readMapSlot(address l1_contract, uint256 slot) public {\\n\\n    //     bytes memory input = abi.encodePacked(l1_contract, slot);\\n\\n    //     //get max amount for the for loop \\n\\n    //     bool success;\\n\\n    //     (success, leafResult) = L1_SLOAD_ADDRESS.staticcall(input);\\n\\n    //     if (!success) {\\n    //         revert(\\\"L1SLOAD failed\\\");\\n    //     }\\n\\n    // }\\n    \\n}\",\"keccak256\":\"0x16e8211dae97fb78257dd79ae4120819fc5d81fa3ba7f9c63652204eb7050eb3\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60806040526001805463ffffffff1916905534801561001d57600080fd5b5061049e8061002d6000396000f3fe608060405234801561001057600080fd5b50600436106100625760003560e01c80630477045814610067578063102b72e71461008d5780636d9833e3146100ad57806390eeb02b146100d0578063cd87a3b4146100f5578063e993d00b146100fd575b600080fd5b61007a61007536600461035d565b610110565b6040519081526020015b60405180910390f35b6100a061009b36600461035d565b610169565b60405161008491906103b9565b6100c06100bb3660046103ec565b610253565b6040519015158152602001610084565b6001546100e09063ffffffff1681565b60405163ffffffff9091168152602001610084565b6100e0601e81565b6100c061010b3660046103ec565b6102df565b604080516020810183905260039181018290526000919061014e9085906060016040516020818303038152906040528051906020012060001c610169565b8060200190518101906101619190610405565b949350505050565b604051606083811b6bffffffffffffffffffffffff1916602083015260348201839052906000906054016040516020818303038152906040529050600060606101016001600160a01b0316836040516101c2919061041e565b600060405180830381855afa9150503d80600081146101fd576040519150601f19603f3d011682016040523d82523d6000602084013e610202565b606091505b5090925090508161024a5760405162461bcd60e51b815260206004820152600e60248201526d130c54d313d0510819985a5b195960921b604482015260640160405180910390fd5b95945050505050565b600081810361026457506000919050565b60015463ffffffff16805b610293733ef9b20c061588ea749fd007a13e10a3321c4af48263ffffffff16610110565b84036102a3575060019392505050565b8063ffffffff166000036102b55750601e5b806102bf8161043a565b9150508163ffffffff168163ffffffff160361026f575060009392505050565b60008181036102f057506000919050565b60015463ffffffff16805b63ffffffff81166000908152602081905260409020548403610321575060019392505050565b8063ffffffff166000036103335750601e5b8061033d8161043a565b9150508163ffffffff168163ffffffff16036102fb575060009392505050565b6000806040838503121561037057600080fd5b82356001600160a01b038116811461038757600080fd5b946020939093013593505050565b60005b838110156103b0578181015183820152602001610398565b50506000910152565b60208152600082518060208401526103d8816040850160208701610395565b601f01601f19169190910160400192915050565b6000602082840312156103fe57600080fd5b5035919050565b60006020828403121561041757600080fd5b5051919050565b60008251610430818460208701610395565b9190910192915050565b600063ffffffff82168061045e57634e487b7160e01b600052601160045260246000fd5b600019019291505056fea26469706673582212203e6186c0d18e379418577092da70bdbb832cb97a868391127909bfda32ba7c7e64736f6c63430008170033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100625760003560e01c80630477045814610067578063102b72e71461008d5780636d9833e3146100ad57806390eeb02b146100d0578063cd87a3b4146100f5578063e993d00b146100fd575b600080fd5b61007a61007536600461035d565b610110565b6040519081526020015b60405180910390f35b6100a061009b36600461035d565b610169565b60405161008491906103b9565b6100c06100bb3660046103ec565b610253565b6040519015158152602001610084565b6001546100e09063ffffffff1681565b60405163ffffffff9091168152602001610084565b6100e0601e81565b6100c061010b3660046103ec565b6102df565b604080516020810183905260039181018290526000919061014e9085906060016040516020818303038152906040528051906020012060001c610169565b8060200190518101906101619190610405565b949350505050565b604051606083811b6bffffffffffffffffffffffff1916602083015260348201839052906000906054016040516020818303038152906040529050600060606101016001600160a01b0316836040516101c2919061041e565b600060405180830381855afa9150503d80600081146101fd576040519150601f19603f3d011682016040523d82523d6000602084013e610202565b606091505b5090925090508161024a5760405162461bcd60e51b815260206004820152600e60248201526d130c54d313d0510819985a5b195960921b604482015260640160405180910390fd5b95945050505050565b600081810361026457506000919050565b60015463ffffffff16805b610293733ef9b20c061588ea749fd007a13e10a3321c4af48263ffffffff16610110565b84036102a3575060019392505050565b8063ffffffff166000036102b55750601e5b806102bf8161043a565b9150508163ffffffff168163ffffffff160361026f575060009392505050565b60008181036102f057506000919050565b60015463ffffffff16805b63ffffffff81166000908152602081905260409020548403610321575060019392505050565b8063ffffffff166000036103335750601e5b8061033d8161043a565b9150508163ffffffff168163ffffffff16036102fb575060009392505050565b6000806040838503121561037057600080fd5b82356001600160a01b038116811461038757600080fd5b946020939093013593505050565b60005b838110156103b0578181015183820152602001610398565b50506000910152565b60208152600082518060208401526103d8816040850160208701610395565b601f01601f19169190910160400192915050565b6000602082840312156103fe57600080fd5b5035919050565b60006020828403121561041757600080fd5b5051919050565b60008251610430818460208701610395565b9190910192915050565b600063ffffffff82168061045e57634e487b7160e01b600052601160045260246000fd5b600019019291505056fea26469706673582212203e6186c0d18e379418577092da70bdbb832cb97a868391127909bfda32ba7c7e64736f6c63430008170033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 5,
+        "contract": "contracts/ToadnadoL2.sol:ToadnadoL2",
+        "label": "l1Roots",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_uint256,t_bytes32)"
+      },
+      {
+        "astId": 11,
+        "contract": "contracts/ToadnadoL2.sol:ToadnadoL2",
+        "label": "currentRootIndex",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint32"
+      }
+    ],
+    "types": {
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_mapping(t_uint256,t_bytes32)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => bytes32)",
+        "numberOfBytes": "32",
+        "value": "t_bytes32"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      },
+      "t_uint32": {
+        "encoding": "inplace",
+        "label": "uint32",
+        "numberOfBytes": "4"
+      }
+    }
+  }
+}
