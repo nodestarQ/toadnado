@@ -62,15 +62,18 @@ const deployL2: DeployFunction = async function (hre: HardhatRuntimeEnvironment)
 
   await deploy("ToadnadoL2", {
     from: deployer,
-    args: [l1Address],
+    args: [l1Address, verifierL2, denomination, merkleTreeHeight],
     log: true,
     autoMine: true,
   });
+
+  // const toadnadoL2 = await hre.ethers.getContract<Contract>("ToadnadoL2", deployer);
+  // console.log("ToadnadoL2 commitments: "+ await toadnadoL2.getAllCommitments())
   
 };
 
-export default deployL1;
-//export default  deployL2;
+//export default deployL1;
+export default  deployL2;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract

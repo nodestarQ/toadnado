@@ -5,7 +5,6 @@ import "./Toadnado.sol";
 
 contract ToadnadoL1 is Toadnado {
   constructor(
-    //IVerifier _verifier,
     address _verifier,
     uint256 _denomination,
     uint32 _merkleTreeHeight
@@ -15,20 +14,17 @@ contract ToadnadoL1 is Toadnado {
 
   function _processDeposit() internal override {
     require(msg.value == denomination, "Please send `mixDenomination` ETH along with transaction");
-    if(block.chainid!=11155111){
-      //do some bridging
-      address payable me = payable(0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4);
-     (bool success, ) = me.call{value: msg.value}("");
-        require(success, "Transfer failed.");
-    }
+    // if(block.chainid!=11155111){
+    //   //do some bridging
+    //   address payable me = payable(0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4);
+    //  (bool success, ) = me.call{value: msg.value}("");
+    //     require(success, "Transfer failed.");
+    // }
   }
 
   function _processWithdraw(
     address payable _recipient
   ) internal override{
-    //TODO ADD THIS LATER: only allow withdrawal on L2 for now 
-    //require(block.chainid!=11155111, "withdrawal only allowed on L2");
-    // sanity checks
     require(msg.value == 0, "Message value is supposed to be zero for ETH instance");
     (bool success, ) = _recipient.call{ value: denomination }("");
     require(success, "payment to _recipient did not go thru");

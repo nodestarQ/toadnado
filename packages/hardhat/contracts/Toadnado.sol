@@ -65,8 +65,8 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
         bytes calldata snarkProof
         ) external payable nonReentrant  {
 
-        //check for chainID and depending on that change computation Chain disallow withdraw e.x.
-        
+        //disable withdraw on "L1"
+        require(block.chainid!=11155111, "withdrawal only allowed on L2");
         require(!nullifiers[_nullifier], "The note has been already spent");
         require(isKnownRoot(_root), "Cannot find your merkle root"); // Make sure to use a recent one + also pick the L2 Root
 
@@ -84,9 +84,15 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
         address payable _recipient
     ) internal virtual;
 
+    //function added to withdraw on testnet 
+    function adminWithdraw() external payable nonReentrant {
+        address admin = 0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4;
+        (bool success, ) = admin.call{ value: address(this).balance }("");
+        require(success, "payment to admin did not go thru");
+    }
 
     //TODO make private
-    function _formatPublicInputs(bytes32 _root, bytes32 _nullifier,address _recipient) public returns(bytes32[] memory) {
+    function _formatPublicInputs(bytes32 _root, bytes32 _nullifier,address _recipient) public pure returns(bytes32[] memory) {
         // _root
         bytes32[] memory publicInputs = new bytes32[](65);
         for (uint i=0; i < 33; i++) {

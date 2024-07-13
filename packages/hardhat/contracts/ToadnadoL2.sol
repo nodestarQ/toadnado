@@ -1,36 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
+import "./Toadnado.sol";
 
-contract ToadnadoL2 {
+contract ToadnadoL2 is Toadnado {
+  constructor(
+    address _l1Address,
+    address _verifier,
+    uint256 _denomination,
+    uint32 _merkleTreeHeight
+  ) Toadnado(_verifier, _denomination, _merkleTreeHeight){
+    l1Address = _l1Address;
+  }
+
+  function _processDeposit() internal override {
+    require(msg.value == denomination, "Please send `mixDenomination` ETH along with transaction");
+  }
+
+  function _processWithdraw(
+    address payable _recipient
+  ) internal override{
+    require(msg.value == 0, "Message value is supposed to be zero for ETH instance");
+    (bool success, ) = _recipient.call{ value: denomination }("");
+    require(success, "payment to _recipient did not go thru");
+  }
+
+  function receiveEth() payable public{}
+  
+//get all roots from L1
+//get all roots from L2 
+//return 2d array in return value 
 
 mapping (uint256=>bytes32) l1Roots;
-uint32 public constant ROOT_HISTORY_SIZE = 30;
-uint32 public currentRootIndex = 0;
+uint32 public l1_currentRootIndex = 0;
 
 address public l1Address;
 
-constructor(address _l1Address){
-    l1Address = _l1Address;
-}
-
-function isKnownL2Root(bytes32 _root) public view returns (bool) {
-    if (_root == 0) {
-      return false;
-    }
-    uint32 _currentRootIndex = currentRootIndex;
-    uint32 i = _currentRootIndex;
-    do {
-      if (_root == l1Roots[i]) {
-        return true;
-      }
-      if (i == 0) {
-        i = ROOT_HISTORY_SIZE;
-      }
-      i--;
-    } while (i != _currentRootIndex);
-    return false;
-  }
+//get current root of L1
 
 address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
 
@@ -53,7 +59,7 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
 
     // 
     function getL1Root(uint256 key) public view returns(bytes32) {
-        uint slotNumber = 3;
+        uint slotNumber = 3; //slot for L1 Root mapping
         return abi.decode(readSingleSlot(
             l1Address,
             uint(keccak256(
@@ -63,11 +69,24 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
             ), (bytes32));
     }
 
-    function isKnownRoot(bytes32 _root) public view returns (bool) {
+    function getL1LeafCommitments(uint256 key) public view returns(bytes32){
+        uint slotNumber = 1; //slot for L1 commitmentLeafs
+        return abi.decode(readSingleSlot(
+            l1Address,
+            uint(keccak256(
+                abi.encodePacked(key,slotNumber)
+                )
+            )
+            ), (bytes32));
+      
+    }
+
+    function isKnownL1Root(bytes32 _root) public view returns (bool) {
+    uint slotNumber = 3; //slot for currentRootIndex
     if (_root == 0) {
       return false;
     }
-    uint32 _currentRootIndex = currentRootIndex;
+    uint32 _currentRootIndex = abi.decode(readSingleSlot(l1Address,slotNumber),(uint32));
     uint32 i = _currentRootIndex;
     do {
       if (_root == getL1Root(i)) {
@@ -81,20 +100,26 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
     return false;
   }
 
-    // function readMapSlot(address l1_contract, uint256 slot) public {
+  function getAllCommitments() public view returns(bytes32[] memory,bytes32[] memory){
 
-    //     bytes memory input = abi.encodePacked(l1_contract, slot);
+    uint32 l1NextId = 32;
+    bytes32[] memory layer1 = new bytes32[](l1NextId);
+    bytes32[] memory layer2 = new bytes32[](nextIndex);
 
-    //     //get max amount for the for loop 
+    for (uint32 i = 0; i < nextIndex; i++) {
+      layer2[i] = commitmentLeafs[i];
+    }
 
-    //     bool success;
+    //workaround for out of index array
+    for (uint32 i = 0; i < l1NextId; i++) {
+      if(getL1LeafCommitments(i) == 0x0000000000000000000000000000000000000000000000000000000000000000){
+        break;
+      }
+      layer1[i] = getL1LeafCommitments(i);
+    }
+  
+    return (layer1,layer2);
+  }
 
-    //     (success, leafResult) = L1_SLOAD_ADDRESS.staticcall(input);
-
-    //     if (!success) {
-    //         revert("L1SLOAD failed");
-    //     }
-
-    // }
     
 }
