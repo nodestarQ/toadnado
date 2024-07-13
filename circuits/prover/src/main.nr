@@ -55,6 +55,9 @@ fn main(
     secret: [u8;32],
     hash_path: [[u8;32];TREE_DEPTH],
     hash_path_bools:  [bool; TREE_DEPTH],
+    root_other_layer: [u8;32],
+    root_other_is_right: bool // left = L1, right = L2
+
     ) {
     // to make sure these are set and cant change
     assert(recipient != 0x0);
@@ -62,12 +65,22 @@ fn main(
 
     let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
     let computed_root = compute_merkle_root(commitmentHash, hash_path, hash_path_bools);
+
+    let (root_left, root_right) = if root_other_is_right {
+            (computed_root, root_other_layer)
+        } else {
+            (root_other_layer, computed_root)
+        };
+    let computed_meta_root = hashKeccak2(root_left, root_right);
+
+
+
     println("computedNullifierHash");
     println(computedNullifierHash);
     println(nullifierHash);
 
     assert(computedNullifierHash == nullifierHash);
-    assert(computed_root == root);
+    assert(computed_meta_root == root);
 }
 
 #[test]
@@ -101,7 +114,7 @@ fn test_commitment_hasher() {
 
 #[test]
 fn test_main() {
-    let root: [u8;32] = [ 150, 118, 38, 213, 240, 193, 20, 230, 195, 6, 204, 49, 66, 22, 159, 101, 13, 63, 97, 83, 212,55, 151, 198, 234, 109, 135, 144, 239, 240, 13, 109 ];
+    let root: [u8;32] = [ 126, 110, 203, 158, 212, 147, 148, 125, 239, 239, 254, 80, 140, 158, 181, 10, 64, 30, 96,99, 86, 26, 58, 188, 197, 12, 248, 200, 203, 120, 238, 155 ];
     let nullifierHash: [u8;32] = [ 206, 109, 123, 82, 130, 189, 154, 54, 97, 174, 6, 31, 238, 209, 219, 218, 78, 82, 171, 7, 59, 31, 146, 133, 190, 110, 21, 93, 156, 56, 212, 236 ];
     let recipient: Field = 0x000000000000000000000000794464c8c91a2be4addabfdb82b6db7b1bb1dbc7;
 
@@ -120,15 +133,20 @@ fn test_main() {
     ];
     let hash_path_bools:  [bool; TREE_DEPTH] =  [ false, false, false, false, false ];
 
-    main(
-    root,
-    nullifierHash, 
-    recipient, 
+    let root_other_layer =  [ 2, 239, 212, 76, 99, 1, 95, 241, 56, 83, 68, 224, 98, 72, 103, 119, 84, 134, 208, 94, 110, 177, 41, 10, 36, 151, 105, 100, 165, 152, 0, 59 ];
 
-    nullifierHashPreImage,
-    secret,
-    hash_path,
-    hash_path_bools,
+    let root_other_is_right = true;
+    main(
+        root,
+        nullifierHash, 
+        recipient, 
+
+        nullifierHashPreImage,
+        secret,
+        hash_path,
+        hash_path_bools,
+        root_other_layer,
+        root_other_is_right
     );
 
 }

@@ -124,7 +124,7 @@ function paddArray(arr:any[], len = 32, filler = 0, infront = true) {
     }
 }
 
-async function generateProof(commitments:string[], nullifierHashPreImage: string,secret: string, recipient: string, commitmentIndex:number) {
+async function generateProof(commitments:string[], nullifierHashPreImage: string,secret: string, recipient: string, commitmentIndex:number, metaRoot:string,isL1:boolean, rootOtherLayer:string) {
     const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, commitmentIndex)
 
     const abiEncoder = new ethers.AbiCoder()
@@ -133,7 +133,7 @@ async function generateProof(commitments:string[], nullifierHashPreImage: string
     const backend = new BarretenbergBackend(circuit);
     const noir = new Noir(circuit, backend)
     const inputs:InputMap = {
-        root:[...ethers.toBeArray(root)],                                      //pub [u8;32],
+        root:[...ethers.toBeArray(metaRoot)],                                      //pub [u8;32],
         nullifierHash: [...ethers.toBeArray(nullifierHash)],                    //pub [u8;32], 
         recipient:ethers.zeroPadValue(recipient,32),                            //pub Field, 
         // relayer:                                     //pub Field,
@@ -144,8 +144,10 @@ async function generateProof(commitments:string[], nullifierHashPreImage: string
         secret: paddArray([...ethers.toBeArray(secret)],32,0,true),                                 //[u8;32],
         hash_path: bytes32ArrayToNoirJs(hashPath) as InputValue,                            //[[u8;32];TREE_DEPTH],
         hash_path_bools:  hashPathBools,                //[bool; TREE_DEPTH],
+        root_other_layer: [...ethers.toBeArray(rootOtherLayer)] ,
+        root_other_is_right: isL1
     }
-    console.log({inputs, nullifierHashPreImage: inputs.nullifierHashPreImage})
+    console.log({inputs})
     const snarkProof = await noir.generateProof(inputs)
     return snarkProof
     
@@ -153,8 +155,8 @@ async function generateProof(commitments:string[], nullifierHashPreImage: string
 
 async function main() {
     //await makeZeroBytes()
-    const treeDepth = 5n
-    const ammountCommitments = Number( 2n ** treeDepth)
+    const treeDepth = 5
+    const ammountCommitments = Number( 2 ** treeDepth)
 
     
     const abiEncoder = new ethers.AbiCoder()
@@ -171,16 +173,28 @@ async function main() {
 
     // make full list of commitments, used to recreate the merkle tree
     const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
-    const commitments = [commitmentHash, ...Array(ammountCommitments-1).fill(zeroBytes)]
-    
+    const commitmentsL1 = [commitmentHash, ...Array(ammountCommitments-1).fill(zeroBytes)]
+    const commitmentsL2 = [...Array(ammountCommitments).fill(zeroBytes)]
+
+    // get roots
+    const l2tree = generateTree(commitmentsL2)
+    const l2Root = l2tree.tree[treeDepth][0]
+    const l1tree = generateTree(commitmentsL1)
+    const l1Root = l1tree.tree[treeDepth][0]
+
+    const abiCoder = new ethers.AbiCoder()
+    const metaRoot = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [l1Root,l2Root])) 
+    console.log({l1Root, l2Root,metaRoot})
+
+
     // commitmentIndex = 0 = user was the first deposit
     const commitmentIndex = 0
 
     // build the merkle tree from all commitments and generate a merkle proof (hashPath + hashPathBools)
-    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, commitmentIndex)
+    //const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitmentsL1, commitmentIndex)
     //console.log({hashPath,  hashPathBools: hashPathBools, leaf})//.slice().reverse()})
-
-    const {proof, publicInputs} = await generateProof(commitments,nullifierHashPreImage,secret,recipient,commitmentIndex )
+    const isL1 = true
+    const {proof, publicInputs} = await generateProof(commitmentsL1,nullifierHashPreImage,secret,recipient,commitmentIndex, metaRoot, isL1, l2Root)
 
     // verify the proof
     const backend = new BarretenbergBackend(circuit);
