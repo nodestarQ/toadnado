@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
+import "./MerkleTree.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 interface IVerifier {
     function verify(
         bytes calldata _proof,
@@ -9,10 +12,11 @@ interface IVerifier {
 }
 error VerificationFailed();
 
-contract ToadnadoL1 {
+contract ToadnadoL1 is MerkleTree, ReentrancyGuard{
 
-    constructor(address _verifier) {
+    constructor(address _verifier) MerkleTree(20) {
         verifier = _verifier;
+        MerkleTree.levels = levels;
     }
 
     // contract that verifies the zkSnark proof
@@ -22,9 +26,12 @@ contract ToadnadoL1 {
     // its a identiefier of a commitment(deposit) that is revealed when it is withdrawn
     // to prevent it being spend again
     mapping (bytes32 => bool) public nullifiers;
+    //keeping track of commitments to prevent deposits from the same commitment
+    mapping(bytes32 => bool) public commitments;
 
     // a history of valid merkle roots, to verify that a proof refers to a valid deposit
     mapping (bytes32 => bool) public commitmentsTreeRoots;
+
 
     //TODO find out depth and set array lenght to that as 2^depth
     // contains the entire current merkle tree from the commitements (leafs) to the root
@@ -32,10 +39,22 @@ contract ToadnadoL1 {
     // [commitment1,commitment2, hash1atLevel1, hash2atLevel1, root]
     bytes32[] public commitmentsTree;
 
+    
+    event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);
 
-    function deposit(bytes32 commitment) public {
-        //TODO update merkle tree
+
+    function deposit(bytes32 _commitment) external payable nonReentrant {
+        require(!commitments[_commitment], "The commitment has been submitted");
+
+        //DONE update merkle tree
+        uint32 insertedIndex = _insert(_commitment);
+        commitments[_commitment] = true;
+        _insert(_commitment);
+
         //TODO get the eth (0.01 eth)
+        //_processDeposit();
+
+        emit Deposit(_commitment, insertedIndex, block.timestamp);
  
     }
 

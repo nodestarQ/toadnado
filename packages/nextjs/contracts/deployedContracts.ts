@@ -6,14 +6,14 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    YourContract: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    ToadnadoL1: {
+      address: "0x9A676e781A523b5d0C0e43731313A708CB607508",
       abi: [
         {
           inputs: [
             {
               internalType: "address",
-              name: "_owner",
+              name: "_verifier",
               type: "address",
             },
           ],
@@ -21,44 +21,48 @@ const deployedContracts = {
           type: "constructor",
         },
         {
+          inputs: [],
+          name: "ReentrancyGuardReentrantCall",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "VerificationFailed",
+          type: "error",
+        },
+        {
           anonymous: false,
           inputs: [
             {
               indexed: true,
-              internalType: "address",
-              name: "greetingSetter",
-              type: "address",
+              internalType: "bytes32",
+              name: "commitment",
+              type: "bytes32",
             },
             {
               indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
+              internalType: "uint32",
+              name: "leafIndex",
+              type: "uint32",
             },
             {
               indexed: false,
               internalType: "uint256",
-              name: "value",
+              name: "timestamp",
               type: "uint256",
             },
           ],
-          name: "GreetingChange",
+          name: "Deposit",
           type: "event",
         },
         {
           inputs: [],
-          name: "greeting",
+          name: "FIELD_SIZE",
           outputs: [
             {
-              internalType: "string",
+              internalType: "uint256",
               name: "",
-              type: "string",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -66,12 +70,12 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "owner",
+          name: "ROOT_HISTORY_SIZE",
           outputs: [
             {
-              internalType: "address",
+              internalType: "uint32",
               name: "",
-              type: "address",
+              type: "uint32",
             },
           ],
           stateMutability: "view",
@@ -79,7 +83,45 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "premium",
+          name: "ZERO_VALUE",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "commitmentLeafs",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "commitments",
           outputs: [
             {
               internalType: "bool",
@@ -93,24 +135,232 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
-          name: "setGreeting",
+          name: "commitmentsTree",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "commitmentsTreeRoots",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "currentRootIndex",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "_commitment",
+              type: "bytes32",
+            },
+          ],
+          name: "deposit",
           outputs: [],
           stateMutability: "payable",
           type: "function",
         },
         {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
+          inputs: [
             {
               internalType: "uint256",
               name: "",
               type: "uint256",
+            },
+          ],
+          name: "filledSubtrees",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getLastRoot",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "_left",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "_right",
+              type: "bytes32",
+            },
+          ],
+          name: "hashLeftRight",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
+            },
+          ],
+          name: "isKnownRoot",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "levels",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "nextIndex",
+          outputs: [
+            {
+              internalType: "uint32",
+              name: "",
+              type: "uint32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          name: "nullifiers",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "roots",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32[]",
+              name: "_commitmentsTree",
+              type: "bytes32[]",
+            },
+            {
+              internalType: "bytes32",
+              name: "_root",
+              type: "bytes32",
+            },
+          ],
+          name: "setCommitmentsTree",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "verifier",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
             },
           ],
           stateMutability: "view",
@@ -120,34 +370,65 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "",
+              name: "to",
               type: "address",
             },
-          ],
-          name: "userGreetingCounter",
-          outputs: [
+            {
+              internalType: "bytes32",
+              name: "nullifier",
+              type: "bytes32",
+            },
             {
               internalType: "uint256",
-              name: "",
+              name: "chainId",
               type: "uint256",
             },
+            {
+              internalType: "bytes",
+              name: "snarkProof",
+              type: "bytes",
+            },
           ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
           name: "withdraw",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
         {
-          stateMutability: "payable",
-          type: "receive",
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "i",
+              type: "uint256",
+            },
+          ],
+          name: "zeros",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
         },
       ],
-      inheritedFunctions: {},
+      inheritedFunctions: {
+        FIELD_SIZE: "contracts/MerkleTree.sol",
+        ROOT_HISTORY_SIZE: "contracts/MerkleTree.sol",
+        ZERO_VALUE: "contracts/MerkleTree.sol",
+        commitmentLeafs: "contracts/MerkleTree.sol",
+        currentRootIndex: "contracts/MerkleTree.sol",
+        filledSubtrees: "contracts/MerkleTree.sol",
+        getLastRoot: "contracts/MerkleTree.sol",
+        hashLeftRight: "contracts/MerkleTree.sol",
+        isKnownRoot: "contracts/MerkleTree.sol",
+        levels: "contracts/MerkleTree.sol",
+        nextIndex: "contracts/MerkleTree.sol",
+        roots: "contracts/MerkleTree.sol",
+        zeros: "contracts/MerkleTree.sol",
+      },
     },
   },
   2227728: {
