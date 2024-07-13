@@ -86,6 +86,14 @@ export async function makeZeroBytes() {
 }
 
 async function main() {
-    await makeZeroBytes()
+    //await makeZeroBytes()
+    const treeDepth = 7n
+    const ammountCommitments = Number( 2n ** treeDepth)
+
+    const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
+    const commitments = ["0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000004200", ...Array(ammountCommitments-2).fill(zeroBytes)]
+    console.log({commitmentsLen: commitments.length})
+    const  {hashPath, hashPathBools} =   getMerkleProof(commitments, 0)
+    console.log({hashPath, hashPathBools})
 }
 main()
