@@ -8,7 +8,11 @@ mapping (uint256=>bytes32) l1Roots;
 uint32 public constant ROOT_HISTORY_SIZE = 30;
 uint32 public currentRootIndex = 0;
 
-address constant L1Address = 0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4;
+address public l1Address;
+
+constructor(address _l1Address){
+    l1Address = _l1Address;
+}
 
 function isKnownL1Root(bytes32 _root) public view returns (bool) {
     if (_root == 0) {
@@ -48,10 +52,10 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
     }
 
     // 
-    function getL1Root(address l1_contract, uint256 key) public view returns(bytes32) {
+    function getL1Root(uint256 key) public view returns(bytes32) {
         uint slotNumber = 3;
         return abi.decode(readSingleSlot(
-            l1_contract,
+            l1Address,
             uint(keccak256(
                 abi.encodePacked(key,slotNumber)
                 )
@@ -66,7 +70,7 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
     uint32 _currentRootIndex = currentRootIndex;
     uint32 i = _currentRootIndex;
     do {
-      if (_root == getL1Root(L1Address, i)) {
+      if (_root == getL1Root(i)) {
         return true;
       }
       if (i == 0) {

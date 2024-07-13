@@ -2,6 +2,12 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 
+
+
+const merkleTreeHeight = 7;
+const denomination = BigInt((10**18)/100); //0.01eth
+const l1Address = "0x3EF9b20C061588Ea749FD007A13e10a3321c4aF4";
+
 /**
  * Deploys a contract named "YourContract" using the deployer account and
  * constructor arguments set to the deployer address
@@ -21,9 +27,6 @@ const deployToadnado: DeployFunction = async function (hre: HardhatRuntimeEnviro
   */
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
-
-  const merkleTreeHeight = 7;
-  const denomination = BigInt((10**18)/100); //0.01eth
 
   await deploy("ToadnadoL1", {
     from: deployer,
@@ -54,13 +57,10 @@ const deployL2: DeployFunction = async function (hre: HardhatRuntimeEnvironment)
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  const merkleTreeHeight = 7;
-  const denomination = BigInt((10**18)/100); //0.01eth
-
   await deploy("ToadnadoL2", {
     from: deployer,
     // Contract constructor arguments
-    args: [],
+    args: [l1Address],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
