@@ -5,6 +5,9 @@ import { ethers } from "ethers";
 //noir
 import { BarretenbergBackend, BarretenbergVerifier as Verifier } from '@noir-lang/backend_barretenberg';
 import { Noir } from '@noir-lang/noir_js';
+import type {InputMap} from '@noir-lang/noir_js';
+type InputValue = Field | InputMap | (Field | InputMap)[]
+type Field = string | number | boolean;;
 import circuit from '../../../circuits/prover/target/prover.json'  assert {type: 'json'};
 
 export function generateTree(commitments:string[]=[]) {
@@ -61,7 +64,7 @@ export function getProofFromTree(tree: string[], leafIndex:number, treeDepth:num
 export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: number) {
     const {tree, treeDepth} = generateTree(allCommitments)
     const root = tree[tree.length-1][0]
-    console.log({root: tree[tree.length-1], treeDepth, tree})
+    console.log({root: tree[tree.length-1], treeDepth})
     const {hashPath, hashPathBools, leaf} = getProofFromTree(tree, targerCommitmentIndex,treeDepth)
     return {hashPath, hashPathBools, leaf, root}
 
@@ -91,8 +94,7 @@ export async function makeZeroBytes() {
     // const  {hashPath, hashPathBools} =   getMerkleProof(commitments, 0)
     // console.log({hashPath, hashPathBools})
 }
-
-function toBytesArrayNoir(bytes:string[]) {
+function bytes32ArrayToNoir(bytes:string[]) {
     return bytes.map((x)=>{
         const b=[...ethers.toBeArray(x)]
         const zeros = Array(32-b.length).fill(0)
@@ -100,35 +102,51 @@ function toBytesArrayNoir(bytes:string[]) {
     }).map((x)=>`[${x.toString()}]`).toString()
 }
 
+function bytes32ArrayToNoirJs(bytes:string[]) : InputValue[]  {
+    return bytes.map((x)=>{
+        const b=[...ethers.toBeArray(x)]
+        const zeros = Array(32-b.length).fill(0)
+        return [...zeros, ...b]
+    })
+}
 function singleBytes32ToNoir(bytes32:string) {
     const b=[...ethers.toBeArray(bytes32)]
     const zeros = Array(32-b.length).fill(0)
     return [...zeros, ...b].toString()
 }
 
-async function generateProof(commitments:string[], nullifierHashPreImage: string,secret: string, recipient: string) {
-    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, 1)
+function paddArray(arr:any[], len = 32, filler = 0, infront = true) {
+    if (infront) {
+        return [...Array(len - arr.length).fill(filler), ...arr]
+
+    } else {
+        return [...arr, ...Array(len - arr.length).fill(filler)]
+    }
+}
+
+async function generateProof(commitments:string[], nullifierHashPreImage: string,secret: string, recipient: string, commitmentIndex:number) {
+    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, commitmentIndex)
 
     const abiEncoder = new ethers.AbiCoder()
-    const nullifierHash = ethers.keccak256(abiEncoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+    const commitmentHash = ethers.keccak256(abiEncoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+    const nullifierHash = ethers.keccak256(nullifierHashPreImage)
     const backend = new BarretenbergBackend(circuit);
     const noir = new Noir(circuit, backend)
-    const inputs = {
-        root:root,                                      //pub [u8;32],
-        nullifierHash:nullifierHash,                    //pub [u8;32], 
-        recipient:recipient,                            //pub Field, 
+    const inputs:InputMap = {
+        root:[...ethers.toBeArray(root)],                                      //pub [u8;32],
+        nullifierHash: [...ethers.toBeArray(nullifierHash)],                    //pub [u8;32], 
+        recipient:ethers.zeroPadValue(recipient,32),                            //pub Field, 
         // relayer:                                     //pub Field,
         // fee:                                         //pub Field,
         // refund:                                      //pub Field,
         //chainId:                                      //pub Field,
-        
-        nullifierHashPreImage: nullifierHashPreImage,   //[u8;32],
-        secret: secret,                                 //[u8;32],
-        hash_path: hashPath,                            //[[u8;32];TREE_DEPTH],
+        nullifierHashPreImage: paddArray([...ethers.toBeArray(nullifierHashPreImage)],32,0,true) ,   //[u8;32],
+        secret: paddArray([...ethers.toBeArray(secret)],32,0,true),                                 //[u8;32],
+        hash_path: bytes32ArrayToNoirJs(hashPath) as InputValue,                            //[[u8;32];TREE_DEPTH],
         hash_path_bools:  hashPathBools,                //[bool; TREE_DEPTH],
-
     }
-    const snarkProof =await  noir.generateProof(inputs)
+    console.log({inputs, nullifierHashPreImage: inputs.nullifierHashPreImage})
+    const snarkProof = await noir.generateProof(inputs)
     const verified = await noir.verifyProof(snarkProof)
     console.log({verified})
     
@@ -136,22 +154,31 @@ async function generateProof(commitments:string[], nullifierHashPreImage: string
 
 async function main() {
     //await makeZeroBytes()
-    const treeDepth = 7n
+    const treeDepth = 5n
     const ammountCommitments = Number( 2n ** treeDepth)
 
     const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
-    const commitments = ["0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000004200", ...Array(ammountCommitments-2).fill(zeroBytes)]
-    console.log({commitmentsLen: commitments.length})
-    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, 1)
+    const abiEncoder = new ethers.AbiCoder()
+    const nullifierHashPreImage = "0x0000000000000000000000000000000000000000000000000000000000000014"
+    const secret = "0x0000000000000000000000000000000000000000000000000000000000000014"
+    const recipient = "0x794464c8c91A2bE4aDdAbfdB82b6db7B1Bb1DBC7"
+    const testCommitment  = ethers.keccak256(abiEncoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+    const commitments = [testCommitment, ...Array(ammountCommitments-1).fill(zeroBytes)]
+    const commitmentIndex = 0
+    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, commitmentIndex)
     console.log({hashPath,  hashPathBools: hashPathBools, leaf})//.slice().reverse()})
 
+    await generateProof(commitments,nullifierHashPreImage,secret,recipient,commitmentIndex )
 
-    console.log("\n--------quick way to get inputs for testing inside noir-------\n")
-    console.log(`
-    let hash_path = [${toBytesArrayNoir(hashPath)}];
-    let leaf = [${singleBytes32ToNoir(leaf)}];
-    let real_root = [${singleBytes32ToNoir(root)}];
-    let hash_path_bools = [${hashPathBools}];
-    `)
+
+    // console.log("\n--------quick way to get inputs for testing inside noir-------\n")
+    // console.log(`
+    // let hash_path = [${bytes32ArrayToNoir(hashPath)}];
+    // let leaf = [${singleBytes32ToNoir(leaf)}];
+    // let real_root = [${singleBytes32ToNoir(root)}];
+    // let hash_path_bools = [${hashPathBools}];
+    // `)
+
+    process.exit();
 }
 main()

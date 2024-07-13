@@ -1,6 +1,6 @@
 use dep::std;
 
-global TREE_DEPTH = 7;
+global TREE_DEPTH = 5;
 
 fn hashKeccak2(first: [u8;32], second: [u8;32]) -> [u8;32] {
     let mut preImage: [u8;64] = [0;64];
@@ -62,7 +62,9 @@ fn main(
 
     let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
     let computed_root = compute_merkle_root(commitmentHash, hash_path, hash_path_bools);
-
+    println("computedNullifierHash");
+    println(computedNullifierHash);
+    println(nullifierHash);
 
     assert(computedNullifierHash == nullifierHash);
     assert(computed_root == root);
@@ -94,4 +96,39 @@ fn test_commitment_hasher() {
     println(computedNullifierHash);
 
     // ethers.hexlify(new Uint8Array(computedNullifierHash))
+}
+
+
+#[test]
+fn test_main() {
+    let root: [u8;32] = [ 150, 118, 38, 213, 240, 193, 20, 230, 195, 6, 204, 49, 66, 22, 159, 101, 13, 63, 97, 83, 212,55, 151, 198, 234, 109, 135, 144, 239, 240, 13, 109 ];
+    let nullifierHash: [u8;32] = [ 206, 109, 123, 82, 130, 189, 154, 54, 97, 174, 6, 31, 238, 209, 219, 218, 78, 82, 171, 7, 59, 31, 146, 133, 190, 110, 21, 93, 156, 56, 212, 236 ];
+    let recipient: Field = 0x000000000000000000000000794464c8c91a2be4addabfdb82b6db7b1bb1dbc7;
+
+    let nullifierHashPreImage: [u8;32] =    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20 ];
+    let secret: [u8;32] =                   [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20 ];
+    let hash_path: [[u8;32];TREE_DEPTH] = [
+      [ 47, 229, 76, 96, 211, 172, 171, 243, 52, 58, 53, 182, 235, 161, 93, 180, 130, 27, 52, 15, 118,
+        231, 65, 226, 36, 150, 133, 237, 72, 153, 175, 108 ], [ 79, 194, 254, 145, 132, 162, 95, 68,
+        206, 141, 219, 95, 50, 103, 31, 202, 230, 217, 200, 94, 215, 16, 193, 153, 172, 239, 22, 173,
+        22, 178, 153, 17 ], [ 13, 130, 106, 71, 79, 133, 28, 86, 48, 82, 217, 41, 239, 13, 170, 112,
+        246, 88, 171, 169, 186, 8, 79, 81, 246, 227, 72, 60, 19, 192, 229, 154 ], [ 247, 118, 26, 22,
+        181, 228, 192, 18, 14, 76, 87, 4, 185, 16, 219, 225, 143, 246, 22, 42, 150, 104, 237, 28, 44,
+        78, 253, 231, 196, 241, 88, 6 ], [ 206, 156, 224, 154, 10, 178, 89, 214, 209, 76, 163, 220,
+        215, 78, 108, 107, 158, 125, 144, 116, 191, 246, 105, 115, 212, 197, 124, 205, 255, 219, 42,
+        130 ]
+    ];
+    let hash_path_bools:  [bool; TREE_DEPTH] =  [ false, false, false, false, false ];
+
+    main(
+    root,
+    nullifierHash, 
+    recipient, 
+
+    nullifierHashPreImage,
+    secret,
+    hash_path,
+    hash_path_bools,
+    );
+
 }
