@@ -11,6 +11,7 @@ interface IVerifier {
     ) external view returns (bool);
 }
 error VerificationFailed();
+
 abstract contract Toadnado is MerkleTree, ReentrancyGuard{
   //IVerifier public immutable verifier;
   uint256 public denomination;
@@ -38,13 +39,6 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     // a history of valid merkle roots, to verify that a proof refers to a valid deposit
     mapping (bytes32 => bool) public commitmentsTreeRoots;
 
-
-    //TODO find out depth and set array lenght to that as 2^depth
-    // contains the entire current merkle tree from the commitements (leafs) to the root
-    // ex at depth 1 (2 commitements)
-    // [commitment1,commitment2, hash1atLevel1, hash2atLevel1, root]
-    bytes32[] public commitmentsTree;
-
     event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);
     event Withdrawal(address recipient, bytes32 nullifier);
 
@@ -69,17 +63,23 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
         bytes calldata snarkProof
         ) external payable nonReentrant  {
 
+        //check for chainID and depending on that change computation Chain disallow withdraw e.x.
+        
+        require(!nullifiers[_nullifier], "The note has been already spent");
+        require(isKnownRoot(_root), "Cannot find your merkle root"); // Make sure to use a recent one + also pick the L2 Root
+
         bytes32[] memory publicInputs = _formatPublicInputs(_root, _nullifier, _recipient);
         if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
             revert VerificationFailed();
         }
     
+        nullifiers[_nullifier] = true;
         _processWithdraw(_recipient);
         emit Withdrawal(_recipient, _nullifier);
     }
     
     function _processWithdraw(
-    address payable _recipient
+        address payable _recipient
     ) internal virtual;
 
 
@@ -101,6 +101,21 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
         publicInputs[65] = recipientBytes;
         return publicInputs;
     }
+
+    /** @dev whether a note is already spent */
+  function isSpent(bytes32 _nullifierHash) public view returns (bool) {
+    return nullifiers[_nullifierHash];
+  }
+
+  /** @dev whether an array of notes is already spent */
+  function isSpentArray(bytes32[] calldata _nullifierHashes) external view returns (bool[] memory spent) {
+    spent = new bool[](_nullifierHashes.length);
+    for (uint256 i = 0; i < _nullifierHashes.length; i++) {
+      if (isSpent(_nullifierHashes[i])) {
+        spent[i] = true;
+      }
+    }
+  }
 
 
     //TODO remove this

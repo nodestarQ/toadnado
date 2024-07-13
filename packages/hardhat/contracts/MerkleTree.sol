@@ -3,19 +3,11 @@ pragma solidity 0.8.23;
 
 
 contract MerkleTree{
-  // uint256 public constant FIELD_SIZE = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
-  // uint256 public constant ZERO_VALUE = 21663839004416932945382355908790599225266501822907911457504978515578255421292; // = keccak256("tornado") % FIELD_SIZE
 
   uint32 public levels;
   
   // merkle leafs
   mapping (uint256 => bytes32) public commitmentLeafs; 
-
-  // the following variables are made public for easier testing and debugging and
-  // are not supposed to be accessed in regular code
-
-  // filledSubtrees and roots could be bytes32[size], but using mappings makes it cheaper because
-  // it removes index range check on every interaction
   mapping(uint256 => bytes32) public filledSubtrees;
   mapping(uint256 => bytes32) public roots;
   uint32 public constant ROOT_HISTORY_SIZE = 30;
@@ -24,7 +16,7 @@ contract MerkleTree{
 
   constructor(uint32 _levels) {
     require(_levels > 0, "_levels should be greater than zero");
-    require(_levels < 32, "_levels should be less than 32");
+    require(_levels < 20, "_levels should be less than 20");
     levels = _levels;
 
     for (uint32 i = 0; i < _levels; i++) {
@@ -41,10 +33,7 @@ contract MerkleTree{
     bytes32 _left,
     bytes32 _right
   ) public pure returns (bytes32) {
-    // require(uint256(_left) < FIELD_SIZE, "_left should be inside the field");
-    // require(uint256(_right) < FIELD_SIZE, "_right should be inside the field");
-    bytes32 R = keccak256(abi.encodePacked(_left, _right));
-    return R;
+    return keccak256(abi.encodePacked(_left, _right)); 
   }
 
   function _insert(bytes32 _leaf) internal returns (uint32 index) {
@@ -68,7 +57,6 @@ contract MerkleTree{
       currentIndex /= 2;
     }
 
-//TODO WHY DOUBLE?!
     uint32 newRootIndex = (currentRootIndex + 1) % ROOT_HISTORY_SIZE;
     currentRootIndex = newRootIndex;
     roots[newRootIndex] = currentLevelHash;

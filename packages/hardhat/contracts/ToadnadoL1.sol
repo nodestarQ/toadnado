@@ -10,7 +10,8 @@ contract ToadnadoL1 is Toadnado {
     uint256 _denomination,
     uint32 _merkleTreeHeight
   ) Toadnado(_verifier, _denomination, _merkleTreeHeight) {}
-  
+   
+  // TODO ADD FUNCTION for automated badge bridging
 
   function _processDeposit() internal override {
     require(msg.value == denomination, "Please send `mixDenomination` ETH along with transaction");
