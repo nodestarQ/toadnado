@@ -30,7 +30,7 @@ export function generateTree(commitments:string[]=[]) {
 }
 
 export function getProofFromTree(tree: string[], leafIndex:number, treeDepth:number) {
-    const leaf = tree[leafIndex]
+    const leaf = tree[0][leafIndex]
     const hashPath = []
 
     const bools = BigInt(leafIndex).toString(2).split('').map(x => x === '1')
@@ -48,15 +48,16 @@ export function getProofFromTree(tree: string[], leafIndex:number, treeDepth:num
         
     }
 
-    return {hashPath, hashPathBools}
+    return {hashPath, hashPathBools, leaf}
 }
 
 
 export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: number) {
     const {tree, treeDepth} = generateTree(allCommitments)
-    console.log({root: tree[tree.length-1], treeDepth})
-    const {hashPath, hashPathBools} = getProofFromTree(tree, targerCommitmentIndex,treeDepth)
-    return {hashPath, hashPathBools}
+    const root = tree[tree.length-1][0]
+    console.log({root: tree[tree.length-1], treeDepth, tree})
+    const {hashPath, hashPathBools, leaf} = getProofFromTree(tree, targerCommitmentIndex,treeDepth)
+    return {hashPath, hashPathBools, leaf, root}
 
 }
 
@@ -85,6 +86,20 @@ export async function makeZeroBytes() {
     // console.log({hashPath, hashPathBools})
 }
 
+function toBytesArrayNoir(bytes:string[]) {
+    return bytes.map((x)=>{
+        const b=[...ethers.toBeArray(x)]
+        const zeros = Array(32-b.length).fill(0)
+        return [...zeros, ...b]
+    }).map((x)=>`[${x.toString()}]`).toString()
+}
+
+function singleBytes32ToNoir(bytes32:string) {
+    const b=[...ethers.toBeArray(bytes32)]
+    const zeros = Array(32-b.length).fill(0)
+    return [...zeros, ...b].toString()
+}
+
 async function main() {
     //await makeZeroBytes()
     const treeDepth = 7n
@@ -93,7 +108,16 @@ async function main() {
     const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
     const commitments = ["0x0000000000000000000000000000000000000000000000000000000000000014","0x0000000000000000000000000000000000000000000000000000000000004200", ...Array(ammountCommitments-2).fill(zeroBytes)]
     console.log({commitmentsLen: commitments.length})
-    const  {hashPath, hashPathBools} =   getMerkleProof(commitments, 0)
-    console.log({hashPath, hashPathBools})
+    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, 1)
+    console.log({hashPath,  hashPathBools: hashPathBools, leaf})//.slice().reverse()})
+
+
+    console.log("\n--------quick way to get inputs for testing inside noir-------\n")
+    console.log(`
+    let hash_path = [${toBytesArrayNoir(hashPath)}];
+    let leaf = [${singleBytes32ToNoir(leaf)}];
+    let real_root = [${singleBytes32ToNoir(root)}];
+    let hash_path_bools = [${hashPathBools}];
+    `)
 }
 main()

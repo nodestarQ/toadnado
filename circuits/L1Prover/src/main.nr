@@ -23,13 +23,13 @@ fn compute_merkle_root<N>(leaf_hash: [u8;32], hash_path: [ [u8;32]; N], hash_pat
     let n = hash_path.len();
     let mut current = leaf_hash;
     for i in 0..n {
-        let path_bit = hash_path_bools[i];
-        let (hash_first, hash_second) = if path_bit {
-            (hash_path[i], current)
+        let hash_right = hash_path_bools[i];
+        if hash_right {
+            current = hashKeccak2(hash_path[i], current);
         } else {
-            (current, hash_path[i])
+            current = hashKeccak2(current, hash_path[i]);
         };
-        current = hashKeccak2(hash_first, hash_second);
+        
 
     }
     current
@@ -68,7 +68,16 @@ fn main(
     assert(computed_root == root);
 }
 
-// #[test]
-// fn test_main() {
-
-// }
+#[test]
+fn test_simple_merkle_proof() {
+    
+    let hash_path = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,20],[79,194,254,145,132,162,95,68,206,141,219,95,50,103,31,202,230,217,200,94,215,16,193,153,172,239,22,173,22,178,153,17],[13,130,106,71,79,133,28,86,48,82,217,41,239,13,170,112,246,88,171,169,186,8,79,81,246,227,72,60,19,192,229,154],[247,118,26,22,181,228,192,18,14,76,87,4,185,16,219,225,143,246,22,42,150,104,237,28,44,78,253,231,196,241,88,6],[206,156,224,154,10,178,89,214,209,76,163,220,215,78,108,107,158,125,144,116,191,246,105,115,212,197,124,205,255,219,42,130],[2,239,212,76,99,1,95,241,56,83,68,224,98,72,103,119,84,134,208,94,110,177,41,10,36,151,105,100,165,152,0,59],[196,222,197,132,93,64,124,226,172,46,104,36,187,120,87,196,177,56,248,25,229,120,157,93,17,232,18,219,16,200,70,205]];
+    let leaf = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,66,0];
+    let real_root = [218,130,62,147,72,0,144,187,88,40,196,24,198,243,240,151,71,112,62,173,29,168,116,56,198,174,231,247,158,128,233,2];
+    let hash_path_bools = [true,false,false,false,false,false,false];
+    let root = compute_merkle_root(leaf,hash_path, hash_path_bools);
+    
+    println("root");
+    println(root);
+    assert(root == real_root);
+}
