@@ -43,7 +43,7 @@ contract ToadnadoL1 is MerkleTree, ReentrancyGuard{
     event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);
 
 
-    function deposit(bytes32 _commitment) external payable nonReentrant {
+    function deposit(bytes32 _commitment) external /*payable nonReentrant*/ {
         require(!commitments[_commitment], "The commitment has been submitted");
 
         //DONE update merkle tree

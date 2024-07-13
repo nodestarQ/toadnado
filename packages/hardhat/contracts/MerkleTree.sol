@@ -68,6 +68,7 @@ contract MerkleTree{
       currentIndex /= 2;
     }
 
+//TODO WHY DOUBLE?!
     uint32 newRootIndex = (currentRootIndex + 1) % ROOT_HISTORY_SIZE;
     currentRootIndex = newRootIndex;
     roots[newRootIndex] = currentLevelHash;

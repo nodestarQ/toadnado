@@ -1,0 +1,610 @@
+{
+  "address": "0x54EC12b250C62c42F3B63EEc6E9235Af7F53d7b7",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_verifier",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "VerificationFailed",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "commitment",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "leafIndex",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "Deposit",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "FIELD_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ROOT_HISTORY_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ZERO_VALUE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "commitmentLeafs",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "commitments",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "commitmentsTree",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "commitmentsTreeRoots",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "currentRootIndex",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_commitment",
+          "type": "bytes32"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "filledSubtrees",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLastRoot",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_left",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_right",
+          "type": "bytes32"
+        }
+      ],
+      "name": "hashLeftRight",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_root",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isKnownRoot",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "levels",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextIndex",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "nullifiers",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "roots",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "_commitmentsTree",
+          "type": "bytes32[]"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_root",
+          "type": "bytes32"
+        }
+      ],
+      "name": "setCommitmentsTree",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "verifier",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "nullifier",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "chainId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "snarkProof",
+          "type": "bytes"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "i",
+          "type": "uint256"
+        }
+      ],
+      "name": "zeros",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x8629fc8b27927587c1525eb0b3d51d3fdd8488163eeece7f5f213f892d5f4f52",
+  "receipt": {
+    "to": null,
+    "from": "0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4",
+    "contractAddress": "0x54EC12b250C62c42F3B63EEc6E9235Af7F53d7b7",
+    "transactionIndex": 24,
+    "gasUsed": "1655895",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x02099f759a0a065848112b8478f1b009432a6d7f8e61a8d606dfbef65a1a90ab",
+    "transactionHash": "0x8629fc8b27927587c1525eb0b3d51d3fdd8488163eeece7f5f213f892d5f4f52",
+    "logs": [],
+    "blockNumber": 6299512,
+    "cumulativeGasUsed": "5228782",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4"
+  ],
+  "numDeployments": 2,
+  "solcInputHash": "0c1b6ed9ab4c0439b2d3d4f5817bb880",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_verifier\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"VerificationFailed\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"commitment\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint32\",\"name\":\"leafIndex\",\"type\":\"uint32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"FIELD_SIZE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ROOT_HISTORY_SIZE\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ZERO_VALUE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"commitmentLeafs\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"commitments\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"commitmentsTree\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"commitmentsTreeRoots\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"currentRootIndex\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"filledSubtrees\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLastRoot\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_left\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"_right\",\"type\":\"bytes32\"}],\"name\":\"hashLeftRight\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_root\",\"type\":\"bytes32\"}],\"name\":\"isKnownRoot\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"levels\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextIndex\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"nullifiers\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"roots\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"_commitmentsTree\",\"type\":\"bytes32[]\"},{\"internalType\":\"bytes32\",\"name\":\"_root\",\"type\":\"bytes32\"}],\"name\":\"setCommitmentsTree\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"verifier\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"nullifier\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"chainId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"snarkProof\",\"type\":\"bytes\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"i\",\"type\":\"uint256\"}],\"name\":\"zeros\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"errors\":{\"ReentrancyGuardReentrantCall()\":[{\"details\":\"Unauthorized reentrant call.\"}]},\"kind\":\"dev\",\"methods\":{\"getLastRoot()\":{\"details\":\"Returns the last root\"},\"hashLeftRight(bytes32,bytes32)\":{\"details\":\"Hash 2 tree leaves, returns keccak256(_left, _right)\"},\"isKnownRoot(bytes32)\":{\"details\":\"Whether the root is present in the root history\"},\"zeros(uint256)\":{\"details\":\"provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ToadnadoL1.sol\":\"ToadnadoL1\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/utils/ReentrancyGuard.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (utils/ReentrancyGuard.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Contract module that helps prevent reentrant calls to a function.\\n *\\n * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier\\n * available, which can be applied to functions to make sure there are no nested\\n * (reentrant) calls to them.\\n *\\n * Note that because there is a single `nonReentrant` guard, functions marked as\\n * `nonReentrant` may not call one another. This can be worked around by making\\n * those functions `private`, and then adding `external` `nonReentrant` entry\\n * points to them.\\n *\\n * TIP: If you would like to learn more about reentrancy and alternative ways\\n * to protect against it, check out our blog post\\n * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].\\n */\\nabstract contract ReentrancyGuard {\\n    // Booleans are more expensive than uint256 or any type that takes up a full\\n    // word because each write operation emits an extra SLOAD to first read the\\n    // slot's contents, replace the bits taken up by the boolean, and then write\\n    // back. This is the compiler's defense against contract upgrades and\\n    // pointer aliasing, and it cannot be disabled.\\n\\n    // The values being non-zero value makes deployment a bit more expensive,\\n    // but in exchange the refund on every call to nonReentrant will be lower in\\n    // amount. Since refunds are capped to a percentage of the total\\n    // transaction's gas, it is best to keep them low in cases like this one, to\\n    // increase the likelihood of the full refund coming into effect.\\n    uint256 private constant NOT_ENTERED = 1;\\n    uint256 private constant ENTERED = 2;\\n\\n    uint256 private _status;\\n\\n    /**\\n     * @dev Unauthorized reentrant call.\\n     */\\n    error ReentrancyGuardReentrantCall();\\n\\n    constructor() {\\n        _status = NOT_ENTERED;\\n    }\\n\\n    /**\\n     * @dev Prevents a contract from calling itself, directly or indirectly.\\n     * Calling a `nonReentrant` function from another `nonReentrant`\\n     * function is not supported. It is possible to prevent this from happening\\n     * by making the `nonReentrant` function external, and making it call a\\n     * `private` function that does the actual work.\\n     */\\n    modifier nonReentrant() {\\n        _nonReentrantBefore();\\n        _;\\n        _nonReentrantAfter();\\n    }\\n\\n    function _nonReentrantBefore() private {\\n        // On the first call to nonReentrant, _status will be NOT_ENTERED\\n        if (_status == ENTERED) {\\n            revert ReentrancyGuardReentrantCall();\\n        }\\n\\n        // Any calls to nonReentrant after this point will fail\\n        _status = ENTERED;\\n    }\\n\\n    function _nonReentrantAfter() private {\\n        // By storing the original value once again, a refund is triggered (see\\n        // https://eips.ethereum.org/EIPS/eip-2200)\\n        _status = NOT_ENTERED;\\n    }\\n\\n    /**\\n     * @dev Returns true if the reentrancy guard is currently set to \\\"entered\\\", which indicates there is a\\n     * `nonReentrant` function in the call stack.\\n     */\\n    function _reentrancyGuardEntered() internal view returns (bool) {\\n        return _status == ENTERED;\\n    }\\n}\\n\",\"keccak256\":\"0xf980daa263b661ab8ddee7d4fd833c7da7e7995e2c359ff1f17e67e4112f2236\",\"license\":\"MIT\"},\"contracts/MerkleTree.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.23;\\n\\n\\ncontract MerkleTree{\\n  uint256 public constant FIELD_SIZE = 21888242871839275222246405745257275088548364400416034343698204186575808495617;\\n  uint256 public constant ZERO_VALUE = 21663839004416932945382355908790599225266501822907911457504978515578255421292; // = keccak256(\\\"tornado\\\") % FIELD_SIZE\\n\\n  uint32 public levels;\\n  \\n  // merkle leafs\\n  mapping (uint256 => bytes32) public commitmentLeafs; \\n\\n  // the following variables are made public for easier testing and debugging and\\n  // are not supposed to be accessed in regular code\\n\\n  // filledSubtrees and roots could be bytes32[size], but using mappings makes it cheaper because\\n  // it removes index range check on every interaction\\n  mapping(uint256 => bytes32) public filledSubtrees;\\n  mapping(uint256 => bytes32) public roots;\\n  uint32 public constant ROOT_HISTORY_SIZE = 30;\\n  uint32 public currentRootIndex = 0;\\n  uint32 public nextIndex = 0;\\n\\n  constructor(uint32 _levels) {\\n    require(_levels > 0, \\\"_levels should be greater than zero\\\");\\n    require(_levels < 32, \\\"_levels should be less than 32\\\");\\n    levels = _levels;\\n\\n    for (uint32 i = 0; i < _levels; i++) {\\n      filledSubtrees[i] = zeros(i);\\n    }\\n\\n    roots[0] = zeros(_levels - 1);\\n  }\\n\\n  /**\\n    @dev Hash 2 tree leaves, returns keccak256(_left, _right)\\n  */\\n  function hashLeftRight(\\n    bytes32 _left,\\n    bytes32 _right\\n  ) public pure returns (bytes32) {\\n    // require(uint256(_left) < FIELD_SIZE, \\\"_left should be inside the field\\\");\\n    // require(uint256(_right) < FIELD_SIZE, \\\"_right should be inside the field\\\");\\n    bytes32 R = keccak256(abi.encodePacked(_left, _right));\\n    return R;\\n  }\\n\\n  function _insert(bytes32 _leaf) internal returns (uint32 index) {\\n    uint32 _nextIndex = nextIndex;\\n    require(_nextIndex != uint32(2)**levels, \\\"Merkle tree is full. No more leaves can be added\\\");\\n    uint32 currentIndex = _nextIndex;\\n    bytes32 currentLevelHash = _leaf;\\n    bytes32 left;\\n    bytes32 right;\\n\\n    for (uint32 i = 0; i < levels; i++) {\\n      if (currentIndex % 2 == 0) {\\n        left = currentLevelHash;\\n        right = zeros(i);\\n        filledSubtrees[i] = currentLevelHash;\\n      } else {\\n        left = filledSubtrees[i];\\n        right = currentLevelHash;\\n      }\\n      currentLevelHash = hashLeftRight(left, right);\\n      currentIndex /= 2;\\n    }\\n\\n    uint32 newRootIndex = (currentRootIndex + 1) % ROOT_HISTORY_SIZE;\\n    currentRootIndex = newRootIndex;\\n    roots[newRootIndex] = currentLevelHash;\\n    commitmentLeafs[_nextIndex] = _leaf; //storing leaf into mapping with the current index\\n    nextIndex = _nextIndex + 1;\\n    return _nextIndex;\\n  }\\n\\n  /**\\n    @dev Whether the root is present in the root history\\n  */\\n  function isKnownRoot(bytes32 _root) public view returns (bool) {\\n    if (_root == 0) {\\n      return false;\\n    }\\n    uint32 _currentRootIndex = currentRootIndex;\\n    uint32 i = _currentRootIndex;\\n    do {\\n      if (_root == roots[i]) {\\n        return true;\\n      }\\n      if (i == 0) {\\n        i = ROOT_HISTORY_SIZE;\\n      }\\n      i--;\\n    } while (i != _currentRootIndex);\\n    return false;\\n  }\\n\\n  /**\\n    @dev Returns the last root\\n  */\\n  function getLastRoot() public view returns (bytes32) {\\n    return roots[currentRootIndex];\\n  }\\n\\n  /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels\\n  function zeros(uint256 i) public pure returns (bytes32) {\\n    if (i == 0) return bytes32(0x2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c);\\n    else if (i == 1) return bytes32(0x256a6135777eee2fd26f54b8b7037a25439d5235caee224154186d2b8a52e31d);\\n    else if (i == 2) return bytes32(0x1151949895e82ab19924de92c40a3d6f7bcb60d92b00504b8199613683f0c200);\\n    else if (i == 3) return bytes32(0x20121ee811489ff8d61f09fb89e313f14959a0f28bb428a20dba6b0b068b3bdb);\\n    else if (i == 4) return bytes32(0x0a89ca6ffa14cc462cfedb842c30ed221a50a3d6bf022a6a57dc82ab24c157c9);\\n    else if (i == 5) return bytes32(0x24ca05c2b5cd42e890d6be94c68d0689f4f21c9cec9c0f13fe41d566dfb54959);\\n    else if (i == 6) return bytes32(0x1ccb97c932565a92c60156bdba2d08f3bf1377464e025cee765679e604a7315c);\\n    else if (i == 7) return bytes32(0x19156fbd7d1a8bf5cba8909367de1b624534ebab4f0f79e003bccdd1b182bdb4);\\n    else if (i == 8) return bytes32(0x261af8c1f0912e465744641409f622d466c3920ac6e5ff37e36604cb11dfff80);\\n    else if (i == 9) return bytes32(0x0058459724ff6ca5a1652fcbc3e82b93895cf08e975b19beab3f54c217d1c007);\\n    else if (i == 10) return bytes32(0x1f04ef20dee48d39984d8eabe768a70eafa6310ad20849d4573c3c40c2ad1e30);\\n    else if (i == 11) return bytes32(0x1bea3dec5dab51567ce7e200a30f7ba6d4276aeaa53e2686f962a46c66d511e5);\\n    else if (i == 12) return bytes32(0x0ee0f941e2da4b9e31c3ca97a40d8fa9ce68d97c084177071b3cb46cd3372f0f);\\n    else if (i == 13) return bytes32(0x1ca9503e8935884501bbaf20be14eb4c46b89772c97b96e3b2ebf3a36a948bbd);\\n    else if (i == 14) return bytes32(0x133a80e30697cd55d8f7d4b0965b7be24057ba5dc3da898ee2187232446cb108);\\n    else if (i == 15) return bytes32(0x13e6d8fc88839ed76e182c2a779af5b2c0da9dd18c90427a644f7e148a6253b6);\\n    else if (i == 16) return bytes32(0x1eb16b057a477f4bc8f572ea6bee39561098f78f15bfb3699dcbb7bd8db61854);\\n    else if (i == 17) return bytes32(0x0da2cb16a1ceaabf1c16b838f7a9e3f2a3a3088d9e0a6debaa748114620696ea);\\n    else if (i == 18) return bytes32(0x24a3b3d822420b14b5d8cb6c28a574f01e98ea9e940551d2ebd75cee12649f9d);\\n    else if (i == 19) return bytes32(0x198622acbd783d1b0d9064105b1fc8e4d8889de95c4c519b3f635809fe6afc05);\\n    else if (i == 20) return bytes32(0x29d7ed391256ccc3ea596c86e933b89ff339d25ea8ddced975ae2fe30b5296d4);\\n    else if (i == 21) return bytes32(0x19be59f2f0413ce78c0c3703a3a5451b1d7f39629fa33abd11548a76065b2967);\\n    else if (i == 22) return bytes32(0x1ff3f61797e538b70e619310d33f2a063e7eb59104e112e95738da1254dc3453);\\n    else if (i == 23) return bytes32(0x10c16ae9959cf8358980d9dd9616e48228737310a10e2b6b731c1a548f036c48);\\n    else if (i == 24) return bytes32(0x0ba433a63174a90ac20992e75e3095496812b652685b5e1a2eae0b1bf4e8fcd1);\\n    else if (i == 25) return bytes32(0x019ddb9df2bc98d987d0dfeca9d2b643deafab8f7036562e627c3667266a044c);\\n    else if (i == 26) return bytes32(0x2d3c88b23175c5a5565db928414c66d1912b11acf974b2e644caaac04739ce99);\\n    else if (i == 27) return bytes32(0x2eab55f6ae4e66e32c5189eed5c470840863445760f5ed7e7b69b2a62600f354);\\n    else if (i == 28) return bytes32(0x002df37a2642621802383cf952bf4dd1f32e05433beeb1fd41031fb7eace979d);\\n    else if (i == 29) return bytes32(0x104aeb41435db66c3e62feccc1d6f5d98d0a0ed75d1374db457cf462e3a1f427);\\n    else if (i == 30) return bytes32(0x1f3c6fd858e9a7d4b0d1f38e256a09d81d5a5e3c963987e2d4b814cfab7c6ebb);\\n    else if (i == 31) return bytes32(0x2c7a07d20dff79d01fecedc1134284a8d08436606c93693b67e333f671bf69cc);\\n    else revert(\\\"Index out of bounds\\\");\\n  }\\n}\",\"keccak256\":\"0x948f79a3e339799ced33944c7d0e8c7f6e7112d7aa0640d7fb03a481ec057500\",\"license\":\"MIT\"},\"contracts/ToadnadoL1.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.23;\\n\\nimport \\\"./MerkleTree.sol\\\";\\nimport \\\"@openzeppelin/contracts/utils/ReentrancyGuard.sol\\\";\\n\\ninterface IVerifier {\\n    function verify(\\n        bytes calldata _proof,\\n        bytes32[] calldata _publicInputs\\n    ) external view returns (bool);\\n}\\nerror VerificationFailed();\\n\\ncontract ToadnadoL1 is MerkleTree, ReentrancyGuard{\\n\\n    constructor(address _verifier) MerkleTree(20) {\\n        verifier = _verifier;\\n        MerkleTree.levels = levels;\\n    }\\n\\n    // contract that verifies the zkSnark proof\\n    address public verifier;\\n\\n    // nullifiers of the l1Withdraws\\n    // its a identiefier of a commitment(deposit) that is revealed when it is withdrawn\\n    // to prevent it being spend again\\n    mapping (bytes32 => bool) public nullifiers;\\n    //keeping track of commitments to prevent deposits from the same commitment\\n    mapping(bytes32 => bool) public commitments;\\n\\n    // a history of valid merkle roots, to verify that a proof refers to a valid deposit\\n    mapping (bytes32 => bool) public commitmentsTreeRoots;\\n\\n\\n    //TODO find out depth and set array lenght to that as 2^depth\\n    // contains the entire current merkle tree from the commitements (leafs) to the root\\n    // ex at depth 1 (2 commitements)\\n    // [commitment1,commitment2, hash1atLevel1, hash2atLevel1, root]\\n    bytes32[] public commitmentsTree;\\n\\n    \\n    event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);\\n\\n\\n    function deposit(bytes32 _commitment) external /*payable nonReentrant*/ {\\n        require(!commitments[_commitment], \\\"The commitment has been submitted\\\");\\n\\n        //DONE update merkle tree\\n        uint32 insertedIndex = _insert(_commitment);\\n        commitments[_commitment] = true;\\n        _insert(_commitment);\\n\\n        //TODO get the eth (0.01 eth)\\n        //_processDeposit();\\n\\n        emit Deposit(_commitment, insertedIndex, block.timestamp);\\n \\n    }\\n\\n    function withdraw(address to, bytes32 nullifier,uint256 chainId, bytes calldata snarkProof) public {\\n        bytes32[] memory publicInputs = _formatPublicInputs(to, nullifier, chainId);\\n        if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {\\n            revert VerificationFailed();\\n        }\\n        //TODO send the money to \\\"to\\\"\\n        //TODO add nullifier\\n        //TODO checkChainID\\n    }\\n\\n    function _formatPublicInputs(address to, bytes32 nullifier,uint256 chainId) private returns(bytes32[] memory) {\\n\\n    }\\n\\n\\n    //TODO remove this\\n    //debug functions\\n    function setCommitmentsTree(bytes32[] calldata _commitmentsTree, bytes32 _root) public {\\n        commitmentsTree = _commitmentsTree;\\n        commitmentsTreeRoots[_root] = true;\\n    }\\n\\n\\n\\n\\n\\n\\n}\",\"keccak256\":\"0x7da779a8fa503de32366be94e9091ea87907db514a0b7ef4467fb548a504f9a6\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080604052600480546001600160401b03191690553480156200002157600080fd5b5060405162001ae838038062001ae88339810160408190526200004491620007e0565b601462000055565b60405180910390fd5b60208163ffffffff1610620000ad5760405162461bcd60e51b815260206004820152601e60248201527f5f6c6576656c732073686f756c64206265206c657373207468616e203332000060448201526064016200004c565b6000805463ffffffff191663ffffffff83161781555b8163ffffffff168163ffffffff1610156200010857620000e963ffffffff821662000197565b63ffffffff8216600090815260026020526040902055600101620000c3565b50620001266200011a60018362000812565b63ffffffff1662000197565b600080805260036020527f3617319a054d772f909f7c479a2cebe5066e836a939412e32403c99029b92eff919091556001600555600680546001600160a01b0319166001600160a01b03949094169390931790925550805463ffffffff811663ffffffff1990911617905562000845565b600081600003620001c957507f2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c919050565b81600103620001f957507f256a6135777eee2fd26f54b8b7037a25439d5235caee224154186d2b8a52e31d919050565b816002036200022957507f1151949895e82ab19924de92c40a3d6f7bcb60d92b00504b8199613683f0c200919050565b816003036200025957507f20121ee811489ff8d61f09fb89e313f14959a0f28bb428a20dba6b0b068b3bdb919050565b816004036200028957507f0a89ca6ffa14cc462cfedb842c30ed221a50a3d6bf022a6a57dc82ab24c157c9919050565b81600503620002b957507f24ca05c2b5cd42e890d6be94c68d0689f4f21c9cec9c0f13fe41d566dfb54959919050565b81600603620002e957507f1ccb97c932565a92c60156bdba2d08f3bf1377464e025cee765679e604a7315c919050565b816007036200031957507f19156fbd7d1a8bf5cba8909367de1b624534ebab4f0f79e003bccdd1b182bdb4919050565b816008036200034957507f261af8c1f0912e465744641409f622d466c3920ac6e5ff37e36604cb11dfff80919050565b816009036200037857507e58459724ff6ca5a1652fcbc3e82b93895cf08e975b19beab3f54c217d1c007919050565b81600a03620003a857507f1f04ef20dee48d39984d8eabe768a70eafa6310ad20849d4573c3c40c2ad1e30919050565b81600b03620003d857507f1bea3dec5dab51567ce7e200a30f7ba6d4276aeaa53e2686f962a46c66d511e5919050565b81600c036200040857507f0ee0f941e2da4b9e31c3ca97a40d8fa9ce68d97c084177071b3cb46cd3372f0f919050565b81600d036200043857507f1ca9503e8935884501bbaf20be14eb4c46b89772c97b96e3b2ebf3a36a948bbd919050565b81600e036200046857507f133a80e30697cd55d8f7d4b0965b7be24057ba5dc3da898ee2187232446cb108919050565b81600f036200049857507f13e6d8fc88839ed76e182c2a779af5b2c0da9dd18c90427a644f7e148a6253b6919050565b81601003620004c857507f1eb16b057a477f4bc8f572ea6bee39561098f78f15bfb3699dcbb7bd8db61854919050565b81601103620004f857507f0da2cb16a1ceaabf1c16b838f7a9e3f2a3a3088d9e0a6debaa748114620696ea919050565b816012036200052857507f24a3b3d822420b14b5d8cb6c28a574f01e98ea9e940551d2ebd75cee12649f9d919050565b816013036200055857507f198622acbd783d1b0d9064105b1fc8e4d8889de95c4c519b3f635809fe6afc05919050565b816014036200058857507f29d7ed391256ccc3ea596c86e933b89ff339d25ea8ddced975ae2fe30b5296d4919050565b81601503620005b857507f19be59f2f0413ce78c0c3703a3a5451b1d7f39629fa33abd11548a76065b2967919050565b81601603620005e857507f1ff3f61797e538b70e619310d33f2a063e7eb59104e112e95738da1254dc3453919050565b816017036200061857507f10c16ae9959cf8358980d9dd9616e48228737310a10e2b6b731c1a548f036c48919050565b816018036200064857507f0ba433a63174a90ac20992e75e3095496812b652685b5e1a2eae0b1bf4e8fcd1919050565b816019036200067857507f019ddb9df2bc98d987d0dfeca9d2b643deafab8f7036562e627c3667266a044c919050565b81601a03620006a857507f2d3c88b23175c5a5565db928414c66d1912b11acf974b2e644caaac04739ce99919050565b81601b03620006d857507f2eab55f6ae4e66e32c5189eed5c470840863445760f5ed7e7b69b2a62600f354919050565b81601c036200070757507e2df37a2642621802383cf952bf4dd1f32e05433beeb1fd41031fb7eace979d919050565b81601d036200073757507f104aeb41435db66c3e62feccc1d6f5d98d0a0ed75d1374db457cf462e3a1f427919050565b81601e036200076757507f1f3c6fd858e9a7d4b0d1f38e256a09d81d5a5e3c963987e2d4b814cfab7c6ebb919050565b81601f036200079757507f2c7a07d20dff79d01fecedc1134284a8d08436606c93693b67e333f671bf69cc919050565b60405162461bcd60e51b815260206004820152601360248201527f496e646578206f7574206f6620626f756e64730000000000000000000000000060448201526064016200004c565b600060208284031215620007f357600080fd5b81516001600160a01b03811681146200080b57600080fd5b9392505050565b63ffffffff8281168282160390808211156200083e57634e487b7160e01b600052601160045260246000fd5b5092915050565b61129380620008556000396000f3fe608060405234801561001057600080fd5b50600436106101375760003560e01c806390eeb02b116100b8578063c2b40ae41161007c578063c2b40ae414610300578063cd87a3b414610320578063e829558814610328578063ec7329591461033b578063f178e47c14610362578063fc7e9c6f1461038257600080fd5b806390eeb02b1461028d5780639ec441541461029d578063b214faa5146102bd578063b85f2670146102d0578063ba70f757146102e357600080fd5b8063414a37ba116100ff578063414a37ba146101f85780634ecf518b1461021f578063621a5286146102445780636d9833e314610257578063839df9451461026a57600080fd5b80632997e86b1461013c5780632b7ac3f3146101745780633591d78d1461019f57806338bf282e146101c25780633990f65b146101e3575b600080fd5b61015f61014a366004610e7d565b60076020526000908152604090205460ff1681565b60405190151581526020015b60405180910390f35b600654610187906001600160a01b031681565b6040516001600160a01b03909116815260200161016b565b61015f6101ad366004610e7d565b60096020526000908152604090205460ff1681565b6101d56101d0366004610e96565b61039a565b60405190815260200161016b565b6101f66101f1366004610eb8565b6103db565b005b6101d57f30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f000000181565b60005461022f9063ffffffff1681565b60405163ffffffff909116815260200161016b565b6101d5610252366004610e7d565b610476565b61015f610265366004610e7d565b610497565b61015f610278366004610e7d565b60086020526000908152604090205460ff1681565b60045461022f9063ffffffff1681565b6101d56102ab366004610e7d565b60016020526000908152604090205481565b6101f66102cb366004610e7d565b610515565b6101f66102de366004610f5a565b6105f7565b60045463ffffffff166000908152600360205260409020546101d5565b6101d561030e366004610e7d565b60036020526000908152604090205481565b61022f601e81565b6101d5610336366004610e7d565b610621565b6101d57f2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c81565b6101d5610370366004610e7d565b60026020526000908152604090205481565b60045461022f90640100000000900463ffffffff1681565b60008083836040516020016103b9929190918252602082015260400190565b60408051601f1981840301815291905280516020909101209150505b92915050565b600654604051633a94343960e21b81526060916001600160a01b03169063ea50d0e49061041090869086908690600401610fd5565b602060405180830381865afa15801561042d573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104519190611050565b61046e5760405163439cc0cd60e01b815260040160405180910390fd5b505050505050565b600a818154811061048657600080fd5b600091825260209091200154905081565b60008181036104a857506000919050565b60045463ffffffff16805b63ffffffff811660009081526003602052604090205484036104d9575060019392505050565b8063ffffffff166000036104eb5750601e5b806104f58161108f565b9150508163ffffffff168163ffffffff16036104b3575060009392505050565b60008181526008602052604090205460ff16156105835760405162461bcd60e51b815260206004820152602160248201527f54686520636f6d6d69746d656e7420686173206265656e207375626d697474656044820152601960fa1b60648201526084015b60405180910390fd5b600061058e82610c3f565b6000838152600860205260409020805460ff1916600117905590506105b282610c3f565b506040805163ffffffff8316815242602082015283917fa945e51eec50ab98c161376f0db4cf2aeba3ec92755fe2fcd388bdbbb80ff196910160405180910390a25050565b610603600a8484610e1d565b506000908152600960205260409020805460ff191660011790555050565b60008160000361065257507f2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c919050565b8160010361068157507f256a6135777eee2fd26f54b8b7037a25439d5235caee224154186d2b8a52e31d919050565b816002036106b057507f1151949895e82ab19924de92c40a3d6f7bcb60d92b00504b8199613683f0c200919050565b816003036106df57507f20121ee811489ff8d61f09fb89e313f14959a0f28bb428a20dba6b0b068b3bdb919050565b8160040361070e57507f0a89ca6ffa14cc462cfedb842c30ed221a50a3d6bf022a6a57dc82ab24c157c9919050565b8160050361073d57507f24ca05c2b5cd42e890d6be94c68d0689f4f21c9cec9c0f13fe41d566dfb54959919050565b8160060361076c57507f1ccb97c932565a92c60156bdba2d08f3bf1377464e025cee765679e604a7315c919050565b8160070361079b57507f19156fbd7d1a8bf5cba8909367de1b624534ebab4f0f79e003bccdd1b182bdb4919050565b816008036107ca57507f261af8c1f0912e465744641409f622d466c3920ac6e5ff37e36604cb11dfff80919050565b816009036107f857507e58459724ff6ca5a1652fcbc3e82b93895cf08e975b19beab3f54c217d1c007919050565b81600a0361082757507f1f04ef20dee48d39984d8eabe768a70eafa6310ad20849d4573c3c40c2ad1e30919050565b81600b0361085657507f1bea3dec5dab51567ce7e200a30f7ba6d4276aeaa53e2686f962a46c66d511e5919050565b81600c0361088557507f0ee0f941e2da4b9e31c3ca97a40d8fa9ce68d97c084177071b3cb46cd3372f0f919050565b81600d036108b457507f1ca9503e8935884501bbaf20be14eb4c46b89772c97b96e3b2ebf3a36a948bbd919050565b81600e036108e357507f133a80e30697cd55d8f7d4b0965b7be24057ba5dc3da898ee2187232446cb108919050565b81600f0361091257507f13e6d8fc88839ed76e182c2a779af5b2c0da9dd18c90427a644f7e148a6253b6919050565b8160100361094157507f1eb16b057a477f4bc8f572ea6bee39561098f78f15bfb3699dcbb7bd8db61854919050565b8160110361097057507f0da2cb16a1ceaabf1c16b838f7a9e3f2a3a3088d9e0a6debaa748114620696ea919050565b8160120361099f57507f24a3b3d822420b14b5d8cb6c28a574f01e98ea9e940551d2ebd75cee12649f9d919050565b816013036109ce57507f198622acbd783d1b0d9064105b1fc8e4d8889de95c4c519b3f635809fe6afc05919050565b816014036109fd57507f29d7ed391256ccc3ea596c86e933b89ff339d25ea8ddced975ae2fe30b5296d4919050565b81601503610a2c57507f19be59f2f0413ce78c0c3703a3a5451b1d7f39629fa33abd11548a76065b2967919050565b81601603610a5b57507f1ff3f61797e538b70e619310d33f2a063e7eb59104e112e95738da1254dc3453919050565b81601703610a8a57507f10c16ae9959cf8358980d9dd9616e48228737310a10e2b6b731c1a548f036c48919050565b81601803610ab957507f0ba433a63174a90ac20992e75e3095496812b652685b5e1a2eae0b1bf4e8fcd1919050565b81601903610ae857507f019ddb9df2bc98d987d0dfeca9d2b643deafab8f7036562e627c3667266a044c919050565b81601a03610b1757507f2d3c88b23175c5a5565db928414c66d1912b11acf974b2e644caaac04739ce99919050565b81601b03610b4657507f2eab55f6ae4e66e32c5189eed5c470840863445760f5ed7e7b69b2a62600f354919050565b81601c03610b7457507e2df37a2642621802383cf952bf4dd1f32e05433beeb1fd41031fb7eace979d919050565b81601d03610ba357507f104aeb41435db66c3e62feccc1d6f5d98d0a0ed75d1374db457cf462e3a1f427919050565b81601e03610bd257507f1f3c6fd858e9a7d4b0d1f38e256a09d81d5a5e3c963987e2d4b814cfab7c6ebb919050565b81601f03610c0157507f2c7a07d20dff79d01fecedc1134284a8d08436606c93693b67e333f671bf69cc919050565b60405162461bcd60e51b8152602060048201526013602482015272496e646578206f7574206f6620626f756e647360681b604482015260640161057a565b60045460008054909163ffffffff640100000000909104811691610c65911660026111c0565b63ffffffff168163ffffffff1603610cd85760405162461bcd60e51b815260206004820152603060248201527f4d65726b6c6520747265652069732066756c6c2e204e6f206d6f7265206c656160448201526f1d995cc818d85b88189948185919195960821b606482015260840161057a565b8083600080805b60005463ffffffff9081169082161015610d7957610cfe6002866111f3565b63ffffffff16600003610d3c57839250610d1d8163ffffffff16610621565b63ffffffff821660009081526002602052604090208590559150610d58565b63ffffffff811660009081526002602052604090205492508391505b610d62838361039a565b9350610d6f600286611216565b9450600101610cdf565b50600454600090601e90610d949063ffffffff166001611239565b610d9e91906111f3565b6004805463ffffffff191663ffffffff8381169182179092556000908152600360209081526040808320899055928a1682526001908190529190208a9055909150610dea908790611239565b6004805463ffffffff929092166401000000000267ffffffff000000001990921691909117905550939695505050505050565b828054828255906000526020600020908101928215610e58579160200282015b82811115610e58578235825591602001919060010190610e3d565b50610e64929150610e68565b5090565b5b80821115610e645760008155600101610e69565b600060208284031215610e8f57600080fd5b5035919050565b60008060408385031215610ea957600080fd5b50508035926020909101359150565b600080600080600060808688031215610ed057600080fd5b85356001600160a01b0381168114610ee757600080fd5b94506020860135935060408601359250606086013567ffffffffffffffff80821115610f1257600080fd5b818801915088601f830112610f2657600080fd5b813581811115610f3557600080fd5b896020828501011115610f4757600080fd5b9699959850939650602001949392505050565b600080600060408486031215610f6f57600080fd5b833567ffffffffffffffff80821115610f8757600080fd5b818601915086601f830112610f9b57600080fd5b813581811115610faa57600080fd5b8760208260051b8501011115610fbf57600080fd5b6020928301989097509590910135949350505050565b60408152826040820152828460608301376000606084830101526000601f19601f85011682016060810160206060858403016020860152818651808452608085019150602088019450600093505b808410156110435784518252938201936001939093019290820190611023565b5098975050505050505050565b60006020828403121561106257600080fd5b8151801515811461107257600080fd5b9392505050565b634e487b7160e01b600052601160045260246000fd5b600063ffffffff8216806110a5576110a5611079565b6000190192915050565b600181815b808511156110ec578163ffffffff048211156110d2576110d2611079565b808516156110df57918102915b93841c93908002906110b4565b509250929050565b600082611103575060016103d5565b81611110575060006103d5565b8160018114611126576002811461113057611161565b60019150506103d5565b60ff84111561114157611141611079565b6001841b915063ffffffff82111561115b5761115b611079565b506103d5565b5060208310610133831016604e8410600b8410161715611198575081810a63ffffffff81111561119357611193611079565b6103d5565b6111a283836110af565b8063ffffffff048211156111b8576111b8611079565b029392505050565b600063ffffffff6111d58185168285166110f4565b949350505050565b634e487b7160e01b600052601260045260246000fd5b600063ffffffff8084168061120a5761120a6111dd565b92169190910692915050565b600063ffffffff8084168061122d5761122d6111dd565b92169190910492915050565b63ffffffff81811683821601908082111561125657611256611079565b509291505056fea2646970667358221220c646cf0ac0891cc4f93f09707bf5dac8efd8c1999c194d8f541a7b9589c9037364736f6c63430008170033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101375760003560e01c806390eeb02b116100b8578063c2b40ae41161007c578063c2b40ae414610300578063cd87a3b414610320578063e829558814610328578063ec7329591461033b578063f178e47c14610362578063fc7e9c6f1461038257600080fd5b806390eeb02b1461028d5780639ec441541461029d578063b214faa5146102bd578063b85f2670146102d0578063ba70f757146102e357600080fd5b8063414a37ba116100ff578063414a37ba146101f85780634ecf518b1461021f578063621a5286146102445780636d9833e314610257578063839df9451461026a57600080fd5b80632997e86b1461013c5780632b7ac3f3146101745780633591d78d1461019f57806338bf282e146101c25780633990f65b146101e3575b600080fd5b61015f61014a366004610e7d565b60076020526000908152604090205460ff1681565b60405190151581526020015b60405180910390f35b600654610187906001600160a01b031681565b6040516001600160a01b03909116815260200161016b565b61015f6101ad366004610e7d565b60096020526000908152604090205460ff1681565b6101d56101d0366004610e96565b61039a565b60405190815260200161016b565b6101f66101f1366004610eb8565b6103db565b005b6101d57f30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f000000181565b60005461022f9063ffffffff1681565b60405163ffffffff909116815260200161016b565b6101d5610252366004610e7d565b610476565b61015f610265366004610e7d565b610497565b61015f610278366004610e7d565b60086020526000908152604090205460ff1681565b60045461022f9063ffffffff1681565b6101d56102ab366004610e7d565b60016020526000908152604090205481565b6101f66102cb366004610e7d565b610515565b6101f66102de366004610f5a565b6105f7565b60045463ffffffff166000908152600360205260409020546101d5565b6101d561030e366004610e7d565b60036020526000908152604090205481565b61022f601e81565b6101d5610336366004610e7d565b610621565b6101d57f2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c81565b6101d5610370366004610e7d565b60026020526000908152604090205481565b60045461022f90640100000000900463ffffffff1681565b60008083836040516020016103b9929190918252602082015260400190565b60408051601f1981840301815291905280516020909101209150505b92915050565b600654604051633a94343960e21b81526060916001600160a01b03169063ea50d0e49061041090869086908690600401610fd5565b602060405180830381865afa15801561042d573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104519190611050565b61046e5760405163439cc0cd60e01b815260040160405180910390fd5b505050505050565b600a818154811061048657600080fd5b600091825260209091200154905081565b60008181036104a857506000919050565b60045463ffffffff16805b63ffffffff811660009081526003602052604090205484036104d9575060019392505050565b8063ffffffff166000036104eb5750601e5b806104f58161108f565b9150508163ffffffff168163ffffffff16036104b3575060009392505050565b60008181526008602052604090205460ff16156105835760405162461bcd60e51b815260206004820152602160248201527f54686520636f6d6d69746d656e7420686173206265656e207375626d697474656044820152601960fa1b60648201526084015b60405180910390fd5b600061058e82610c3f565b6000838152600860205260409020805460ff1916600117905590506105b282610c3f565b506040805163ffffffff8316815242602082015283917fa945e51eec50ab98c161376f0db4cf2aeba3ec92755fe2fcd388bdbbb80ff196910160405180910390a25050565b610603600a8484610e1d565b506000908152600960205260409020805460ff191660011790555050565b60008160000361065257507f2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c919050565b8160010361068157507f256a6135777eee2fd26f54b8b7037a25439d5235caee224154186d2b8a52e31d919050565b816002036106b057507f1151949895e82ab19924de92c40a3d6f7bcb60d92b00504b8199613683f0c200919050565b816003036106df57507f20121ee811489ff8d61f09fb89e313f14959a0f28bb428a20dba6b0b068b3bdb919050565b8160040361070e57507f0a89ca6ffa14cc462cfedb842c30ed221a50a3d6bf022a6a57dc82ab24c157c9919050565b8160050361073d57507f24ca05c2b5cd42e890d6be94c68d0689f4f21c9cec9c0f13fe41d566dfb54959919050565b8160060361076c57507f1ccb97c932565a92c60156bdba2d08f3bf1377464e025cee765679e604a7315c919050565b8160070361079b57507f19156fbd7d1a8bf5cba8909367de1b624534ebab4f0f79e003bccdd1b182bdb4919050565b816008036107ca57507f261af8c1f0912e465744641409f622d466c3920ac6e5ff37e36604cb11dfff80919050565b816009036107f857507e58459724ff6ca5a1652fcbc3e82b93895cf08e975b19beab3f54c217d1c007919050565b81600a0361082757507f1f04ef20dee48d39984d8eabe768a70eafa6310ad20849d4573c3c40c2ad1e30919050565b81600b0361085657507f1bea3dec5dab51567ce7e200a30f7ba6d4276aeaa53e2686f962a46c66d511e5919050565b81600c0361088557507f0ee0f941e2da4b9e31c3ca97a40d8fa9ce68d97c084177071b3cb46cd3372f0f919050565b81600d036108b457507f1ca9503e8935884501bbaf20be14eb4c46b89772c97b96e3b2ebf3a36a948bbd919050565b81600e036108e357507f133a80e30697cd55d8f7d4b0965b7be24057ba5dc3da898ee2187232446cb108919050565b81600f0361091257507f13e6d8fc88839ed76e182c2a779af5b2c0da9dd18c90427a644f7e148a6253b6919050565b8160100361094157507f1eb16b057a477f4bc8f572ea6bee39561098f78f15bfb3699dcbb7bd8db61854919050565b8160110361097057507f0da2cb16a1ceaabf1c16b838f7a9e3f2a3a3088d9e0a6debaa748114620696ea919050565b8160120361099f57507f24a3b3d822420b14b5d8cb6c28a574f01e98ea9e940551d2ebd75cee12649f9d919050565b816013036109ce57507f198622acbd783d1b0d9064105b1fc8e4d8889de95c4c519b3f635809fe6afc05919050565b816014036109fd57507f29d7ed391256ccc3ea596c86e933b89ff339d25ea8ddced975ae2fe30b5296d4919050565b81601503610a2c57507f19be59f2f0413ce78c0c3703a3a5451b1d7f39629fa33abd11548a76065b2967919050565b81601603610a5b57507f1ff3f61797e538b70e619310d33f2a063e7eb59104e112e95738da1254dc3453919050565b81601703610a8a57507f10c16ae9959cf8358980d9dd9616e48228737310a10e2b6b731c1a548f036c48919050565b81601803610ab957507f0ba433a63174a90ac20992e75e3095496812b652685b5e1a2eae0b1bf4e8fcd1919050565b81601903610ae857507f019ddb9df2bc98d987d0dfeca9d2b643deafab8f7036562e627c3667266a044c919050565b81601a03610b1757507f2d3c88b23175c5a5565db928414c66d1912b11acf974b2e644caaac04739ce99919050565b81601b03610b4657507f2eab55f6ae4e66e32c5189eed5c470840863445760f5ed7e7b69b2a62600f354919050565b81601c03610b7457507e2df37a2642621802383cf952bf4dd1f32e05433beeb1fd41031fb7eace979d919050565b81601d03610ba357507f104aeb41435db66c3e62feccc1d6f5d98d0a0ed75d1374db457cf462e3a1f427919050565b81601e03610bd257507f1f3c6fd858e9a7d4b0d1f38e256a09d81d5a5e3c963987e2d4b814cfab7c6ebb919050565b81601f03610c0157507f2c7a07d20dff79d01fecedc1134284a8d08436606c93693b67e333f671bf69cc919050565b60405162461bcd60e51b8152602060048201526013602482015272496e646578206f7574206f6620626f756e647360681b604482015260640161057a565b60045460008054909163ffffffff640100000000909104811691610c65911660026111c0565b63ffffffff168163ffffffff1603610cd85760405162461bcd60e51b815260206004820152603060248201527f4d65726b6c6520747265652069732066756c6c2e204e6f206d6f7265206c656160448201526f1d995cc818d85b88189948185919195960821b606482015260840161057a565b8083600080805b60005463ffffffff9081169082161015610d7957610cfe6002866111f3565b63ffffffff16600003610d3c57839250610d1d8163ffffffff16610621565b63ffffffff821660009081526002602052604090208590559150610d58565b63ffffffff811660009081526002602052604090205492508391505b610d62838361039a565b9350610d6f600286611216565b9450600101610cdf565b50600454600090601e90610d949063ffffffff166001611239565b610d9e91906111f3565b6004805463ffffffff191663ffffffff8381169182179092556000908152600360209081526040808320899055928a1682526001908190529190208a9055909150610dea908790611239565b6004805463ffffffff929092166401000000000267ffffffff000000001990921691909117905550939695505050505050565b828054828255906000526020600020908101928215610e58579160200282015b82811115610e58578235825591602001919060010190610e3d565b50610e64929150610e68565b5090565b5b80821115610e645760008155600101610e69565b600060208284031215610e8f57600080fd5b5035919050565b60008060408385031215610ea957600080fd5b50508035926020909101359150565b600080600080600060808688031215610ed057600080fd5b85356001600160a01b0381168114610ee757600080fd5b94506020860135935060408601359250606086013567ffffffffffffffff80821115610f1257600080fd5b818801915088601f830112610f2657600080fd5b813581811115610f3557600080fd5b896020828501011115610f4757600080fd5b9699959850939650602001949392505050565b600080600060408486031215610f6f57600080fd5b833567ffffffffffffffff80821115610f8757600080fd5b818601915086601f830112610f9b57600080fd5b813581811115610faa57600080fd5b8760208260051b8501011115610fbf57600080fd5b6020928301989097509590910135949350505050565b60408152826040820152828460608301376000606084830101526000601f19601f85011682016060810160206060858403016020860152818651808452608085019150602088019450600093505b808410156110435784518252938201936001939093019290820190611023565b5098975050505050505050565b60006020828403121561106257600080fd5b8151801515811461107257600080fd5b9392505050565b634e487b7160e01b600052601160045260246000fd5b600063ffffffff8216806110a5576110a5611079565b6000190192915050565b600181815b808511156110ec578163ffffffff048211156110d2576110d2611079565b808516156110df57918102915b93841c93908002906110b4565b509250929050565b600082611103575060016103d5565b81611110575060006103d5565b8160018114611126576002811461113057611161565b60019150506103d5565b60ff84111561114157611141611079565b6001841b915063ffffffff82111561115b5761115b611079565b506103d5565b5060208310610133831016604e8410600b8410161715611198575081810a63ffffffff81111561119357611193611079565b6103d5565b6111a283836110af565b8063ffffffff048211156111b8576111b8611079565b029392505050565b600063ffffffff6111d58185168285166110f4565b949350505050565b634e487b7160e01b600052601260045260246000fd5b600063ffffffff8084168061120a5761120a6111dd565b92169190910692915050565b600063ffffffff8084168061122d5761122d6111dd565b92169190910492915050565b63ffffffff81811683821601908082111561125657611256611079565b509291505056fea2646970667358221220c646cf0ac0891cc4f93f09707bf5dac8efd8c1999c194d8f541a7b9589c9037364736f6c63430008170033",
+  "devdoc": {
+    "errors": {
+      "ReentrancyGuardReentrantCall()": [
+        {
+          "details": "Unauthorized reentrant call."
+        }
+      ]
+    },
+    "kind": "dev",
+    "methods": {
+      "getLastRoot()": {
+        "details": "Returns the last root"
+      },
+      "hashLeftRight(bytes32,bytes32)": {
+        "details": "Hash 2 tree leaves, returns keccak256(_left, _right)"
+      },
+      "isKnownRoot(bytes32)": {
+        "details": "Whether the root is present in the root history"
+      },
+      "zeros(uint256)": {
+        "details": "provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels"
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 78,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "levels",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_uint32"
+      },
+      {
+        "astId": 82,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "commitmentLeafs",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_uint256,t_bytes32)"
+      },
+      {
+        "astId": 86,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "filledSubtrees",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_uint256,t_bytes32)"
+      },
+      {
+        "astId": 90,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "roots",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_uint256,t_bytes32)"
+      },
+      {
+        "astId": 96,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "currentRootIndex",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_uint32"
+      },
+      {
+        "astId": 99,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "nextIndex",
+        "offset": 4,
+        "slot": "4",
+        "type": "t_uint32"
+      },
+      {
+        "astId": 10,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "_status",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 711,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "verifier",
+        "offset": 0,
+        "slot": "6",
+        "type": "t_address"
+      },
+      {
+        "astId": 715,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "nullifiers",
+        "offset": 0,
+        "slot": "7",
+        "type": "t_mapping(t_bytes32,t_bool)"
+      },
+      {
+        "astId": 719,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "commitments",
+        "offset": 0,
+        "slot": "8",
+        "type": "t_mapping(t_bytes32,t_bool)"
+      },
+      {
+        "astId": 723,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "commitmentsTreeRoots",
+        "offset": 0,
+        "slot": "9",
+        "type": "t_mapping(t_bytes32,t_bool)"
+      },
+      {
+        "astId": 726,
+        "contract": "contracts/ToadnadoL1.sol:ToadnadoL1",
+        "label": "commitmentsTree",
+        "offset": 0,
+        "slot": "10",
+        "type": "t_array(t_bytes32)dyn_storage"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_bytes32)dyn_storage": {
+        "base": "t_bytes32",
+        "encoding": "dynamic_array",
+        "label": "bytes32[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_mapping(t_bytes32,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      },
+      "t_mapping(t_uint256,t_bytes32)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => bytes32)",
+        "numberOfBytes": "32",
+        "value": "t_bytes32"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      },
+      "t_uint32": {
+        "encoding": "inplace",
+        "label": "uint32",
+        "numberOfBytes": "4"
+      }
+    }
+  }
+}
