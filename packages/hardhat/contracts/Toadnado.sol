@@ -11,7 +11,6 @@ interface IVerifier {
     ) external view returns (bool);
 }
 error VerificationFailed();
-
 abstract contract Toadnado is MerkleTree, ReentrancyGuard{
   //IVerifier public immutable verifier;
   uint256 public denomination;
@@ -68,19 +67,18 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     function _processDeposit() internal virtual;
 
     function withdraw(
-        address payable _recipient, 
+        bytes32 _root,
         bytes32 _nullifier,
-        uint256 chainId, 
+        address payable _recipient, 
         bytes calldata snarkProof
         ) external payable nonReentrant  {
-        bytes32[] memory publicInputs = _formatPublicInputs(_recipient, _nullifier, chainId);
+
+        bytes32[] memory publicInputs = _formatPublicInputs(_root, _nullifier, _recipient);
         if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
             revert VerificationFailed();
         }
-        //TODO send the money to "to"
-        //TODO add nullifier
-        //TODO checkChainID
         
+
         _processWithdraw(_recipient);
         emit Withdrawal(_recipient, _nullifier);
     }
@@ -90,17 +88,32 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     ) internal virtual;
 
 
-    function _formatPublicInputs(address to, bytes32 nullifier,uint256 chainId) private returns(bytes32[] memory) {
+    //TODO make private
+    function _formatPublicInputs(bytes32 _root, bytes32 _nullifier,address _recipient) public returns(bytes32[] memory) {
+        // _root
+        bytes32[] memory publicInputs = new bytes32[](65);
+        for (uint i=0; i < 33; i++) {
+            publicInputs[i] = bytes32(uint256(uint8(_root[i-1])));
+        }
 
+        // _nullifier
+        for (uint i=32; i < 64; i++) {
+            publicInputs[i] = bytes32(uint256(uint8(_nullifier[i-33])));
+        }
+
+        // _recipient
+        bytes32 recipientBytes = bytes32(uint256(uint160(bytes20(_recipient))));
+        publicInputs[65] = recipientBytes;
+        return publicInputs;
     }
 
 
     //TODO remove this
     //debug functions
-    function setCommitmentsTree(bytes32[] calldata _commitmentsTree, bytes32 _root) public {
-        commitmentsTree = _commitmentsTree;
-        commitmentsTreeRoots[_root] = true;
-    }
+    // function setCommitmentsTree(bytes32[] calldata _commitmentsTree, bytes32 _root) public {
+    //     commitmentsTree = _commitmentsTree;
+    //     commitmentsTreeRoots[_root] = true;
+    // }
 
 
 
