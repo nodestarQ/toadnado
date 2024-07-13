@@ -51,12 +51,8 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
 
     function deposit(bytes32 _commitment) external payable nonReentrant {
         require(!commitments[_commitment], "The commitment has been submitted");
-
-        //DONE update merkle tree
         uint32 insertedIndex = _insert(_commitment);
         commitments[_commitment] = true;
-
-        //DONE get denomination going
         _processDeposit();
 
         emit Deposit(_commitment, insertedIndex, block.timestamp);
