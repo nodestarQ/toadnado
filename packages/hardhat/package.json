@@ -17,6 +17,8 @@
     "verify": "hardhat etherscan-verify"
   },
   "dependencies": {
+    "@noir-lang/backend_barretenberg": "^0.30.0",
+    "@noir-lang/noir_js": "^0.30.0",
     "@openzeppelin/contracts": "^5.0.2",
     "@typechain/ethers-v6": "~0.5.1",
     "dotenv": "~16.0.3",
