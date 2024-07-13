@@ -1,6 +1,6 @@
 use dep::std;
 
-global TREE_DEPTH = 10;
+global TREE_DEPTH = 7;
 
 fn hashKeccak2(first: [u8;32], second: [u8;32]) -> [u8;32] {
     let mut preImage: [u8;64] = [0;64];
@@ -49,7 +49,7 @@ fn main(
     //relayer:pub Field,
     // fee:pub Field,
     // refund:pub Field,
-    chainId:pub Field,
+    //chainId:pub Field,
     
     nullifierHashPreImage: [u8;32],
     secret: [u8;32],
@@ -58,7 +58,7 @@ fn main(
     ) {
     // to make sure these are set and cant change
     assert(recipient != 0x0);
-    assert(chainId != 0x0);
+    //assert(chainId != 0x0);
 
     let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
     let computed_root = compute_merkle_root(commitmentHash, hash_path, hash_path_bools);
@@ -77,7 +77,21 @@ fn test_simple_merkle_proof() {
     let hash_path_bools = [true,false,false,false,false,false,false];
     let root = compute_merkle_root(leaf,hash_path, hash_path_bools);
     
-    println("root");
-    println(root);
+    // println("root");
+    // println(root);
     assert(root == real_root);
+}
+#[test]
+fn test_commitment_hasher() {
+    //[...crypto.getRandomValues(new Uint8Array(Array(32)))]
+    let nullifierHashPreImage = [214,255,124,83,114,187,12,181,14,111,72,234,5,249,135,238,141,197,183,240,45,224,153,161,158,69,230,216,57,122,75,68];
+    let secret = [230,146,124,238,124,120,160,205,44,185,238,166,139,63,96,30,207,97,7,85,117,207,245,240,45,97,6,100,229,191,245,27];
+
+    let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
+    println("commitmentHash");
+    println(commitmentHash);
+    println("computedNullifierHash");
+    println(computedNullifierHash);
+
+    // ethers.hexlify(new Uint8Array(computedNullifierHash))
 }

@@ -1,5 +1,5 @@
 [package]
-name = "L1Prover"
+name = "prover"
 type = "bin"
 authors = [""]
 compiler_version = ">=0.30.0"
