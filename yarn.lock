@@ -12,6 +12,16 @@
   resolved "https://registry.yarnpkg.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
+"@aztec/bb.js@0.38.0":
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/@aztec/bb.js/-/bb.js-0.38.0.tgz#895eecc091ba64c54e3ae74e87daac532d1ed932"
+  integrity sha512-74MX3ieK0Oz3zUqbSfF1Bb25J38lGHkD4ajrOXfH1A97HMLCsOI5Rv40D5VUnv2JRnii3a9HU/ft26QafTsJQw==
+  dependencies:
+    comlink "^4.4.1"
+    commander "^10.0.1"
+    debug "^4.3.4"
+    tslib "^2.4.0"
+
 "@babel/code-frame@^7.22.13", "@babel/code-frame@^7.24.7":
   version "7.24.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.24.7.tgz#882fd9e09e8ee324e496bd040401c6f046ef4465"
@@ -1126,6 +1136,41 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@noir-lang/acvm_js@0.46.0":
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/@noir-lang/acvm_js/-/acvm_js-0.46.0.tgz#e4f336bdbdfab0f99599fcf99b85e6e2b9c31a10"
+  integrity sha512-1iDEHumZJVzaxC+Fr9eB8x0iCDDiW+W6tZW9kkKwyUjKtAWoqxR6ea8/aVRw/JdQ3QjiERZt94iki9tK63YqmQ==
+
+"@noir-lang/backend_barretenberg@^0.30.0":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@noir-lang/backend_barretenberg/-/backend_barretenberg-0.30.0.tgz#54b4a209ef47d9fb160ca75d5d3b2fc0d8195178"
+  integrity sha512-siQwExKNYEcX5NcndHU1DWhXyGZLJdoIJ++/LFWFJEiVqtvM5lgGzhJPQWwPsqJtwX+3/5uS4I7ZYq3hJ6aqOA==
+  dependencies:
+    "@aztec/bb.js" "0.38.0"
+    "@noir-lang/types" "0.30.0"
+    fflate "^0.8.0"
+
+"@noir-lang/noir_js@^0.30.0":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@noir-lang/noir_js/-/noir_js-0.30.0.tgz#f8ccdfe85b53e3075f12fe64f921bcf1c0cb1f95"
+  integrity sha512-z+Xh/eikHRNB6ycbAiMZKRx/kPaJdDychTpsXZyxn0BRSvsqyaX10gVO5zCzpQ5vDPkOT04ZPP8sew6mJyhYuw==
+  dependencies:
+    "@noir-lang/acvm_js" "0.46.0"
+    "@noir-lang/noirc_abi" "0.30.0"
+    "@noir-lang/types" "0.30.0"
+
+"@noir-lang/noirc_abi@0.30.0":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@noir-lang/noirc_abi/-/noirc_abi-0.30.0.tgz#557bd76da8c5e86dd524f77814a90017e1e5c1ce"
+  integrity sha512-1MmWgRmYAa3cvZQwNsJCJfXyPb1kKpbF8SzmjWqzBNPrYXxT2mD6zCakPEfJJAxABUvxNjWJDoU43wskQ+laQg==
+  dependencies:
+    "@noir-lang/types" "0.30.0"
+
+"@noir-lang/types@0.30.0":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@noir-lang/types/-/types-0.30.0.tgz#0487c850140b8708e363bc65e26e726d6aaabc99"
+  integrity sha512-jjMI1VX46SGJ9cXnaBSXY7HHUOATgsCeYdxwCj5uFnIPLnaUtiwuvZV0xUsaFYfW7dUPK7P+mpHmfEy2W1acJg==
 
 "@nomicfoundation/ethereumjs-block@5.0.2":
   version "5.0.2"
@@ -3876,6 +3921,11 @@ combined-stream@^1.0.6, combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
+comlink@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.4.1.tgz#e568b8e86410b809e8600eb2cf40c189371ef981"
+  integrity sha512-+1dlx0aY5Jo1vHy/tSsIGpSkN4tS9rZSW8FIhG0JH/crs9wwweswIo/POr451r7bZww3hFbPAKnTpimzL/mm4Q==
+
 command-exists@^1.2.8:
   version "1.2.9"
   resolved "https://registry.yarnpkg.com/command-exists/-/command-exists-1.2.9.tgz#c50725af3808c8ab0260fd60b01fbfa25b954f69"
@@ -3906,7 +3956,7 @@ commander@3.0.2:
   resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
   integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
 
-commander@^10.0.0:
+commander@^10.0.0, commander@^10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
   integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
@@ -5453,6 +5503,11 @@ fd-slicer@~1.1.0:
   integrity sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==
   dependencies:
     pend "~1.2.0"
+
+fflate@^0.8.0:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.8.2.tgz#fc8631f5347812ad6028bbe4a2308b2792aa1dea"
+  integrity sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==
 
 file-entry-cache@^6.0.1:
   version "6.0.1"

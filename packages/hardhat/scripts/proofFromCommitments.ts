@@ -1,6 +1,12 @@
 import { ethers } from "ethers";
 
 
+
+//noir
+import { BarretenbergBackend, BarretenbergVerifier as Verifier } from '@noir-lang/backend_barretenberg';
+import { Noir } from '@noir-lang/noir_js';
+import circuit from '../../../circuits/prover/target/prover.json'  assert {type: 'json'};
+
 export function generateTree(commitments:string[]=[]) {
     const abiEncoder = new ethers.AbiCoder
     const commitmentsLen = commitments.length
@@ -98,6 +104,34 @@ function singleBytes32ToNoir(bytes32:string) {
     const b=[...ethers.toBeArray(bytes32)]
     const zeros = Array(32-b.length).fill(0)
     return [...zeros, ...b].toString()
+}
+
+async function generateProof(commitments:string[], nullifierHashPreImage: string,secret: string, recipient: string) {
+    const  {hashPath, hashPathBools, leaf, root} =   getMerkleProof(commitments, 1)
+
+    const abiEncoder = new ethers.AbiCoder()
+    const nullifierHash = ethers.keccak256(abiEncoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+    const backend = new BarretenbergBackend(circuit);
+    const noir = new Noir(circuit, backend)
+    const inputs = {
+        root:root,                                      //pub [u8;32],
+        nullifierHash:nullifierHash,                    //pub [u8;32], 
+        recipient:recipient,                            //pub Field, 
+        // relayer:                                     //pub Field,
+        // fee:                                         //pub Field,
+        // refund:                                      //pub Field,
+        //chainId:                                      //pub Field,
+        
+        nullifierHashPreImage: nullifierHashPreImage,   //[u8;32],
+        secret: secret,                                 //[u8;32],
+        hash_path: hashPath,                            //[[u8;32];TREE_DEPTH],
+        hash_path_bools:  hashPathBools,                //[bool; TREE_DEPTH],
+
+    }
+    const snarkProof =await  noir.generateProof(inputs)
+    const verified = await noir.verifyProof(snarkProof)
+    console.log({verified})
+    
 }
 
 async function main() {
