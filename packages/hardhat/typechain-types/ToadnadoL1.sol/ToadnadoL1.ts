@@ -29,6 +29,7 @@ export interface ToadnadoL1Interface extends Interface {
       | "deposit"
       | "nullifiers"
       | "setCommitmentsTree"
+      | "setVerifier"
       | "verifier"
       | "withdraw"
   ): FunctionFragment;
@@ -50,10 +51,14 @@ export interface ToadnadoL1Interface extends Interface {
     functionFragment: "setCommitmentsTree",
     values: [BytesLike[], BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setVerifier",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "verifier", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [AddressLike, BytesLike, BigNumberish, BytesLike]
+    values: [BytesLike, BytesLike, AddressLike, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
@@ -68,6 +73,10 @@ export interface ToadnadoL1Interface extends Interface {
   decodeFunctionResult(functionFragment: "nullifiers", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setCommitmentsTree",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setVerifier",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "verifier", data: BytesLike): Result;
@@ -135,12 +144,19 @@ export interface ToadnadoL1 extends BaseContract {
     "nonpayable"
   >;
 
+  setVerifier: TypedContractMethod<
+    [_verifier: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   verifier: TypedContractMethod<[], [string], "view">;
 
   withdraw: TypedContractMethod<
     [
-      to: AddressLike,
+      root: BytesLike,
       nullifier: BytesLike,
+      recipient: AddressLike,
       chainId: BigNumberish,
       snarkProof: BytesLike
     ],
@@ -172,14 +188,18 @@ export interface ToadnadoL1 extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "setVerifier"
+  ): TypedContractMethod<[_verifier: AddressLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "verifier"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "withdraw"
   ): TypedContractMethod<
     [
-      to: AddressLike,
+      root: BytesLike,
       nullifier: BytesLike,
+      recipient: AddressLike,
       chainId: BigNumberish,
       snarkProof: BytesLike
     ],

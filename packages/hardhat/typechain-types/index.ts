@@ -3,8 +3,14 @@
 /* eslint-disable */
 import type * as toadnadoL1Sol from "./ToadnadoL1.sol";
 export type { toadnadoL1Sol };
+import type * as plonkVkSol from "./plonk_vk.sol";
+export type { plonkVkSol };
 export type { YourContract } from "./YourContract";
 export * as factories from "./factories";
+export type { BaseUltraVerifier } from "./plonk_vk.sol/BaseUltraVerifier";
+export { BaseUltraVerifier__factory } from "./factories/plonk_vk.sol/BaseUltraVerifier__factory";
+export type { UltraVerifier } from "./plonk_vk.sol/UltraVerifier";
+export { UltraVerifier__factory } from "./factories/plonk_vk.sol/UltraVerifier__factory";
 export type { IVerifier } from "./ToadnadoL1.sol/IVerifier";
 export { IVerifier__factory } from "./factories/ToadnadoL1.sol/IVerifier__factory";
 export type { ToadnadoL1 } from "./ToadnadoL1.sol/ToadnadoL1";

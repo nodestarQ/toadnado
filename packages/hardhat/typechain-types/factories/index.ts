@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as toadnadoL1Sol from "./ToadnadoL1.sol";
+export * as plonkVkSol from "./plonk_vk.sol";
 export { YourContract__factory } from "./YourContract__factory";

@@ -39,7 +39,7 @@ contract ToadnadoL1 {
  
     }
 
-    function withdraw(bytes32 root,  bytes32 nullifier, address recipient, uint256 chainId, bytes calldata snarkProof) public {
+    function withdraw(bytes32 root, bytes32 nullifier, address recipient, uint256 chainId, bytes calldata snarkProof) public {
         bytes32[] memory publicInputs = _formatPublicInputs(root, nullifier, recipient, chainId);
         if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
             revert VerificationFailed();
@@ -63,9 +63,9 @@ contract ToadnadoL1 {
         commitmentsTreeRoots[_root] = true;
     }
 
-
-
-
-
-
+    //TODO remove this
+    //debug functions
+    function setVerifier(address _verifier) public {
+        verifier = _verifier;
+    }
 }

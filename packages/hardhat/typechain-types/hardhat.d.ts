@@ -14,6 +14,14 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "BaseUltraVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BaseUltraVerifier__factory>;
+    getContractFactory(
+      name: "UltraVerifier",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UltraVerifier__factory>;
+    getContractFactory(
       name: "IVerifier",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IVerifier__factory>;
@@ -27,6 +35,16 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.YourContract__factory>;
 
     getContractAt(
+      name: "BaseUltraVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BaseUltraVerifier>;
+    getContractAt(
+      name: "UltraVerifier",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UltraVerifier>;
+    getContractAt(
       name: "IVerifier",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -43,6 +61,14 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.YourContract>;
 
     deployContract(
+      name: "BaseUltraVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BaseUltraVerifier>;
+    deployContract(
+      name: "UltraVerifier",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.UltraVerifier>;
+    deployContract(
       name: "IVerifier",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVerifier>;
@@ -55,6 +81,16 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.YourContract>;
 
+    deployContract(
+      name: "BaseUltraVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BaseUltraVerifier>;
+    deployContract(
+      name: "UltraVerifier",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.UltraVerifier>;
     deployContract(
       name: "IVerifier",
       args: any[],
