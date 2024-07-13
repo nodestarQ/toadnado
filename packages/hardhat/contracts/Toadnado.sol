@@ -43,10 +43,12 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     event Withdrawal(address recipient, bytes32 nullifier);
 
 
+    //add bridging if it is on L1, else do normal deposit
     function deposit(bytes32 _commitment) external payable nonReentrant {
         require(!commitments[_commitment], "The commitment has been submitted");
         uint32 insertedIndex = _insert(_commitment);
         commitments[_commitment] = true;
+
         _processDeposit();
 
         emit Deposit(_commitment, insertedIndex, block.timestamp);
