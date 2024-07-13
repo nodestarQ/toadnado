@@ -34,11 +34,10 @@ export function getProofFromTree(tree: string[], leafIndex:number, treeDepth:num
     const hashPath = []
 
     const bools = BigInt(leafIndex).toString(2).split('').map(x => x === '1')
-    const paddedBools = [...Array(treeDepth-bools.length).fill(false), ...bools].reverse()
+    const hashPathBools = [...Array(treeDepth-bools.length).fill(false), ...bools].reverse()
     let nodeIndex = leafIndex
     for (let currentLevel = 0; currentLevel < treeDepth; currentLevel++) {
-        const syblingIsLeft = paddedBools[currentLevel]
-        console.log({syblingIsLeft})
+        const syblingIsLeft = hashPathBools[currentLevel]
         if (syblingIsLeft) {
             hashPath.push(tree[currentLevel][nodeIndex-1])
         } else {
@@ -49,16 +48,23 @@ export function getProofFromTree(tree: string[], leafIndex:number, treeDepth:num
         
     }
 
-    return hashPath
+    return {hashPath, hashPathBools}
+}
+
+
+export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: number) {
+    const {tree, treeDepth} = generateTree(allCommitments)
+    //console.log({tree, treeDepth})
+    const {hashPath, hashPathBools} = getProofFromTree(tree, targerCommitmentIndex,treeDepth)
+    return {hashPath, hashPathBools}
 
 }
 
+
 function main() {
     const comitments = [0,1,2,3,4,5,6,7].map((x)=>ethers.zeroPadValue(ethers.toBeHex(x),32))
-    const {tree, treeDepth} = generateTree(comitments)
-    console.log({tree, treeDepth})
-    const hashPath = getProofFromTree(tree, 5,treeDepth)
-    console.log({hashPath})
+    const  {hashPath, hashPathBools} =   getMerkleProof(comitments, 4)
+    console.log({hashPath, hashPathBools})
 }
 
 main()

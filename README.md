@@ -78,3 +78,13 @@ To know more about its features, check out our [website](https://scaffoldeth.io)
 We welcome contributions to Scaffold-ETH 2!
 
 Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+
+
+
+## generate merkle tree and proof
+```shell
+#TODO use npx or make install instructions bun
+cd packages/hardhat;
+bun run scripts/proofFromCommitments.ts
+```
+
