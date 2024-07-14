@@ -55,25 +55,29 @@ const Withdraw: NextPage = () => {
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("ToadnadoL2");
 
   async function createProof(){
+    
+    console.log("we startin")
     let noter: Note = JSON.parse(noteString);
+    console.log("we walkin")
     let commitments = await getAllCommitments();  
-    console.log(commitments);
+    // console.log(commitments);
+    console.log("we runnin")
     console.log(await getWithdrawCalldata(recipient, noter.secret, noter.nullifierPreimage, noter.commitmentindex, commitments.l1, commitments.l2, noter.isL1))
+    console.log("we runnin even further")
   }
 
   async function getAllCommitments(){
     let layer1Commitments: string[] = [];
     let layer2Commitments: string[] = [];
-    let l1Array = await commitments[0];
-    let l2Array = await commitments[1];
-
-    for (let i = 0; i <= l1Array.length; i++) {
-      console.log(l1Array[i])
+    let l1Array =  commitments[0];
+    let l2Array =  commitments[1];
+    for (let i = 0; i < commitments[0].length; i++) {
       if(l1Array[i] === "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
       layer1Commitments.push(ethers.utils.hexlify(l1Array[i]))
     }
-    for (let j = 0; j <= l2Array.length; j++) {
-      console.log(l2Array[j])
+    console.log("pre loop")
+    for (let j = 0; j < commitments[1].length; j++) {
+      console.log(j)
       if(l2Array[j] === "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
       layer2Commitments.push(ethers.utils.hexlify(l2Array[j]))
     }

@@ -11,7 +11,6 @@ import { keccak256 } from 'viem';
 import { ethers } from "ethers";
 import {useScaffoldReadContract} from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import {useScaffoldWriteContract} from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
-import {getWithdrawCalldata} from "../../../hardhat/scripts/proofFromCommitments";
 
 
 function generateRandomByte32(): Uint8Array {
@@ -34,7 +33,7 @@ const Deposit: NextPage = () => {
   const [noteReady, setNoteReady] = useState(false);
   const [tx, setTx] = useState<`0x${string}` | undefined>(undefined);
   
-  const { data: L2nextIndex } = useScaffoldReadContract({
+  const { data: L1nextIndex } = useScaffoldReadContract({
     contractName: "ToadnadoL1",
     functionName: "nextIndex",
     args: [],
@@ -48,6 +47,7 @@ const Deposit: NextPage = () => {
 
   //TOADNADO L1 CONTRACT
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("ToadnadoL1");
+
 
   async function generateProtoNote(){
     const abiEncoder = new ethers.utils.AbiCoder
@@ -63,7 +63,7 @@ const Deposit: NextPage = () => {
       nullifierPreimage: ethers.utils.hexlify(nullifierPreimage),
       commitment,
       commitmentindex: 0,
-      isL1: false
+      isL1: true
     }
 
     setNote(protoNote);
@@ -86,7 +86,7 @@ const Deposit: NextPage = () => {
     let protonote = await generateProtoNote();
     console.log("THEN: "+ protonote.commitment);
     try {
-        let nextIndex = await L2nextIndex;
+        let nextIndex = await L1nextIndex;
         let res = await writeYourContractAsync({
           functionName: "deposit",
           args: [protonote.commitment],
@@ -95,7 +95,7 @@ const Deposit: NextPage = () => {
         setTx(res);
         console.log(res);
         //for blockscout: console.log(res);
-        protonote.isL1 = false;
+        protonote.isL1 = true;
         protonote.commitmentindex = nextIndex;
         setNote(protonote);
         setNoteReady(true);
