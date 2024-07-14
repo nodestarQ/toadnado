@@ -171,7 +171,7 @@ const Withdraw: NextPage = () => {
             Recipient
             <input type="text" className="grow" placeholder="0x..." onChange={handleChange} />
           </label>
-          <button className="btn btn-success" onClick={async()=>{await createProof()}} disabled={!recipient}>DEBUG</button>
+          {/* <button className="btn btn-success" onClick={async()=>{await createProof()}} disabled={!recipient}>DEBUG</button> */}
             <button className="btn btn-success" onClick={async()=>{await depositL2()}} disabled={!recipient}>withdraw L2</button>
             {
             noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
