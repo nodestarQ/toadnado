@@ -18,8 +18,14 @@ fn hashKeccak2(first: [u8;32], second: [u8;32]) -> [u8;32] {
 
 // used merkle from noir std as example
 // https://github.com/noir-lang/noir/blob/49e1b0c0d45565f3e87469b77f2fef0c283f6ea1/noir_stdlib/src/merkle.nr#L5
-// Returns the merkle root of the tree from the provided leaf, its hashpath, domains, using a poseidon2 with the domain argument
-fn compute_merkle_root<N>(leaf_hash: [u8;32], hash_path: [ [u8;32]; N], hash_path_bools: [bool; N]) -> [u8;32] {
+// Returns the merkle root of the tree from the provided leaf hash, 
+// its hashpath and hash_path_bools to indicate wether to hash left or right
+fn compute_merkle_root<N>(
+    leaf_hash: [u8;32], 
+    hash_path: [ [u8;32]; N], 
+    hash_path_bools: [bool; N]
+    ) -> [u8;32] {
+
     let n = hash_path.len();
     let mut current = leaf_hash;
     for i in 0..n {
@@ -29,28 +35,24 @@ fn compute_merkle_root<N>(leaf_hash: [u8;32], hash_path: [ [u8;32]; N], hash_pat
         } else {
             current = hashKeccak2(current, hash_path[i]);
         };
-        
-
     }
     current
 }
 
 fn commitmentHasher(nullifierHashPreImage: [u8;32], secret: [u8;32]) -> ([u8;32],[u8;32]) {
     let computedNullifierHash:  [u8;32] = std::hash::keccak256(nullifierHashPreImage,32);
-    let commitmentHash:  [u8;32] =hashKeccak2(nullifierHashPreImage,secret );
+    let commitmentHash:  [u8;32] = hashKeccak2(nullifierHashPreImage,secret );
     (commitmentHash,computedNullifierHash)
 }
 
 
 fn main(
+    // public
     root:pub [u8;32],
     nullifierHash:pub [u8;32], 
     recipient:pub Field, 
-    //relayer:pub Field,
-    // fee:pub Field,
-    // refund:pub Field,
-    //chainId:pub Field,
-    
+
+    // private
     nullifierHashPreImage: [u8;32],
     secret: [u8;32],
     hash_path: [[u8;32];TREE_DEPTH],
@@ -64,14 +66,17 @@ fn main(
     //assert(chainId != 0x0);
 
     let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
+
+
+
     let computed_root = compute_merkle_root(commitmentHash, hash_path, hash_path_bools);
 
-    let (root_left, root_right) = if root_other_is_right {
+    let (root_L1, root_L2) = if root_other_is_right {
             (computed_root, root_other_layer)
         } else {
             (root_other_layer, computed_root)
         };
-    let computed_meta_root = hashKeccak2(root_left, root_right);
+    let computed_meta_root = hashKeccak2(root_L1, root_L2);
 
 
 
