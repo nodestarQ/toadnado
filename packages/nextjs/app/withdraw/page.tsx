@@ -11,6 +11,7 @@ import { keccak256 } from 'viem';
 import { ethers } from "ethers";
 import {useScaffoldReadContract} from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import {useScaffoldWriteContract} from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import {getWithdrawCalldata} from "../../../hardhat/scripts/proofFromCommitments";
 
 
 function generateRandomByte32(): Uint8Array {
@@ -26,12 +27,16 @@ type Note = {
 }
 
 
-const Home: NextPage = () => {
+const Withdraw: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const [note, setNote] = useState< Note | undefined >();
   const [secret, setSecret] = useState("");
   const [noteReady, setNoteReady] = useState(false);
   const [tx, setTx] = useState<`0x${string}` | undefined>(undefined);
+  const [recipient, setRecipient] = useState<string>("");
+  const [noteString, setNoteString] = useState<string>("");
+
+
   
   const { data: L2nextIndex } = useScaffoldReadContract({
     contractName: "ToadnadoL2",
@@ -39,14 +44,22 @@ const Home: NextPage = () => {
     args: [],
   });
 
-  const { data: commitments } = useScaffoldReadContract({
+  let { data: commitments } = useScaffoldReadContract({
     contractName: "ToadnadoL2",
     functionName: "getAllCommitments",
     args: [],
   });
 
+
   //TOADNADO L2 CONTRACT
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("ToadnadoL2");
+
+  async function createProof(){
+    let noter: Note = JSON.parse(noteString);
+    let commitments = await getAllCommitments();  
+    console.log(commitments);
+    console.log(await getWithdrawCalldata(recipient, noter.secret, noter.nullifierPreimage, noter.commitmentindex, commitments.l1, commitments.l2, noter.isL1))
+  }
 
   async function getAllCommitments(){
     let layer1Commitments: string[] = [];
@@ -54,17 +67,17 @@ const Home: NextPage = () => {
     let l1Array = await commitments[0];
     let l2Array = await commitments[1];
 
-    for (let i = 0; i < l1Array.length; i++) {
-      if(l1Array[i] == "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
+    for (let i = 0; i <= l1Array.length; i++) {
+      console.log(l1Array[i])
+      if(l1Array[i] === "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
       layer1Commitments.push(ethers.utils.hexlify(l1Array[i]))
     }
-    for (let i = 0; i < l2Array.length; i++) {
-      if(l1Array[i] == "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
-      layer2Commitments.push(ethers.utils.hexlify(l2Array[i]))
+    for (let j = 0; j <= l2Array.length; j++) {
+      console.log(l2Array[j])
+      if(l2Array[j] === "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
+      layer2Commitments.push(ethers.utils.hexlify(l2Array[j]))
     }
-
-    console.log(layer1Commitments);
-    console.log(layer2Commitments);
+    return {l1:layer1Commitments, l2:layer2Commitments};
   }
 
   async function generateProtoNote(){
@@ -123,6 +136,14 @@ const Home: NextPage = () => {
       }
   }
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRecipient(event.target.value);
+  };
+
+  const handleChangeTa = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNoteString(event.target.value);
+  };
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -134,10 +155,20 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
-          <p className="text-center">Deposit 0.01ETH</p>
+          <p className="text-center">Withdraw 0.01ETH</p>
           <div className="grid grid-cols gap-4 items-center ">
-            
-            <button className="btn btn-secondary" onClick={async()=>{await depositL2()}}>deposit L2</button>
+          
+          <label className="input input-bordered flex items-center gap-2">
+            Note
+            <input type="text" className="grow" placeholder={'"secret": "secret","nullifierPreimage": "nullifierPreimage","commitment": "commitment","commitmentindex": commitmentindex,"isL1": isL1'} onChange={handleChangeTa} />
+          </label>
+          
+          <label className="input input-bordered flex items-center gap-2">
+            Recipient
+            <input type="text" className="grow" placeholder="0x..." onChange={handleChange} />
+          </label>
+          <button className="btn btn-success" onClick={async()=>{await createProof()}} disabled={!recipient}>DEBUG</button>
+            <button className="btn btn-success" onClick={async()=>{await depositL2()}} disabled={!recipient}>withdraw L2</button>
             {
             noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
             }
@@ -153,4 +184,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Withdraw;

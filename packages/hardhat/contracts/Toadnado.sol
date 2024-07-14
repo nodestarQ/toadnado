@@ -75,18 +75,18 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     function _formatPublicInputs(bytes32 _root, bytes32 _nullifier,address _recipient) public pure returns(bytes32[] memory) {
         // _root
         bytes32[] memory publicInputs = new bytes32[](65);
-        for (uint i=0; i < 33; i++) {
-            publicInputs[i] = bytes32(uint256(uint8(_root[i-1])));
+        for (uint i=0; i < 32; i++) {
+            publicInputs[i] = bytes32(uint256(uint8(_root[i])));
         }
 
         // _nullifier
         for (uint i=32; i < 64; i++) {
-            publicInputs[i] = bytes32(uint256(uint8(_nullifier[i-33])));
+            publicInputs[i] = bytes32(uint256(uint8(_nullifier[i-32])));
         }
 
         // _recipient
         bytes32 recipientBytes = bytes32(uint256(uint160(bytes20(_recipient))));
-        publicInputs[65] = recipientBytes;
+        publicInputs[64] = recipientBytes;
         return publicInputs;
     }
 

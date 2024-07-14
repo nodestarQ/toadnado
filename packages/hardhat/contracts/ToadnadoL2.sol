@@ -23,8 +23,8 @@ contract ToadnadoL2 is Toadnado {
     address payable _recipient
   ) internal override{
     require(msg.value == 0, "Message value is supposed to be zero for ETH instance");
-    (bool success, ) = _recipient.call{ value: denomination }("");
-    require(success, "payment to _recipient did not go thru");
+    _recipient.transfer(denomination);
+    //require(success, "payment to _recipient did not go thru");
   }
 
   function withdraw(

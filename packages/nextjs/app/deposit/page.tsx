@@ -11,6 +11,7 @@ import { keccak256 } from 'viem';
 import { ethers } from "ethers";
 import {useScaffoldReadContract} from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import {useScaffoldWriteContract} from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import {getWithdrawCalldata} from "../../../hardhat/scripts/proofFromCommitments";
 
 
 function generateRandomByte32(): Uint8Array {
@@ -26,7 +27,7 @@ type Note = {
 }
 
 
-const Home: NextPage = () => {
+const Deposit: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const [note, setNote] = useState< Note | undefined >();
   const [secret, setSecret] = useState("");
@@ -34,38 +35,19 @@ const Home: NextPage = () => {
   const [tx, setTx] = useState<`0x${string}` | undefined>(undefined);
   
   const { data: L2nextIndex } = useScaffoldReadContract({
-    contractName: "ToadnadoL2",
+    contractName: "ToadnadoL1",
     functionName: "nextIndex",
     args: [],
   });
 
   const { data: commitments } = useScaffoldReadContract({
-    contractName: "ToadnadoL2",
+    contractName: "ToadnadoL1",
     functionName: "getAllCommitments",
     args: [],
   });
 
-  //TOADNADO L2 CONTRACT
-  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("ToadnadoL2");
-
-  async function getAllCommitments(){
-    let layer1Commitments: string[] = [];
-    let layer2Commitments: string[] = [];
-    let l1Array = await commitments[0];
-    let l2Array = await commitments[1];
-
-    for (let i = 0; i < l1Array.length; i++) {
-      if(l1Array[i] == "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
-      layer1Commitments.push(ethers.utils.hexlify(l1Array[i]))
-    }
-    for (let i = 0; i < l2Array.length; i++) {
-      if(l1Array[i] == "0x0000000000000000000000000000000000000000000000000000000000000000"){break}
-      layer2Commitments.push(ethers.utils.hexlify(l2Array[i]))
-    }
-
-    console.log(layer1Commitments);
-    console.log(layer2Commitments);
-  }
+  //TOADNADO L1 CONTRACT
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("ToadnadoL1");
 
   async function generateProtoNote(){
     const abiEncoder = new ethers.utils.AbiCoder
@@ -99,7 +81,7 @@ const Home: NextPage = () => {
     document.body.removeChild(element);
   }
 
-  async function depositL2(){
+  async function depositL1(){
     console.log("creating partial Note");
     let protonote = await generateProtoNote();
     console.log("THEN: "+ protonote.commitment);
@@ -137,12 +119,12 @@ const Home: NextPage = () => {
           <p className="text-center">Deposit 0.01ETH</p>
           <div className="grid grid-cols gap-4 items-center ">
             
-            <button className="btn btn-secondary" onClick={async()=>{await depositL2()}}>deposit L2</button>
+            <button className="btn btn-secondary" onClick={async()=>{await depositL1()}}>deposit L1</button>
             {
             noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
             }
             {
-            tx ? (<a href={"https://l1sload-blockscout.scroll.io/tx/"+tx} target="_blank">https://l1sload-blockscout.scroll.io/tx/{tx}</a>) : (<></>)
+            tx ? (<a href={"https://eth-sepolia.blockscout.com/tx/"+tx} target="_blank">https://eth-sepolia.blockscout.com/tx/{tx}</a>) : (<></>)
             }
 
             {/* <button className="btn" onClick={async()=>{await getAllCommitments()}}>commitent</button> */}
@@ -153,4 +135,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Deposit;

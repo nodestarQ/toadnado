@@ -231,6 +231,7 @@ export async function getWithdrawCalldata(
 
 
     // format circuit inputs
+    console.log({metaRoot})
     const inputs:InputMap = {
         root:[...ethers.toBeArray(metaRoot)],                                                       //pub [u8;32],
         nullifierHash: [...ethers.toBeArray(nullifierHash)],                                        //pub [u8;32], 
@@ -260,6 +261,7 @@ export async function getWithdrawCalldata(
         snarkProof: ethers.hexlify(snarkProofData.proof)
     }
     console.log({contractInputs})
+    console.log({publicInputs:snarkProofData.publicInputs})
     return contractInputs
     
 
@@ -292,6 +294,7 @@ async function main() {
 
     const abiCoder = new ethers.AbiCoder()
     const commitmentHash  = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+    console.log({commitmentHash})
     const commitmentsL1 = ["0x0000000000000000000000000000000000000000000000000000000000000001",commitmentHash] 
     const commitmentsL2:string[] = ["0x0000000000000000000000000000000000000000000000000000000000000001"] 
 
@@ -346,4 +349,4 @@ async function main() {
     // let hash_path_bools = [${hashPathBools}];
     // `)
 }
-main()
+//main()
