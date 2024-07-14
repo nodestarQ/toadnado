@@ -1,101 +1,34 @@
-# 🏗 Scaffold-ETH 2
+# 🐸🌪️ Toadnado 🐸🌪️
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+Toadnado is a mixer that allows you to deposit from both L2 (scroll) and L1. You can then anonymously withdraw on L2 to a new address. This doesn't reveal from which address you deposited, or even which chain. The anonymity set spans across both L1 and L2 :D
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+Today's bridges do not preserve privacy. We build Toadnado to prove that they can, and it's cool! We hope it will inspire future bridge protocols to add better privacy.
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+We used scrolls new L1SLOAD opcode to read the L1 commitment-root atomically from L1. ☝️🤓
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-## Requirements
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+"Let my people go, so that they may worship me. If you refuse to let them go, I will plague your whole country with frogs." — Exodus 8:1–4
 
 ## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+To get started with toadnado, follow the steps below:
 
-1. Install dependencies if it was skipped in CLI:
+1. `git clone` and install dependencies with `yarn install` in the root directory:
 
-```
-cd my-dapp-example
-yarn install
-```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-Run smart contract test with `yarn hardhat:test`
-
-- Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
-
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
-
-
-
-## generate merkle tree and proof
-```shell
-#TODO use npx or make install instructions bun
-cd packages/hardhat;
-bun run scripts/proofFromCommitments.ts
-```
-
-## Deploy SCs
 ```shell
 ##go to the deployment script 00_deploy_your_contract and uncomment the l1 export and comment out the l2 export
 yarn deploy --network sepolia --tags L1
 ##after that verify
 yarn verify --network sepolia
 ## after this has been finished grab the l1 sc address and replace it with the l1scaddress constant in the deploy script, also uncomment l2 export and commment out l1 export
-yarn deploy --network l1sload --tags L2
+yarn deploy --network l1sload
 ## verification does not work as of yet on scroll devnet  
 ```
+## How to Use
+1. Run `yarn start` from the root directory and if needed check the `scaffold.config.json`
+2. Deposit some ETH on either L1 (ethereum sepolia testnet) or L2 (scroll devnet) `Deposits`.
+![Deposit interface](/media/1.png)
+3. Download the `note.json` that will be generated upon successfull transaction, simply press on the button and the file will be saved in your download folder.
+![Deposit interface with successfull tx and download button](/media/2.png)
+4. On L2 Withdraw you can specify a recipient and the note to successfully transfer funds from the mixer to a new address.
+![Withdraw interface](/media/3.png)
 
