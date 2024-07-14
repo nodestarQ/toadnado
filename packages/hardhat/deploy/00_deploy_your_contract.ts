@@ -6,7 +6,7 @@ import { Contract } from "ethers";
 
 const merkleTreeHeight = 5;
 const denomination = BigInt((10**18)/100); //0.01eth
-let l1Address = "0x598666BF32AFaF4e5b16edf9f86cb3d7A413b2B1";
+let l1Address = "0xf8e698C30156B8Bb159C6A64A77c48A9137b3EDb";
 let l2Address = "";
 
 /*

@@ -40,7 +40,6 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     mapping (bytes32 => bool) public commitmentsTreeRoots;
 
     event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);
-    event Withdrawal(address recipient, bytes32 nullifier);
 
 
     //add bridging if it is on L1, else do normal deposit
@@ -58,28 +57,6 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     /** @dev this function is defined in a child contract */
     function _processDeposit() internal virtual;
 
-    function withdraw(
-        bytes32 _root,
-        bytes32 _nullifier,
-        address payable _recipient, 
-        bytes calldata snarkProof
-        ) external payable nonReentrant  {
-
-        //disable withdraw on "L1"
-        require(block.chainid!=11155111, "withdrawal only allowed on L2");
-        require(!nullifiers[_nullifier], "The note has been already spent");
-        require(isKnownRoot(_root), "Cannot find your merkle root"); // Make sure to use a recent one + also pick the L2 Root
-
-        bytes32[] memory publicInputs = _formatPublicInputs(_root, _nullifier, _recipient);
-        if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
-            revert VerificationFailed();
-        }
-    
-        nullifiers[_nullifier] = true;
-        _processWithdraw(_recipient);
-        emit Withdrawal(_recipient, _nullifier);
-    }
-    
     function _processWithdraw(
         address payable _recipient
     ) internal virtual;

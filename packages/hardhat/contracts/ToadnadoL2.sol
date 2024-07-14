@@ -4,6 +4,8 @@ pragma solidity 0.8.23;
 import "./Toadnado.sol";
 
 contract ToadnadoL2 is Toadnado {
+  event Withdrawal(address recipient, bytes32 nullifier);
+
   constructor(
     address _l1Address,
     address _verifier,
@@ -24,6 +26,32 @@ contract ToadnadoL2 is Toadnado {
     (bool success, ) = _recipient.call{ value: denomination }("");
     require(success, "payment to _recipient did not go thru");
   }
+
+  function withdraw(
+      bytes32 _l1root,
+      bytes32 _l2root,
+      bytes32 _nullifier,
+      address payable _recipient, 
+      bytes calldata snarkProof
+      ) external payable nonReentrant  {
+
+      //disable withdraw on "L1"
+      require(block.chainid!=11155111, "withdrawal only allowed on L2");
+      require(!nullifiers[_nullifier], "The note has been already spent");
+      require(isKnownRoot(_l2root), "Cannot find your l2 merkle root"); // Make sure to use a recent one + also pick the L2 Root
+      require(isKnownL1Root(_l1root), "Cannot find your l1 merkle root"); // Make sure to use a recent one + also pick the L2 Root
+      
+      bytes32 metaRoot = keccak256(abi.encodePacked(_l1root,_l2root));
+      bytes32[] memory publicInputs = _formatPublicInputs(metaRoot, _nullifier, _recipient);
+      if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
+          revert VerificationFailed();
+      }
+  
+      nullifiers[_nullifier] = true;
+      _processWithdraw(_recipient);
+      emit Withdrawal(_recipient, _nullifier);
+  }
+    
 
   function receiveEth() payable public{}
   

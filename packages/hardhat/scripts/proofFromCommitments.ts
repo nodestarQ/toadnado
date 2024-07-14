@@ -287,13 +287,13 @@ async function main() {
     
     // user withdraw address
     const recipient = "0x794464c8c91A2bE4aDdAbfdB82b6db7B1Bb1DBC7"
-    const commitmentIndex = 0
+    const commitmentIndex = 1
     const isL1 = true
 
     const abiCoder = new ethers.AbiCoder()
     const commitmentHash  = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
-    const commitmentsL1 = [commitmentHash] 
-    const commitmentsL2:string[] = [] 
+    const commitmentsL1 = ["0x0000000000000000000000000000000000000000000000000000000000000001",commitmentHash] 
+    const commitmentsL2:string[] = ["0x0000000000000000000000000000000000000000000000000000000000000001"] 
 
     await getWithdrawCalldata(
         recipient,
