@@ -95,7 +95,7 @@ contract MerkleTree{
 
   /// @dev provides Zero (Empty) elements for a MiMC MerkleTree. Up to 32 levels
   function zeros(uint256 i) public pure returns (bytes32) {
-    if (i == 0) return bytes32(0x2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c);
+         if (i == 0) return bytes32(0x2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c);
     else if (i == 1) return bytes32(0x4fc2fe9184a25f44ce8ddb5f32671fcae6d9c85ed710c199acef16ad16b29911);
     else if (i == 2) return bytes32(0x0d826a474f851c563052d929ef0daa70f658aba9ba084f51f6e3483c13c0e59a);
     else if (i == 3) return bytes32(0xf7761a16b5e4c0120e4c5704b910dbe18ff6162a9668ed1c2c4efde7c4f15806);
