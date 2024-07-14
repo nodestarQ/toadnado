@@ -19,11 +19,14 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     constructor(
         address _verifier, 
         uint256 _denomination,
-        uint32 _merkleTreeHeight
+        uint32 _merkleTreeHeight 
         ) MerkleTree(_merkleTreeHeight) {
         require(_denomination > 0, "denomination should be greater than 0");
         verifier = _verifier;
         denomination = _denomination;
+        //dirty workaround (stinky)
+        uint32 insertedIndex = _insert(0x0000000000000000000000000000000000000000000000000000000000000001);
+        commitments[0x0000000000000000000000000000000000000000000000000000000000000001] = true;
     }
 
     // contract that verifies the zkSnark proof

@@ -9,6 +9,7 @@ import { Address } from "~~/components/scaffold-eth";
 import { randomBytes } from 'crypto';
 import { keccak256 } from 'viem';
 import { ethers } from "ethers";
+import {useScaffoldReadContract} from "~~/hooks/scaffold-eth/useScaffoldReadContract"
 
 
 function generateRandomByte32(): Uint8Array {
@@ -19,6 +20,18 @@ function generateRandomByte32(): Uint8Array {
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const [note, setNote] = useState("");
+
+  async function getCommitments(){
+  
+    const { data: commitments } = useScaffoldReadContract({
+      contractName: "ToadnadoL2",
+      functionName: "getCommitments",
+      args: [""],
+    });
+  
+    console.log(await commitments);
+  
+  }
 
   async function generateTwoSecrets(){
 
@@ -58,14 +71,11 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
+          <p className="text-center">Deposit 0.01ETH</p>
           <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <button className="btn btn-secondary" onClick={async()=>{await downloadNote()}}>randomBuffer</button>
-          </div>
-        </div>
-
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <button className="btn" onClick={async()=>{await downloadNote()}}>randomBuffer</button>
+            <button className="btn btn-secondary" onClick={async()=>{await downloadNote()}}>randomBuffer L1</button>
+            <button className="btn btn-secondary" onClick={async()=>{await downloadNote()}}>randomBuffer L2</button>
+            <button className="btn" onClick={async()=>{await getCommitments()}}>commitent</button>
           </div>
         </div>
       </div>

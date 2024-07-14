@@ -7,7 +7,6 @@ import { Contract } from "ethers";
 const merkleTreeHeight = 5;
 const denomination = BigInt((10**18)/100); //0.01eth
 let l1Address = "0x598666BF32AFaF4e5b16edf9f86cb3d7A413b2B1";
-let l2Address = "";
 
 /*
 1. deploy Plonk on L1
@@ -72,8 +71,8 @@ const deployL2: DeployFunction = async function (hre: HardhatRuntimeEnvironment)
   
 };
 
-//export default deployL1;
-export default  deployL2;
+export default deployL1;
+//export default  deployL2;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
 // e.g. yarn deploy --tags YourContract
