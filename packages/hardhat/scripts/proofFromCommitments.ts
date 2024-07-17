@@ -219,9 +219,9 @@ export async function getWithdrawCalldata(
     // get merkle proof data -------------------------------
     let merkleProofData 
     if(commitmentIsFromL1) {
-        merkleProofData = getProofFromTree(l2Tree.tree, commitmentIndex,TREE_DEPTH)
-    } else {
         merkleProofData = getProofFromTree(l1Tree.tree, commitmentIndex,TREE_DEPTH)
+    } else {
+        merkleProofData = getProofFromTree(l2Tree.tree, commitmentIndex,TREE_DEPTH)
     }
     const hashPath = merkleProofData.hashPath
     const hashPathBools = merkleProofData.hashPathBools
