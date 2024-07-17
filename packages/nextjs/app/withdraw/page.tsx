@@ -12,6 +12,7 @@ import { ethers } from "ethers";
 import {useScaffoldReadContract} from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import {useScaffoldWriteContract} from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import {getWithdrawCalldata} from "../../../hardhat/scripts/proofFromCommitments";
+import { useSwitchChain } from 'wagmi'
 
 
 function generateRandomByte32(): Uint8Array {
@@ -62,8 +63,20 @@ const Withdraw: NextPage = () => {
     let commitments = await getAllCommitments();  
     // console.log(commitments);
     console.log("we runnin")
-    console.log(await getWithdrawCalldata(recipient, noter.secret, noter.nullifierPreimage, noter.commitmentindex, commitments.l1, commitments.l2, noter.isL1))
+    const calldata = await getWithdrawCalldata(recipient, noter.secret, noter.nullifierPreimage, noter.commitmentindex, commitments.l1, commitments.l2, noter.isL1)
     console.log("we runnin even further")
+
+    try {
+      let res = await writeYourContractAsync({
+        functionName: "withdraw",
+        args: [calldata.l1Root, calldata.l2Root, calldata.nullifierHash, calldata.recipient, calldata.snarkProof],
+        value: 0n,
+      });
+      setTx(res);
+      console.log(res);
+    } catch (e) {
+      console.error("Error setting greeting:", e);
+    }
   }
 
   async function getAllCommitments(){
@@ -147,7 +160,7 @@ const Withdraw: NextPage = () => {
   const handleChangeTa = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNoteString(event.target.value);
   };
-
+  const { switchChainAsync } = useSwitchChain();
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -171,9 +184,16 @@ const Withdraw: NextPage = () => {
             Recipient
             <input type="text" className="grow" placeholder="0x..." onChange={handleChange} />
           </label>
-          {/* <button className="btn btn-success" onClick={async()=>{await createProof()}} disabled={!recipient}>DEBUG</button> */}
-            <button className="btn btn-success" onClick={async()=>{await depositL2()}} disabled={!recipient}>withdraw L2</button>
-            {
+          <button className="btn btn-success" onClick={async()=>{
+            //cursed way to do it i know
+            if (await ethereum.request({method: "eth_chainId"}) !== "0x21fe10" ) {
+              await switchChainAsync({ chainId: 2227728 })
+              location.reload();
+            }
+              await createProof()
+            }} disabled={!recipient}>withdraw</button>
+            {/* <button className="btn btn-success" onClick={async()=>{await depositL2()}} disabled={!recipient}>withdraw L2</button> */}
+            { 
             noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
             }
             {

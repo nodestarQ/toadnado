@@ -11,6 +11,7 @@ import { keccak256 } from 'viem';
 import { ethers } from "ethers";
 import {useScaffoldReadContract} from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 import {useScaffoldWriteContract} from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import { useSwitchChain } from 'wagmi'
 
 
 function generateRandomByte32(): Uint8Array {
@@ -19,7 +20,7 @@ function generateRandomByte32(): Uint8Array {
 
 type Note = {
   secret: string,
-  nullifierPreimage: string, 
+  nullifierPreimage: string,
   commitment: string,
   commitmentindex: number,
   isL1: boolean
@@ -32,7 +33,7 @@ const Home: NextPage = () => {
   const [secret, setSecret] = useState("");
   const [noteReady, setNoteReady] = useState(false);
   const [tx, setTx] = useState<`0x${string}` | undefined>(undefined);
-  
+
   const { data: L2nextIndex } = useScaffoldReadContract({
     contractName: "ToadnadoL2",
     functionName: "nextIndex",
@@ -88,7 +89,7 @@ const Home: NextPage = () => {
     return protoNote;
     //setNote('{"secret": "'+ethers.utils.hexlify(secret)+'",\n'+'"nullifierPreimage": "'+ethers.utils.hexlify(nullifierPreimage)+'"\n}');
   }
-  
+
   async function downloadNote() {
     const element = document.createElement("a");
     const file = new Blob([JSON.stringify(note, null, 2)], {type: 'application/json'});
@@ -104,25 +105,25 @@ const Home: NextPage = () => {
     let protonote = await generateProtoNote();
     console.log("THEN: "+ protonote.commitment);
     try {
-        let nextIndex = await L2nextIndex;
-        let res = await writeYourContractAsync({
-          functionName: "deposit",
-          args: [protonote.commitment],
-          value: ethers.utils.parseEther("0.01"),
-        });
-        setTx(res);
-        console.log(res);
-        //for blockscout: console.log(res);
-        protonote.isL1 = false;
-        protonote.commitmentindex = nextIndex;
-        setNote(protonote);
-        setNoteReady(true);
-      } catch (e) {
-        console.error("Error setting greeting:", e);
-        setNote(undefined)
-      }
+      let nextIndex = await L2nextIndex;
+      let res = await writeYourContractAsync({
+        functionName: "deposit",
+        args: [protonote.commitment],
+        value: ethers.utils.parseEther("0.01"),
+      });
+      setTx(res);
+      console.log(res);
+      //for blockscout: console.log(res);
+      protonote.isL1 = false;
+      protonote.commitmentindex = nextIndex;
+      setNote(protonote);
+      setNoteReady(true);
+    } catch (e) {
+      console.error("Error setting greeting:", e);
+      setNote(undefined)
+    }
   }
-
+  const { switchChainAsync } = useSwitchChain();
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -136,13 +137,20 @@ const Home: NextPage = () => {
           </div>
           <p className="text-center">Deposit 0.01ETH</p>
           <div className="grid grid-cols gap-4 items-center ">
-            
-            <button className="btn btn-secondary" onClick={async()=>{await depositL2()}}>deposit L2</button>
+
+            <button className="btn btn-secondary" onClick={async () => {
+              //cursed way to do it i know
+              if (await ethereum.request({ method: "eth_chainId" }) !== "0x21fe10") {
+                await switchChainAsync({ chainId: 2227728 })
+                location.reload();0xaa36a7
+              }
+              await depositL2()
+            }}>deposit L2</button>
             {
-            noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
+              noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
             }
             {
-            tx ? (<a href={"https://l1sload-blockscout.scroll.io/tx/"+tx} target="_blank">https://l1sload-blockscout.scroll.io/tx/{tx}</a>) : (<></>)
+              tx ? (<a href={"https://l1sload-blockscout.scroll.io/tx/"+tx} target="_blank">https://l1sload-blockscout.scroll.io/tx/{tx}</a>) : (<></>)
             }
 
             {/* <button className="btn" onClick={async()=>{await getAllCommitments()}}>commitent</button> */}
