@@ -25,7 +25,7 @@ export const l1sload = /*#__PURE__*/defineChain({
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [/*chains.hardhat*/ l1sload /*chains.sepolia*/],
+  targetNetworks: [/*chains.hardhat*/ l1sload, chains.sepolia],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)
