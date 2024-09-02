@@ -23,7 +23,7 @@ contract MerkleTree{
       filledSubtrees[i] = zeros(i);
     }
 
-    roots[0] = zeros(_levels - 1);
+    roots[0] = zeros(_levels);
   }
 
   /**
