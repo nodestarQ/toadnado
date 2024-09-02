@@ -2,6 +2,17 @@ use dep::std;
 
 global TREE_DEPTH = 5;
 
+
+fn joinArrays<I,J>(arrays: [[u8;J];I]) -> [u8] {
+    //TODO find out if doing without slice is faster?
+    let mut resSlice: [u8] = [];
+    for index in 0 .. arrays.len() {
+        resSlice = resSlice.append(arrays[index].as_slice());
+        
+    } 
+    resSlice
+}
+
 fn hashKeccak2(first: [u8;32], second: [u8;32]) -> [u8;32] {
     let mut preImage: [u8;64] = [0;64];
 
@@ -39,9 +50,10 @@ fn compute_merkle_root<N>(
     current
 }
 
-fn commitmentHasher(nullifierHashPreImage: [u8;32], secret: [u8;32]) -> ([u8;32],[u8;32]) {
-    let computedNullifierHash:  [u8;32] = std::hash::keccak256(nullifierHashPreImage,32);
-    let commitmentHash:  [u8;32] = hashKeccak2(nullifierHashPreImage,secret );
+fn commitmentHasher(nullifierHashPreImage: [u8;32], secret: [u8;32], chainId: Field) -> ([u8;32],[u8;32]) {
+    let computedNullifierHash: [u8;32] = std::hash::keccak256(nullifierHashPreImage,32);
+    let preImage: [u8;32*3] = joinArrays([nullifierHashPreImage,secret, chainId.to_be_bytes(32).as_array()]).as_array();
+    let commitmentHash: [u8;32] = std::hash::keccak256(preImage, 32*3);
     (commitmentHash,computedNullifierHash)
 }
 
@@ -51,6 +63,7 @@ fn main(
     root:pub [u8;32],
     nullifierHash:pub [u8;32], 
     recipient:pub Field, 
+    chainId: pub Field,
 
     // private
     nullifierHashPreImage: [u8;32],
@@ -62,12 +75,9 @@ fn main(
 
     ) {
     // to make sure these are set and cant change
-    assert(recipient != 0x0);
-    //assert(chainId != 0x0);
+    assert(recipient != 0x0, "recipient shouldnt be 0");
 
-    let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
-
-
+    let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret, chainId);
 
     let computed_root = compute_merkle_root(commitmentHash, hash_path, hash_path_bools);
 
@@ -84,8 +94,8 @@ fn main(
     println(computedNullifierHash);
     println(nullifierHash);
 
-    assert(computedNullifierHash == nullifierHash);
-    assert(computed_meta_root == root);
+    assert(computedNullifierHash == nullifierHash, "nullifier hash doesnt match");
+    assert(computed_meta_root == root, "meta_root doesnt match");
 }
 
 #[test]
@@ -106,8 +116,8 @@ fn test_commitment_hasher() {
     //[...crypto.getRandomValues(new Uint8Array(Array(32)))]
     let nullifierHashPreImage = [214,255,124,83,114,187,12,181,14,111,72,234,5,249,135,238,141,197,183,240,45,224,153,161,158,69,230,216,57,122,75,68];
     let secret = [230,146,124,238,124,120,160,205,44,185,238,166,139,63,96,30,207,97,7,85,117,207,245,240,45,97,6,100,229,191,245,27];
-
-    let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret);
+    let chainId = 2227728; //L1SLOAD aka L2 
+    let (commitmentHash, computedNullifierHash) = commitmentHasher(nullifierHashPreImage, secret, chainId);
     println("commitmentHash");
     println(commitmentHash);
     println("computedNullifierHash");
@@ -122,6 +132,7 @@ fn test_main() {
     let root: [u8;32] = [ 126, 110, 203, 158, 212, 147, 148, 125, 239, 239, 254, 80, 140, 158, 181, 10, 64, 30, 96,99, 86, 26, 58, 188, 197, 12, 248, 200, 203, 120, 238, 155 ];
     let nullifierHash: [u8;32] = [ 206, 109, 123, 82, 130, 189, 154, 54, 97, 174, 6, 31, 238, 209, 219, 218, 78, 82, 171, 7, 59, 31, 146, 133, 190, 110, 21, 93, 156, 56, 212, 236 ];
     let recipient: Field = 0x000000000000000000000000794464c8c91a2be4addabfdb82b6db7b1bb1dbc7;
+    let chainId = 2227728; //L1SLOAD aka L2 
 
     let nullifierHashPreImage: [u8;32] =    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20 ];
     let secret: [u8;32] =                   [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20 ];
@@ -145,6 +156,7 @@ fn test_main() {
         root,
         nullifierHash, 
         recipient, 
+        chainId,
 
         nullifierHashPreImage,
         secret,
