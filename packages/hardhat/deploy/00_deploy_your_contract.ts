@@ -6,7 +6,7 @@ import { Contract } from "ethers";
 
 const merkleTreeHeight = 5;
 const denomination = BigInt((10**18)/100); //0.01eth
-let l1Address = "0xdA08f0E50c7cA1608a9ae1fc8e91012CfE8218c0";
+let l1Address = "0x1180607885aaB8Fc3BA853cD00B1AD5268F88372";
 
 /*
 1. deploy Plonk on L1

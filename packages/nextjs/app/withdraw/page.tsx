@@ -45,6 +45,20 @@ const Withdraw: NextPage = () => {
     args: [],
   });
 
+
+  const { data: lastL2Root } = useScaffoldReadContract({
+    contractName: "ToadnadoL2",
+    functionName: "getLastRoot",
+    args: [],
+  });
+
+  const { data: firstL1Root } = useScaffoldReadContract({
+    contractName: "ToadnadoL2",
+    functionName: "getL1Root",
+    args: [1],
+  });
+
+  
   let { data: commitments } = useScaffoldReadContract({
     contractName: "ToadnadoL2",
     functionName: "getAllCommitments",
@@ -61,6 +75,7 @@ const Withdraw: NextPage = () => {
     let noter: Note = JSON.parse(noteString);
     console.log("we walkin")
     let commitments = await getAllCommitments();  
+    console.log({lastL2Root, firstL1Root})
     // console.log(commitments);
     console.log("we runnin")
     const calldata = await getWithdrawCalldata(recipient, noter.secret, noter.nullifierPreimage, noter.commitmentindex, commitments.l1, commitments.l2, noter.isL1)
@@ -192,6 +207,15 @@ const Withdraw: NextPage = () => {
             }
               await createProof()
             }} disabled={!recipient}>withdraw</button>
+
+            <button className="btn btn-success" onClick={async()=>{
+              let res = await writeYourContractAsync({
+                functionName: "receiveEth",
+                args: [],
+                value: 50000000000000000n,
+              });
+
+            }}>DEBUG: send 0.05 eth to L2 contract</button>
             {/* <button className="btn btn-success" onClick={async()=>{await depositL2()}} disabled={!recipient}>withdraw L2</button> */}
             { 
             noteReady ? (<button className="btn btn-warning" onClick={async()=>{await downloadNote()}}>download note</button>) : (<></>)
@@ -201,11 +225,13 @@ const Withdraw: NextPage = () => {
             }
 
             {/* <button className="btn" onClick={async()=>{await getAllCommitments()}}>commitent</button> */}
+
           </div>
         </div>
       </div>
     </>
   );
 };
+
 
 export default Withdraw;
