@@ -233,8 +233,8 @@ export async function getWithdrawCalldata(
     // format circuit inputs
     console.log({metaRoot})
     const inputs:InputMap = {
-        root:[...ethers.toBeArray(metaRoot)],                                                       //pub [u8;32],
-        nullifierHash: [...ethers.toBeArray(nullifierHash)],                                        //pub [u8;32], 
+        root:  paddArray([...ethers.toBeArray(metaRoot)],32,0,true),                                                       //pub [u8;32],
+        nullifierHash: paddArray([...ethers.toBeArray(nullifierHash)],32,0,true),                                        //pub [u8;32], 
         recipient:ethers.zeroPadValue(recipient,32),                                                //pub Field, 
         // relayer:                                                                                 //pub Field,
         // fee:                                                                                     //pub Field,
@@ -244,7 +244,7 @@ export async function getWithdrawCalldata(
         secret: paddArray([...ethers.toBeArray(secret)],32,0,true),                                 //[u8;32],
         hash_path: bytes32ArrayToNoirJs(hashPath as string[]) as InputValue,                        //[[u8;32];TREE_DEPTH],
         hash_path_bools:  hashPathBools,                                                            //[bool; TREE_DEPTH],
-        root_other_layer: [...ethers.toBeArray(rootOtherLayer)] ,
+        root_other_layer:  paddArray([...ethers.toBeArray(rootOtherLayer)],32,0,true),
         root_other_is_right: commitmentIsFromL1
     }
     console.log({circuitInputs: inputs})
