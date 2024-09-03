@@ -1,45 +1,29 @@
 {
-  "name": "se-2",
-  "version": "0.0.1",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
-  "scripts": {
-    "account": "yarn workspace @se-2/hardhat account",
-    "chain": "yarn workspace @se-2/hardhat chain",
-    "compile": "yarn workspace @se-2/hardhat compile",
-    "deploy": "yarn workspace @se-2/hardhat deploy",
-    "flatten": "yarn workspace @se-2/hardhat flatten",
-    "fork": "yarn workspace @se-2/hardhat fork",
-    "format": "yarn next:format && yarn hardhat:format",
-    "generate": "yarn workspace @se-2/hardhat generate",
-    "hardhat-verify": "yarn workspace @se-2/hardhat hardhat-verify",
-    "hardhat:format": "yarn workspace @se-2/hardhat format",
-    "hardhat:lint": "yarn workspace @se-2/hardhat lint",
-    "hardhat:lint-staged": "yarn workspace @se-2/hardhat lint-staged",
-    "hardhat:test": "yarn workspace @se-2/hardhat test",
-    "postinstall": "husky install",
-    "next:build": "yarn workspace @se-2/nextjs build",
-    "next:check-types": "yarn workspace @se-2/nextjs check-types",
-    "next:format": "yarn workspace @se-2/nextjs format",
-    "next:lint": "yarn workspace @se-2/nextjs lint",
-    "next:serve": "yarn workspace @se-2/nextjs serve",
-    "precommit": "lint-staged",
-    "start": "yarn workspace @se-2/nextjs dev",
-    "test": "yarn hardhat:test",
-    "vercel": "yarn workspace @se-2/nextjs vercel",
-    "vercel:yolo": "yarn workspace @se-2/nextjs vercel:yolo",
-    "verify": "yarn workspace @se-2/hardhat verify"
-  },
+  "name": "toadnado",
+  "packageManager": "yarn@4.3.1",
   "devDependencies": {
-    "husky": "~8.0.3",
-    "lint-staged": "~13.2.2"
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-ignition": "^0.15.0",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "@typechain/hardhat": "^9.0.0",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": ">=9.1.0",
+    "@types/node": ">=18.0.0",
+    "chai": "^4.2.0",
+    "ethers": "^6.4.0",
+    "hardhat": "^2.22.10",
+    "hardhat-gas-reporter": "^1.0.8",
+    "solidity-coverage": "^0.8.0",
+    "ts-node": ">=8.0.0",
+    "typechain": "^8.3.0",
+    "typescript": ">=4.5.0"
   },
-  "packageManager": "yarn@3.2.3",
-  "engines": {
-    "node": ">=18.17.0"
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
   }
 }
