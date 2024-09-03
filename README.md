@@ -32,3 +32,7 @@ yarn deploy --network l1sload
 4. On L2 Withdraw you can specify a recipient and the note to successfully transfer funds from the mixer to a new address.
 ![Withdraw interface](/media/3.png)
 
+## test
+```shell
+yarn hardhat test
+```
