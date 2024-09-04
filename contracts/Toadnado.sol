@@ -101,18 +101,4 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
       }
     }
   }
-
-
-    //TODO remove this
-    //debug functions
-    // function setCommitmentsTree(bytes32[] calldata _commitmentsTree, bytes32 _root) public {
-    //     commitmentsTree = _commitmentsTree;
-    //     commitmentsTreeRoots[_root] = true;
-    // }
-
-
-
-
-
-
 }

@@ -3,6 +3,7 @@
 /* eslint-disable */
 export * as toadnadoSol from "./Toadnado.sol";
 export * as plonkVkSol from "./plonk_vk.sol";
+export * as test from "./test";
 export { MerkleTree__factory } from "./MerkleTree__factory";
 export { ToadnadoL1__factory } from "./ToadnadoL1__factory";
 export { ToadnadoL2__factory } from "./ToadnadoL2__factory";

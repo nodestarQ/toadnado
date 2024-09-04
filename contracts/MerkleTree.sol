@@ -7,7 +7,7 @@ contract MerkleTree{
   uint32 public levels;
   
   // merkle leafs
-  mapping (uint256 => bytes32) public commitmentLeafs; 
+  mapping (uint256 => bytes32) public commitmentLeafs; //TODO remove this and use event scanning instead
   mapping(uint256 => bytes32) public filledSubtrees;
   mapping(uint256 => bytes32) public roots;
   uint32 public constant ROOT_HISTORY_SIZE = 30;

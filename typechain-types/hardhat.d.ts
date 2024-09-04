@@ -30,6 +30,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UltraVerifier__factory>;
     getContractFactory(
+      name: "L2SLOADmock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.L2SLOADmock__factory>;
+    getContractFactory(
       name: "IVerifier",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IVerifier__factory>;
@@ -67,6 +71,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.UltraVerifier>;
     getContractAt(
+      name: "L2SLOADmock",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.L2SLOADmock>;
+    getContractAt(
       name: "IVerifier",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -104,6 +113,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UltraVerifier>;
     deployContract(
+      name: "L2SLOADmock",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.L2SLOADmock>;
+    deployContract(
       name: "IVerifier",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVerifier>;
@@ -140,6 +153,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UltraVerifier>;
+    deployContract(
+      name: "L2SLOADmock",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.L2SLOADmock>;
     deployContract(
       name: "IVerifier",
       args: any[],

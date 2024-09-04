@@ -5,6 +5,8 @@ import type * as toadnadoSol from "./Toadnado.sol";
 export type { toadnadoSol };
 import type * as plonkVkSol from "./plonk_vk.sol";
 export type { plonkVkSol };
+import type * as test from "./test";
+export type { test };
 export type { MerkleTree } from "./MerkleTree";
 export type { ToadnadoL1 } from "./ToadnadoL1";
 export type { ToadnadoL2 } from "./ToadnadoL2";

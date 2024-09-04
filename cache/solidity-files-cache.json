@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/jimjim/Desktop/toadnado/contracts/MerkleTree.sol": {
-      "lastModificationDate": 1725377056390,
-      "contentHash": "e94b963dd1160a157bfd42f78dd1dde7",
+      "lastModificationDate": 1725462328703,
+      "contentHash": "f472772d39dd92c2389817f420c0fad1",
       "sourceName": "contracts/MerkleTree.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -38,8 +38,8 @@
       ]
     },
     "/home/jimjim/Desktop/toadnado/contracts/Toadnado.sol": {
-      "lastModificationDate": 1725377056390,
-      "contentHash": "97e9ee5562aacbeac9ac9d3eed74e949",
+      "lastModificationDate": 1725461127483,
+      "contentHash": "74689422c5e1827e4021aac040fcb143",
       "sourceName": "contracts/Toadnado.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -225,6 +225,42 @@
         "BaseUltraVerifier",
         "UltraVerificationKey",
         "UltraVerifier"
+      ]
+    },
+    "/home/jimjim/Desktop/toadnado/contracts/test/L2SLOADmock.sol": {
+      "lastModificationDate": 1725483592323,
+      "contentHash": "d07c527d40ff4ac68a93e6976787393f",
+      "sourceName": "contracts/test/L2SLOADmock.sol",
+      "solcConfig": {
+        "version": "0.8.23",
+        "settings": {
+          "evmVersion": "shanghai",
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.8.23"
+      ],
+      "artifacts": [
+        "L2SLOADmock"
       ]
     }
   }
