@@ -2,6 +2,7 @@
 pragma solidity 0.8.23;
 
 import "./Toadnado.sol";
+import "hardhat/console.sol";
 
 contract ToadnadoL2 is Toadnado {
   event Withdrawal(address recipient, bytes32 nullifier);
@@ -36,24 +37,33 @@ contract ToadnadoL2 is Toadnado {
       ) external payable nonReentrant  {
 
       //disable withdraw on "L1"
-      require(block.chainid!=11155111, "withdrawal only allowed on L2");
+      uint256 chainid =block.chainid;
+      console.logBytes32(bytes32(chainid));
+      console.logString("1");
+      require(chainid!=11155111, "withdrawal only allowed on L2");
       require(!nullifiers[_nullifier], "The note has been already spent");
+      console.logString("12");
       require(isKnownRoot(_l2root), "Cannot find your l2 merkle root"); // Make sure to use a recent one + also pick the L2 Root
+      console.logString("13");
       require(isKnownL1Root(_l1root), "Cannot find your l1 merkle root"); // Make sure to use a recent one + also pick the L2 Root
-      
+      console.logString("14");
       bytes32 metaRoot = keccak256(abi.encodePacked(_l1root,_l2root));
-      bytes32[] memory publicInputs = _formatPublicInputs(metaRoot, _nullifier, _recipient);
+        console.logString("2");
+      bytes32[] memory publicInputs = _formatPublicInputs(metaRoot, _nullifier, _recipient, chainid);
+        console.logString("3");
+      console.logString("chainId in formatted public inputs:");
+      console.logBytes32(publicInputs[65]);
       if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
           revert VerificationFailed();
       }
-  
+      console.logString("chainId in formatted public inputs:");
       nullifiers[_nullifier] = true;
+      console.logString("chainId in formatted public inputs:");
       _processWithdraw(_recipient);
+      console.logString("chainId in formatted public inputs:");
       emit Withdrawal(_recipient, _nullifier);
+      console.logString("chainId in formatted public inputs:");
   }
-    
-
-  function receiveEth() payable public{}
   
 //get all roots from L1
 //get all roots from L2 
@@ -66,9 +76,12 @@ address public l1Address;
 
 //get current root of L1
 
-address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
+
+address public L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
 
     function readSingleSlot(address l1_contract, uint256 slot) public view returns (bytes memory) {
+      console.logString("readSingleSlot slot:");
+      console.logUint(slot);
 
         bytes memory input = abi.encodePacked(l1_contract, slot);
 
@@ -76,7 +89,7 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
         bytes memory result;
 
         (success, result) = L1_SLOAD_ADDRESS.staticcall(input);
-
+        //result = IL1SLOADmock(L1_SLOAD_ADDRESS).fallback(input);
         if (!success) {
             revert("L1SLOAD failed");
         }
@@ -87,6 +100,7 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
 
     // 
     function getL1Root(uint256 key) public view returns(bytes32) {
+      console.logString("getL1Root 1");
         uint slotNumber = 3; //slot for L1 Root mapping
         return abi.decode(readSingleSlot(
             l1Address,
@@ -114,9 +128,13 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
     if (_root == 0) {
       return false;
     }
+    console.logString("isKnownL1Root 1");
     uint32 _currentRootIndex = abi.decode(readSingleSlot(l1Address,slotNumber),(uint32));
+    console.logUint(_currentRootIndex);
+    console.logString("isKnownL1Root 2");
     uint32 i = _currentRootIndex;
     do {
+      console.logString("isKnownL1Root 3");
       if (_root == getL1Root(i)) {
         return true;
       }
@@ -125,6 +143,7 @@ address constant L1_SLOAD_ADDRESS = 0x0000000000000000000000000000000000000101;
       }
       i--;
     } while (i != _currentRootIndex);
+    console.logString("isKnownL1Root 5");
     return false;
   }
 

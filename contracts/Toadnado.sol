@@ -41,6 +41,8 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
 
     event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);
 
+    //TODO remove this and do proper bridging instead
+    receive() external payable {}
 
     //add bridging if it is on L1, else do normal deposit
     function deposit(bytes32 _commitment) external payable nonReentrant {
@@ -69,9 +71,9 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
     }
 
     //TODO make private
-    function _formatPublicInputs(bytes32 _root, bytes32 _nullifier,address _recipient) public pure returns(bytes32[] memory) {
+    function _formatPublicInputs(bytes32 _root, bytes32 _nullifier,address _recipient, uint256 _chainId) public pure returns(bytes32[] memory) {
         // _root
-        bytes32[] memory publicInputs = new bytes32[](65);
+        bytes32[] memory publicInputs = new bytes32[](66);
         for (uint i=0; i < 32; i++) {
             publicInputs[i] = bytes32(uint256(uint8(_root[i])));
         }
@@ -84,6 +86,7 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard{
         // _recipient
         bytes32 recipientBytes = bytes32(uint256(uint160(bytes20(_recipient))));
         publicInputs[64] = recipientBytes;
+        publicInputs[65] = bytes32(_chainId);
         return publicInputs;
     }
 

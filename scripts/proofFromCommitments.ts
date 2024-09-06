@@ -79,29 +79,29 @@ export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: 
 }
 
 
-export async function makeZeroBytes() {
-    //const comitments = [0,1,2,3,4,5,6,7].map((x)=>ethers.zeroPadValue(ethers.toBeHex(x),32))
-    const treeDepth = 20n
-    const ammountCommitments = 2n ** treeDepth
+// export async function makeZeroBytes() {
+//     //const comitments = [0,1,2,3,4,5,6,7].map((x)=>ethers.zeroPadValue(ethers.toBeHex(x),32))
+//     const treeDepth = 20n
+//     const ammountCommitments = 2n ** treeDepth
 
-    const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32) //keccack("tornado")
-    const commitments = Array(Number(ammountCommitments)).fill(zeroBytes); //["0x0000000000000000000000000000000000000000000000000000000000000014", ...Array(ammountCommitments-1).fill(zeroBytes)]
-    console.log({ammountCommitments, commitmentslen: commitments.length})
-    const {tree} = generateTree(commitments);
-    // 0 = leaf 20 = root
-    const levels = tree.map((x, i)=>[i, x[0]])
-    console.log({levels})
+//     const zeroBytes = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32) //keccack("tornado")
+//     const commitments = Array(Number(ammountCommitments)).fill(zeroBytes); //["0x0000000000000000000000000000000000000000000000000000000000000014", ...Array(ammountCommitments-1).fill(zeroBytes)]
+//     console.log({ammountCommitments, commitmentslen: commitments.length})
+//     const {tree} = generateTree(commitments);
+//     // 0 = leaf 20 = root
+//     const levels = tree.map((x, i)=>[i, x[0]])
+//     console.log({levels})
     
 
-    const path = `${import.meta.dir}/output/levels.json`
-    console.log({path})
-    await Bun.write(path, JSON.stringify({comment:"0 = leaf 20 = root",levels},null,2));
+//     const path = `${import.meta.dir}/output/levels.json`
+//     console.log({path})
+//     await Bun.write(path, JSON.stringify({comment:"0 = leaf 20 = root",levels},null,2));
 
 
-    // console.log({commitmentsLen: commitments.length})
-    // const  {hashPath, hashPathBools} =   getMerkleProof(commitments, 0)
-    // console.log({hashPath, hashPathBools})
-}
+//     // console.log({commitmentsLen: commitments.length})
+//     // const  {hashPath, hashPathBools} =   getMerkleProof(commitments, 0)
+//     // console.log({hashPath, hashPathBools})
+// }
 function bytes32ArrayToNoir(bytes:string[]) {
     return bytes.map((x)=>{
         const b=[...ethers.toBeArray(x)]
@@ -182,6 +182,7 @@ export async function getWithdrawCalldata(
     recipient:string, // <-- address
     secret:string, // string = ether.bytesLike. typescript sucks 
     nullifierHashPreImage:string, 
+    chainId:BigInt ,
     commitmentIndex:number, 
     commitmentsL1:ethers.BytesLike[],
     commitmentsL2:ethers.BytesLike[],
@@ -213,7 +214,7 @@ export async function getWithdrawCalldata(
 
     // nullifier hash and commitment ---------------------------------------
     const nullifierHash = ethers.keccak256(nullifierHashPreImage)
-    const commitmentHash  = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [nullifierHashPreImage,secret])) 
+    const commitmentHash  = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId])) //TODO make function of this 
 
 
     // get merkle proof data -------------------------------
@@ -236,6 +237,7 @@ export async function getWithdrawCalldata(
         root:  paddArray([...ethers.toBeArray(metaRoot)],32,0,true),                                                       //pub [u8;32],
         nullifierHash: paddArray([...ethers.toBeArray(nullifierHash)],32,0,true),                                        //pub [u8;32], 
         recipient:ethers.zeroPadValue(recipient,32),                                                //pub Field, 
+        chainId:Number(chainId)as InputValue,
         // relayer:                                                                                 //pub Field,
         // fee:                                                                                     //pub Field,
         // refund:                                                                                  //pub Field,
