@@ -62,6 +62,11 @@
           "internalType": "address",
           "name": "_recipient",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_chainId",
+          "type": "uint256"
         }
       ],
       "name": "_formatPublicInputs",
@@ -386,6 +391,10 @@
       ],
       "stateMutability": "pure",
       "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
     }
   ],
   "bytecode": "0x",

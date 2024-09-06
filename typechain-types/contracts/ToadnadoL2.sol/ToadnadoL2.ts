@@ -21,7 +21,7 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../common";
+} from "../../common";
 
 export interface ToadnadoL2Interface extends Interface {
   getFunction(
@@ -70,7 +70,7 @@ export interface ToadnadoL2Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "_formatPublicInputs",
-    values: [BytesLike, BytesLike, AddressLike, BigNumberish]
+    values: [BytesLike, BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "adminWithdraw",
@@ -329,12 +329,7 @@ export interface ToadnadoL2 extends BaseContract {
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
 
   _formatPublicInputs: TypedContractMethod<
-    [
-      _root: BytesLike,
-      _nullifier: BytesLike,
-      _recipient: AddressLike,
-      _chainId: BigNumberish
-    ],
+    [_root: BytesLike, _nullifier: BytesLike, _recipient: AddressLike],
     [string[]],
     "view"
   >;
@@ -436,12 +431,7 @@ export interface ToadnadoL2 extends BaseContract {
   getFunction(
     nameOrSignature: "_formatPublicInputs"
   ): TypedContractMethod<
-    [
-      _root: BytesLike,
-      _nullifier: BytesLike,
-      _recipient: AddressLike,
-      _chainId: BigNumberish
-    ],
+    [_root: BytesLike, _nullifier: BytesLike, _recipient: AddressLike],
     [string[]],
     "view"
   >;

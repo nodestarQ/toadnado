@@ -38,8 +38,8 @@
       ]
     },
     "/home/jimjim/Desktop/toadnado/contracts/Toadnado.sol": {
-      "lastModificationDate": 1725461127483,
-      "contentHash": "74689422c5e1827e4021aac040fcb143",
+      "lastModificationDate": 1725588470157,
+      "contentHash": "8d83a7ed7b8468e50b5b1d9da5f10f59",
       "sourceName": "contracts/Toadnado.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -114,8 +114,8 @@
       ]
     },
     "/home/jimjim/Desktop/toadnado/contracts/ToadnadoL2.sol": {
-      "lastModificationDate": 1725377056390,
-      "contentHash": "90dd9e166c77c5776c4e222fa3c1b360",
+      "lastModificationDate": 1725590182690,
+      "contentHash": "71b214ded4f905e75930b8a7cd0efcf8",
       "sourceName": "contracts/ToadnadoL2.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -142,7 +142,8 @@
         }
       },
       "imports": [
-        "./Toadnado.sol"
+        "./Toadnado.sol",
+        "hardhat/console.sol"
       ],
       "versionPragmas": [
         "0.8.23"
@@ -190,8 +191,8 @@
       ]
     },
     "/home/jimjim/Desktop/toadnado/contracts/plonk_vk.sol": {
-      "lastModificationDate": 1725377056391,
-      "contentHash": "5a76523190d3ba856a3bddf71d640db7",
+      "lastModificationDate": 1725577135631,
+      "contentHash": "4da7ceb2994708cc84a0a4fa0d06c7bf",
       "sourceName": "contracts/plonk_vk.sol",
       "solcConfig": {
         "version": "0.8.23",
@@ -227,10 +228,48 @@
         "UltraVerifier"
       ]
     },
-    "/home/jimjim/Desktop/toadnado/contracts/test/L2SLOADmock.sol": {
-      "lastModificationDate": 1725483592323,
-      "contentHash": "d07c527d40ff4ac68a93e6976787393f",
-      "sourceName": "contracts/test/L2SLOADmock.sol",
+    "/home/jimjim/Desktop/toadnado/contracts/test/L1SLOADmock.sol": {
+      "lastModificationDate": 1725587892623,
+      "contentHash": "1fe82651567ec3ca5b9a1b26d3fc9c51",
+      "sourceName": "contracts/test/L1SLOADmock.sol",
+      "solcConfig": {
+        "version": "0.8.23",
+        "settings": {
+          "evmVersion": "shanghai",
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol"
+      ],
+      "versionPragmas": [
+        "0.8.23"
+      ],
+      "artifacts": [
+        "L1SLOADmock"
+      ]
+    },
+    "/home/jimjim/Desktop/toadnado/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1725379633809,
+      "contentHash": "896f68942c3a20e9ae3c3c5bfd3add54",
+      "sourceName": "hardhat/console.sol",
       "solcConfig": {
         "version": "0.8.23",
         "settings": {
@@ -257,10 +296,10 @@
       },
       "imports": [],
       "versionPragmas": [
-        "0.8.23"
+        ">=0.4.22 <0.9.0"
       ],
       "artifacts": [
-        "L2SLOADmock"
+        "console"
       ]
     }
   }

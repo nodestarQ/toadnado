@@ -21,12 +21,10 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export interface L2SLOADmockInterface extends Interface {
+export interface L1SLOADmockInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "decodeInput"
-      | "hashMappingSlot"
-      | "hii"
       | "mockedSlots"
       | "readMockedSlot"
       | "setMockedSlot"
@@ -36,11 +34,6 @@ export interface L2SLOADmockInterface extends Interface {
     functionFragment: "decodeInput",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "hashMappingSlot",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "hii", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mockedSlots",
     values: [AddressLike, BigNumberish]
@@ -59,11 +52,6 @@ export interface L2SLOADmockInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "hashMappingSlot",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "hii", data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: "mockedSlots",
     data: BytesLike
   ): Result;
@@ -77,11 +65,11 @@ export interface L2SLOADmockInterface extends Interface {
   ): Result;
 }
 
-export interface L2SLOADmock extends BaseContract {
-  connect(runner?: ContractRunner | null): L2SLOADmock;
+export interface L1SLOADmock extends BaseContract {
+  connect(runner?: ContractRunner | null): L1SLOADmock;
   waitForDeployment(): Promise<this>;
 
-  interface: L2SLOADmockInterface;
+  interface: L1SLOADmockInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -126,14 +114,6 @@ export interface L2SLOADmock extends BaseContract {
     "view"
   >;
 
-  hashMappingSlot: TypedContractMethod<
-    [key: BigNumberish, slotNumber: BigNumberish],
-    [string],
-    "view"
-  >;
-
-  hii: TypedContractMethod<[], [bigint], "view">;
-
   mockedSlots: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [string],
@@ -159,16 +139,6 @@ export interface L2SLOADmock extends BaseContract {
   getFunction(
     nameOrSignature: "decodeInput"
   ): TypedContractMethod<[data: BytesLike], [[string, bigint]], "view">;
-  getFunction(
-    nameOrSignature: "hashMappingSlot"
-  ): TypedContractMethod<
-    [key: BigNumberish, slotNumber: BigNumberish],
-    [string],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "hii"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "mockedSlots"
   ): TypedContractMethod<

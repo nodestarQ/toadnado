@@ -14,8 +14,8 @@ export type { BaseUltraVerifier } from "./contracts/plonk_vk.sol/BaseUltraVerifi
 export { BaseUltraVerifier__factory } from "./factories/contracts/plonk_vk.sol/BaseUltraVerifier__factory";
 export type { UltraVerifier } from "./contracts/plonk_vk.sol/UltraVerifier";
 export { UltraVerifier__factory } from "./factories/contracts/plonk_vk.sol/UltraVerifier__factory";
-export type { L2SLOADmock } from "./contracts/test/L2SLOADmock";
-export { L2SLOADmock__factory } from "./factories/contracts/test/L2SLOADmock__factory";
+export type { L1SLOADmock } from "./contracts/test/L1SLOADmock";
+export { L1SLOADmock__factory } from "./factories/contracts/test/L1SLOADmock__factory";
 export type { IVerifier } from "./contracts/Toadnado.sol/IVerifier";
 export { IVerifier__factory } from "./factories/contracts/Toadnado.sol/IVerifier__factory";
 export type { Toadnado } from "./contracts/Toadnado.sol/Toadnado";

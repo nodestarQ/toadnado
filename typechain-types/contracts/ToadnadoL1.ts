@@ -57,7 +57,7 @@ export interface ToadnadoL1Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "_formatPublicInputs",
-    values: [BytesLike, BytesLike, AddressLike]
+    values: [BytesLike, BytesLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "adminWithdraw",
@@ -245,7 +245,12 @@ export interface ToadnadoL1 extends BaseContract {
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
 
   _formatPublicInputs: TypedContractMethod<
-    [_root: BytesLike, _nullifier: BytesLike, _recipient: AddressLike],
+    [
+      _root: BytesLike,
+      _nullifier: BytesLike,
+      _recipient: AddressLike,
+      _chainId: BigNumberish
+    ],
     [string[]],
     "view"
   >;
@@ -310,7 +315,12 @@ export interface ToadnadoL1 extends BaseContract {
   getFunction(
     nameOrSignature: "_formatPublicInputs"
   ): TypedContractMethod<
-    [_root: BytesLike, _nullifier: BytesLike, _recipient: AddressLike],
+    [
+      _root: BytesLike,
+      _nullifier: BytesLike,
+      _recipient: AddressLike,
+      _chainId: BigNumberish
+    ],
     [string[]],
     "view"
   >;

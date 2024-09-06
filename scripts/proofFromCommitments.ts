@@ -260,7 +260,8 @@ export async function getWithdrawCalldata(
         l2Root, 
         nullifierHash, 
         recipient, 
-        snarkProof: ethers.hexlify(snarkProofData.proof)
+        snarkProof: ethers.hexlify(snarkProofData.proof),
+        publicInputs: snarkProofData.publicInputs
     }
     console.log({contractInputs})
     console.log({publicInputs:snarkProofData.publicInputs})

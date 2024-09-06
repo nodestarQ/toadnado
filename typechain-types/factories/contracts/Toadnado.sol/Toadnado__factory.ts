@@ -69,6 +69,11 @@ const _abi = [
         name: "_recipient",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "_chainId",
+        type: "uint256",
+      },
     ],
     name: "_formatPublicInputs",
     outputs: [
@@ -392,6 +397,10 @@ const _abi = [
     ],
     stateMutability: "pure",
     type: "function",
+  },
+  {
+    stateMutability: "payable",
+    type: "receive",
   },
 ] as const;
 
