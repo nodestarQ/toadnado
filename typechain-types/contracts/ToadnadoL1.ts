@@ -27,7 +27,6 @@ export interface ToadnadoL1Interface extends Interface {
   getFunction(
     nameOrSignature:
       | "ROOT_HISTORY_SIZE"
-      | "_formatPublicInputs"
       | "adminWithdraw"
       | "commitmentLeafs"
       | "commitments"
@@ -38,26 +37,25 @@ export interface ToadnadoL1Interface extends Interface {
       | "filledSubtrees"
       | "getLastRoot"
       | "hashLeftRight"
-      | "isKnownRoot"
+      | "isKnownL1Root"
+      | "isKnownL2Root"
       | "isSpent"
       | "isSpentArray"
+      | "l2Address"
       | "levels"
       | "nextIndex"
       | "nullifiers"
       | "roots"
       | "verifier"
+      | "withdraw"
       | "zeros"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Deposit" | "Withdrawal"): EventFragment;
 
   encodeFunctionData(
     functionFragment: "ROOT_HISTORY_SIZE",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "_formatPublicInputs",
-    values: [BytesLike, BytesLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "adminWithdraw",
@@ -97,7 +95,11 @@ export interface ToadnadoL1Interface extends Interface {
     values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "isKnownRoot",
+    functionFragment: "isKnownL1Root",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isKnownL2Root",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "isSpent", values: [BytesLike]): string;
@@ -105,6 +107,7 @@ export interface ToadnadoL1Interface extends Interface {
     functionFragment: "isSpentArray",
     values: [BytesLike[]]
   ): string;
+  encodeFunctionData(functionFragment: "l2Address", values?: undefined): string;
   encodeFunctionData(functionFragment: "levels", values?: undefined): string;
   encodeFunctionData(functionFragment: "nextIndex", values?: undefined): string;
   encodeFunctionData(
@@ -113,14 +116,14 @@ export interface ToadnadoL1Interface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "roots", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "verifier", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [BytesLike, BytesLike, BytesLike, AddressLike, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "zeros", values: [BigNumberish]): string;
 
   decodeFunctionResult(
     functionFragment: "ROOT_HISTORY_SIZE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "_formatPublicInputs",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -161,7 +164,11 @@ export interface ToadnadoL1Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isKnownRoot",
+    functionFragment: "isKnownL1Root",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isKnownL2Root",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isSpent", data: BytesLike): Result;
@@ -169,11 +176,13 @@ export interface ToadnadoL1Interface extends Interface {
     functionFragment: "isSpentArray",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "l2Address", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "levels", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nextIndex", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nullifiers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roots", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "verifier", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "zeros", data: BytesLike): Result;
 }
 
@@ -192,6 +201,19 @@ export namespace DepositEvent {
     commitment: string;
     leafIndex: bigint;
     timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawalEvent {
+  export type InputTuple = [recipient: AddressLike, nullifier: BytesLike];
+  export type OutputTuple = [recipient: string, nullifier: string];
+  export interface OutputObject {
+    recipient: string;
+    nullifier: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -244,17 +266,6 @@ export interface ToadnadoL1 extends BaseContract {
 
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
 
-  _formatPublicInputs: TypedContractMethod<
-    [
-      _root: BytesLike,
-      _nullifier: BytesLike,
-      _recipient: AddressLike,
-      _chainId: BigNumberish
-    ],
-    [string[]],
-    "view"
-  >;
-
   adminWithdraw: TypedContractMethod<[], [void], "payable">;
 
   commitmentLeafs: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
@@ -283,7 +294,9 @@ export interface ToadnadoL1 extends BaseContract {
     "view"
   >;
 
-  isKnownRoot: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
+  isKnownL1Root: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
+
+  isKnownL2Root: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
 
   isSpent: TypedContractMethod<[_nullifierHash: BytesLike], [boolean], "view">;
 
@@ -292,6 +305,8 @@ export interface ToadnadoL1 extends BaseContract {
     [boolean[]],
     "view"
   >;
+
+  l2Address: TypedContractMethod<[], [string], "view">;
 
   levels: TypedContractMethod<[], [bigint], "view">;
 
@@ -303,6 +318,18 @@ export interface ToadnadoL1 extends BaseContract {
 
   verifier: TypedContractMethod<[], [string], "view">;
 
+  withdraw: TypedContractMethod<
+    [
+      _l1root: BytesLike,
+      _l2root: BytesLike,
+      _nullifier: BytesLike,
+      _recipient: AddressLike,
+      snarkProof: BytesLike
+    ],
+    [void],
+    "payable"
+  >;
+
   zeros: TypedContractMethod<[i: BigNumberish], [string], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -312,18 +339,6 @@ export interface ToadnadoL1 extends BaseContract {
   getFunction(
     nameOrSignature: "ROOT_HISTORY_SIZE"
   ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "_formatPublicInputs"
-  ): TypedContractMethod<
-    [
-      _root: BytesLike,
-      _nullifier: BytesLike,
-      _recipient: AddressLike,
-      _chainId: BigNumberish
-    ],
-    [string[]],
-    "view"
-  >;
   getFunction(
     nameOrSignature: "adminWithdraw"
   ): TypedContractMethod<[], [void], "payable">;
@@ -359,7 +374,10 @@ export interface ToadnadoL1 extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "isKnownRoot"
+    nameOrSignature: "isKnownL1Root"
+  ): TypedContractMethod<[_root: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isKnownL2Root"
   ): TypedContractMethod<[_root: BytesLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "isSpent"
@@ -367,6 +385,9 @@ export interface ToadnadoL1 extends BaseContract {
   getFunction(
     nameOrSignature: "isSpentArray"
   ): TypedContractMethod<[_nullifierHashes: BytesLike[]], [boolean[]], "view">;
+  getFunction(
+    nameOrSignature: "l2Address"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "levels"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -383,6 +404,19 @@ export interface ToadnadoL1 extends BaseContract {
     nameOrSignature: "verifier"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "withdraw"
+  ): TypedContractMethod<
+    [
+      _l1root: BytesLike,
+      _l2root: BytesLike,
+      _nullifier: BytesLike,
+      _recipient: AddressLike,
+      snarkProof: BytesLike
+    ],
+    [void],
+    "payable"
+  >;
+  getFunction(
     nameOrSignature: "zeros"
   ): TypedContractMethod<[i: BigNumberish], [string], "view">;
 
@@ -392,6 +426,13 @@ export interface ToadnadoL1 extends BaseContract {
     DepositEvent.InputTuple,
     DepositEvent.OutputTuple,
     DepositEvent.OutputObject
+  >;
+  getEvent(
+    key: "Withdrawal"
+  ): TypedContractEvent<
+    WithdrawalEvent.InputTuple,
+    WithdrawalEvent.OutputTuple,
+    WithdrawalEvent.OutputObject
   >;
 
   filters: {
@@ -404,6 +445,17 @@ export interface ToadnadoL1 extends BaseContract {
       DepositEvent.InputTuple,
       DepositEvent.OutputTuple,
       DepositEvent.OutputObject
+    >;
+
+    "Withdrawal(address,bytes32)": TypedContractEvent<
+      WithdrawalEvent.InputTuple,
+      WithdrawalEvent.OutputTuple,
+      WithdrawalEvent.OutputObject
+    >;
+    Withdrawal: TypedContractEvent<
+      WithdrawalEvent.InputTuple,
+      WithdrawalEvent.OutputTuple,
+      WithdrawalEvent.OutputObject
     >;
   };
 }

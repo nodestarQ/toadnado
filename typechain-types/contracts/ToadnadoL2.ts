@@ -26,9 +26,7 @@ import type {
 export interface ToadnadoL2Interface extends Interface {
   getFunction(
     nameOrSignature:
-      | "L1_SLOAD_ADDRESS"
       | "ROOT_HISTORY_SIZE"
-      | "_formatPublicInputs"
       | "adminWithdraw"
       | "commitmentLeafs"
       | "commitments"
@@ -37,17 +35,14 @@ export interface ToadnadoL2Interface extends Interface {
       | "denomination"
       | "deposit"
       | "filledSubtrees"
-      | "getAllCommitments"
-      | "getL1LeafCommitments"
       | "getL1Root"
       | "getLastRoot"
       | "hashLeftRight"
       | "isKnownL1Root"
-      | "isKnownRoot"
+      | "isKnownL2Root"
       | "isSpent"
       | "isSpentArray"
       | "l1Address"
-      | "l1_currentRootIndex"
       | "levels"
       | "nextIndex"
       | "nullifiers"
@@ -61,16 +56,8 @@ export interface ToadnadoL2Interface extends Interface {
   getEvent(nameOrSignatureOrTopic: "Deposit" | "Withdrawal"): EventFragment;
 
   encodeFunctionData(
-    functionFragment: "L1_SLOAD_ADDRESS",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "ROOT_HISTORY_SIZE",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "_formatPublicInputs",
-    values: [BytesLike, BytesLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "adminWithdraw",
@@ -102,14 +89,6 @@ export interface ToadnadoL2Interface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getAllCommitments",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getL1LeafCommitments",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getL1Root",
     values: [BigNumberish]
   ): string;
@@ -126,7 +105,7 @@ export interface ToadnadoL2Interface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "isKnownRoot",
+    functionFragment: "isKnownL2Root",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "isSpent", values: [BytesLike]): string;
@@ -135,10 +114,6 @@ export interface ToadnadoL2Interface extends Interface {
     values: [BytesLike[]]
   ): string;
   encodeFunctionData(functionFragment: "l1Address", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "l1_currentRootIndex",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "levels", values?: undefined): string;
   encodeFunctionData(functionFragment: "nextIndex", values?: undefined): string;
   encodeFunctionData(
@@ -158,15 +133,7 @@ export interface ToadnadoL2Interface extends Interface {
   encodeFunctionData(functionFragment: "zeros", values: [BigNumberish]): string;
 
   decodeFunctionResult(
-    functionFragment: "L1_SLOAD_ADDRESS",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "ROOT_HISTORY_SIZE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "_formatPublicInputs",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -198,14 +165,6 @@ export interface ToadnadoL2Interface extends Interface {
     functionFragment: "filledSubtrees",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAllCommitments",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getL1LeafCommitments",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getL1Root", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getLastRoot",
@@ -220,7 +179,7 @@ export interface ToadnadoL2Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isKnownRoot",
+    functionFragment: "isKnownL2Root",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isSpent", data: BytesLike): Result;
@@ -229,10 +188,6 @@ export interface ToadnadoL2Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "l1Address", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "l1_currentRootIndex",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "levels", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nextIndex", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nullifiers", data: BytesLike): Result;
@@ -324,20 +279,7 @@ export interface ToadnadoL2 extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  L1_SLOAD_ADDRESS: TypedContractMethod<[], [string], "view">;
-
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
-
-  _formatPublicInputs: TypedContractMethod<
-    [
-      _root: BytesLike,
-      _nullifier: BytesLike,
-      _recipient: AddressLike,
-      _chainId: BigNumberish
-    ],
-    [string[]],
-    "view"
-  >;
 
   adminWithdraw: TypedContractMethod<[], [void], "payable">;
 
@@ -359,14 +301,6 @@ export interface ToadnadoL2 extends BaseContract {
 
   filledSubtrees: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
-  getAllCommitments: TypedContractMethod<[], [[string[], string[]]], "view">;
-
-  getL1LeafCommitments: TypedContractMethod<
-    [key: BigNumberish],
-    [string],
-    "view"
-  >;
-
   getL1Root: TypedContractMethod<[key: BigNumberish], [string], "view">;
 
   getLastRoot: TypedContractMethod<[], [string], "view">;
@@ -379,7 +313,7 @@ export interface ToadnadoL2 extends BaseContract {
 
   isKnownL1Root: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
 
-  isKnownRoot: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
+  isKnownL2Root: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
 
   isSpent: TypedContractMethod<[_nullifierHash: BytesLike], [boolean], "view">;
 
@@ -390,8 +324,6 @@ export interface ToadnadoL2 extends BaseContract {
   >;
 
   l1Address: TypedContractMethod<[], [string], "view">;
-
-  l1_currentRootIndex: TypedContractMethod<[], [bigint], "view">;
 
   levels: TypedContractMethod<[], [bigint], "view">;
 
@@ -428,23 +360,8 @@ export interface ToadnadoL2 extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "L1_SLOAD_ADDRESS"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "ROOT_HISTORY_SIZE"
   ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "_formatPublicInputs"
-  ): TypedContractMethod<
-    [
-      _root: BytesLike,
-      _nullifier: BytesLike,
-      _recipient: AddressLike,
-      _chainId: BigNumberish
-    ],
-    [string[]],
-    "view"
-  >;
   getFunction(
     nameOrSignature: "adminWithdraw"
   ): TypedContractMethod<[], [void], "payable">;
@@ -470,12 +387,6 @@ export interface ToadnadoL2 extends BaseContract {
     nameOrSignature: "filledSubtrees"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: "getAllCommitments"
-  ): TypedContractMethod<[], [[string[], string[]]], "view">;
-  getFunction(
-    nameOrSignature: "getL1LeafCommitments"
-  ): TypedContractMethod<[key: BigNumberish], [string], "view">;
-  getFunction(
     nameOrSignature: "getL1Root"
   ): TypedContractMethod<[key: BigNumberish], [string], "view">;
   getFunction(
@@ -492,7 +403,7 @@ export interface ToadnadoL2 extends BaseContract {
     nameOrSignature: "isKnownL1Root"
   ): TypedContractMethod<[_root: BytesLike], [boolean], "view">;
   getFunction(
-    nameOrSignature: "isKnownRoot"
+    nameOrSignature: "isKnownL2Root"
   ): TypedContractMethod<[_root: BytesLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "isSpent"
@@ -503,9 +414,6 @@ export interface ToadnadoL2 extends BaseContract {
   getFunction(
     nameOrSignature: "l1Address"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "l1_currentRootIndex"
-  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "levels"
   ): TypedContractMethod<[], [bigint], "view">;

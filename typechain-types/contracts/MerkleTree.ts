@@ -29,7 +29,6 @@ export interface MerkleTreeInterface extends Interface {
       | "filledSubtrees"
       | "getLastRoot"
       | "hashLeftRight"
-      | "isKnownRoot"
       | "levels"
       | "nextIndex"
       | "roots"
@@ -60,10 +59,6 @@ export interface MerkleTreeInterface extends Interface {
     functionFragment: "hashLeftRight",
     values: [BytesLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "isKnownRoot",
-    values: [BytesLike]
-  ): string;
   encodeFunctionData(functionFragment: "levels", values?: undefined): string;
   encodeFunctionData(functionFragment: "nextIndex", values?: undefined): string;
   encodeFunctionData(functionFragment: "roots", values: [BigNumberish]): string;
@@ -91,10 +86,6 @@ export interface MerkleTreeInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "hashLeftRight",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isKnownRoot",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "levels", data: BytesLike): Result;
@@ -162,8 +153,6 @@ export interface MerkleTree extends BaseContract {
     "view"
   >;
 
-  isKnownRoot: TypedContractMethod<[_root: BytesLike], [boolean], "view">;
-
   levels: TypedContractMethod<[], [bigint], "view">;
 
   nextIndex: TypedContractMethod<[], [bigint], "view">;
@@ -198,9 +187,6 @@ export interface MerkleTree extends BaseContract {
     [string],
     "view"
   >;
-  getFunction(
-    nameOrSignature: "isKnownRoot"
-  ): TypedContractMethod<[_root: BytesLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "levels"
   ): TypedContractMethod<[], [bigint], "view">;

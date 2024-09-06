@@ -128,3 +128,16 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+artifacts/build-info/3fb3e26a73f0c5d8a3710a110b19da5f.json
+artifacts/build-info/1469198b88ea037ec96ad143620915cc.json
+artifacts/build-info/e2878b980acce3076c182a475418ad84.json
+artifacts/contracts/MerkleTree.sol/MerkleTree.dbg.json
+artifacts/contracts/MerkleTree.sol/MerkleTree.json
+artifacts/contracts/Toadnado.sol/IVerifier.dbg.json
+artifacts/contracts/Toadnado.sol/Toadnado.dbg.json
+artifacts/contracts/Toadnado.sol/Toadnado.json
+artifacts/contracts/ToadnadoL1.sol/ToadnadoL1.dbg.json
+artifacts/contracts/ToadnadoL1.sol/ToadnadoL1.json
+artifacts/contracts/ToadnadoL2.sol/ToadnadoL2.dbg.json
+artifacts/contracts/ToadnadoL2.sol/ToadnadoL2.json
+cache/solidity-files-cache.json

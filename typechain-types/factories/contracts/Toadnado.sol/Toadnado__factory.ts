@@ -15,6 +15,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "VerificationFailed",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -40,6 +45,25 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "nullifier",
+        type: "bytes32",
+      },
+    ],
+    name: "Withdrawal",
+    type: "event",
+  },
+  {
     inputs: [],
     name: "ROOT_HISTORY_SIZE",
     outputs: [
@@ -50,40 +74,6 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "_root",
-        type: "bytes32",
-      },
-      {
-        internalType: "bytes32",
-        name: "_nullifier",
-        type: "bytes32",
-      },
-      {
-        internalType: "address",
-        name: "_recipient",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_chainId",
-        type: "uint256",
-      },
-    ],
-    name: "_formatPublicInputs",
-    outputs: [
-      {
-        internalType: "bytes32[]",
-        name: "",
-        type: "bytes32[]",
-      },
-    ],
-    stateMutability: "pure",
     type: "function",
   },
   {
@@ -253,7 +243,7 @@ const _abi = [
         type: "bytes32",
       },
     ],
-    name: "isKnownRoot",
+    name: "isKnownL1Root",
     outputs: [
       {
         internalType: "bool",
@@ -261,7 +251,26 @@ const _abi = [
         type: "bool",
       },
     ],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_root",
+        type: "bytes32",
+      },
+    ],
+    name: "isKnownL2Root",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -377,6 +386,39 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_l1root",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "_l2root",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "_nullifier",
+        type: "bytes32",
+      },
+      {
+        internalType: "address payable",
+        name: "_recipient",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "snarkProof",
+        type: "bytes",
+      },
+    ],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "payable",
     type: "function",
   },
   {
