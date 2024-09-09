@@ -201,7 +201,7 @@ export async function getWithdrawCalldata(
     const l2Tree = generateTree(allCommitmentsL2)
     const l1Root = l1Tree.tree[l1Tree.tree.length-1][0]
     const l2Root = l2Tree.tree[l2Tree.tree.length-1][0]
-    console.log({l1Root: l1Tree.tree[l1Tree.tree.length-1], l2Root: l2Tree.tree[l2Tree.tree.length-1]})
+    //console.log({l1Root: l1Tree.tree[l1Tree.tree.length-1], l2Root: l2Tree.tree[l2Tree.tree.length-1]})
     const abiCoder = new ethers.AbiCoder()
     const metaRoot = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [l1Root,l2Root]))
 
@@ -232,7 +232,7 @@ export async function getWithdrawCalldata(
 
 
     // format circuit inputs
-    console.log({metaRoot})
+    //console.log({metaRoot})
     const inputs:InputMap = {
         root:  paddArray([...ethers.toBeArray(metaRoot)],32,0,true),                                                       //pub [u8;32],
         nullifierHash: paddArray([...ethers.toBeArray(nullifierHash)],32,0,true),                                        //pub [u8;32], 
@@ -249,11 +249,11 @@ export async function getWithdrawCalldata(
         root_other_layer:  paddArray([...ethers.toBeArray(rootOtherLayer)],32,0,true),
         root_other_is_right: commitmentIsFromL1
     }
-    console.log({circuitInputs: inputs})
+    //console.log({circuitInputs: inputs})
     const snarkProofData = await NOIR.generateProof(inputs)
     
-    const verified =await NOIR.verifyProof({proof:snarkProofData.proof, publicInputs:snarkProofData.publicInputs})
-    console.log({verified})
+    const verifiedLocally =await NOIR.verifyProof({proof:snarkProofData.proof, publicInputs:snarkProofData.publicInputs})
+    console.log({verifiedLocally})
 
     const contractInputs =  {
         l1Root,
@@ -263,8 +263,8 @@ export async function getWithdrawCalldata(
         snarkProof: ethers.hexlify(snarkProofData.proof),
         publicInputs: snarkProofData.publicInputs
     }
-    console.log({contractInputs})
-    console.log({publicInputs:snarkProofData.publicInputs})
+    // console.log({contractInputs})
+    // console.log({publicInputs:snarkProofData.publicInputs})
     return contractInputs
     
 
