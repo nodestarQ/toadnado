@@ -52,14 +52,42 @@ async function depositL1(ToadnadoL1: any, L1SLOADmock: any, chainId: any) {
 
 describe("Toadnado", function () {
   it("deposit L1 withdraw L2", async function () {
+    //reset balances
+    await hre.ethers.provider.send("hardhat_setBalance", [
+      L1_SCROLL_MESSENGER,
+      "0x00",
+    ]);
+    await hre.ethers.provider.send("hardhat_setBalance", [
+      L2_SCROLL_MESSENGER,
+      "0x00",
+    ]);
     const [deployer, alicePublic, alicePrivate] = await ethers.getSigners()
 
     //deploy L1SLOADmock ---------------------------
-    const L1SLOADmockFactory = (await hre.ethers.getContractFactory("L1SLOADmock"));
-    const L1SLOADmockDeployedNormal = await hre.ethers.deployContract("L1SLOADmock") // cant use factory for byte code have to get bytecode from deployed contract
-    await setCode(L1SLOAD_ADDRESS, await hre.ethers.provider.getCode(L1SLOADmockDeployedNormal.target))
-    const L1SLOADmock = L1SLOADmockFactory.attach(L1SLOAD_ADDRESS)
+    const L1SLOADmock_Factory = (await hre.ethers.getContractFactory("L1SLOADmock"));
+    const L1SLOADmock_DeployedNormal = await hre.ethers.deployContract("L1SLOADmock") // cant use factory for byte code have to get bytecode from deployed contract
+    await setCode(L1SLOAD_ADDRESS, await hre.ethers.provider.getCode(L1SLOADmock_DeployedNormal.target))
+    const L1SLOADmock = L1SLOADmock_Factory.attach(L1SLOAD_ADDRESS)
     console.log("L1SLOADmock deployed at", L1SLOADmock.target)
+
+    // deploy messenger mocks
+    // L1
+    const L1ScrollMessengerMock_Factory = (await hre.ethers.getContractFactory("scrollMessengerMock"));
+    const L1ScrollMessengerMock_DeployedNormal = await hre.ethers.deployContract("scrollMessengerMock", [L2_SCROLL_MESSENGER]) // cant use factory for byte code have to get bytecode from deployed contract
+    await setCode(L1_SCROLL_MESSENGER, await hre.ethers.provider.getCode(L1ScrollMessengerMock_DeployedNormal.target))
+    const L1ScrollMessengerMock = L1ScrollMessengerMock_Factory.attach(L1_SCROLL_MESSENGER)
+    await L1ScrollMessengerMock.setOtherMessenger(L2_SCROLL_MESSENGER) // need to set it here because state doesnt copy over
+    console.log("L1ScrollMessengerMock deployed at", L1ScrollMessengerMock.target)
+
+
+    // L2
+    const L2ScrollMessengerMock_Factory = (await hre.ethers.getContractFactory("scrollMessengerMock"));
+    const L2ScrollMessengerMock_DeployedNormal = await hre.ethers.deployContract("scrollMessengerMock",  [L1_SCROLL_MESSENGER]) // cant use factory for byte code have to get bytecode from deployed contract
+    await setCode(L2_SCROLL_MESSENGER, await hre.ethers.provider.getCode(L2ScrollMessengerMock_DeployedNormal.target))
+    const L2ScrollMessengerMock = L2ScrollMessengerMock_Factory.attach(L2_SCROLL_MESSENGER)
+    await L2ScrollMessengerMock.setOtherMessenger(L1_SCROLL_MESSENGER) 
+    console.log("L2ScrollMessengerMock deployed at", L2ScrollMessengerMock.target)
+
 
     // deploy verifier
     const UltraVerifier = await hre.ethers.deployContract("UltraVerifier", [], { value: 0n });
@@ -88,12 +116,16 @@ describe("Toadnado", function () {
     console.log({depositTxFee: ethers.formatEther(depositTxConfirmed?.fee), depositTxGas: depositTxConfirmed?.gasUsed,  gasPriceGwei: Number(depositTxConfirmed?.gasPrice) / 1000000000})
     expect(balanceAfterDeposit).to.eq(balanceBeforeDeposit - DENOMINATION - depositTxConfirmed.fee)
 
-    // pretend we just bridged eth from L1->L2
-    //TODO do this with a bridge transanction
-    await deployer.sendTransaction({
-      to: ToadnadoL2.target,
-      value: DENOMINATION,
-    });
+    // dev said 1000000n was enough for gas limit  https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#calling-a-cross-chain-function
+    await ToadnadoL1.bridgeEth(DENOMINATION, 1000000n)
+    const L2ScrollMessengerMockBalance = await hre.ethers.provider.getBalance(L2ScrollMessengerMock.target)
+    expect(L2ScrollMessengerMockBalance).to.eq(DENOMINATION, "ToadnadoL1.bridgeEth didnt bridge over DENOMINATION to the L2 messenger")
+    
+    // bridge over eth
+    const [,,message,] = await L1ScrollMessengerMock.getLastMessage() // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
+    await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, DENOMINATION, 0n, message, [0n,"0x00"])
+    const ToadnadoL2BalanceAfterEthBridge = await hre.ethers.provider.getBalance(ToadnadoL2.target)
+    expect(ToadnadoL2BalanceAfterEthBridge).to.eq(DENOMINATION, ":(")
 
     // event scanning to get the leaves of the merkle trees
     const depositEventFilter = ToadnadoL1.filters.Deposit()

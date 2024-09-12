@@ -2,8 +2,7 @@
 pragma solidity 0.8.23;
 
 import {Toadnado} from "./Toadnado.sol";
-import {IL1ScrollMessenger} from "@scroll-tech/contracts/L1/IL1ScrollMessenger.sol";
-
+import {IScrollMessenger} from "@scroll-tech/contracts/libraries/IScrollMessenger.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 
@@ -33,7 +32,7 @@ contract ToadnadoL1 is Toadnado, Ownable {
     //TODO do the array style history like in roots mapping in merkleTree.sol
     function addL2Root(bytes32 _root) public {
         require(msg.sender == l1ScrollMessenger,"function not called by l1ScrollMessenger");
-        require(IL1ScrollMessenger(l1ScrollMessenger).xDomainMessageSender() == l2ScrollToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
+        require(IScrollMessenger(l1ScrollMessenger).xDomainMessageSender() == l2ScrollToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
         L2RootsCache[_root] = true;
     }
 
@@ -44,5 +43,22 @@ contract ToadnadoL1 is Toadnado, Ownable {
 
     function isKnownL2Root(bytes32 _root) public view override returns (bool) {
         return L2RootsCache[_root];
+    }
+
+    function recieveBridgedEth() public payable override {
+      require(msg.sender == l1ScrollMessenger,"function not called by l1ScrollMessenger");
+      require(IScrollMessenger(l1ScrollMessenger).xDomainMessageSender() == l2ScrollToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
+    }
+
+    function bridgeEth(uint256 _amount,uint256 gasLimit) public override {
+      IScrollMessenger scrollMessenger = IScrollMessenger(l1ScrollMessenger);
+      // sendMessage is able to execute any function by encoding the abi using the encodeWithSignature function
+      scrollMessenger.sendMessage{value:_amount}(
+          l2ScrollToadnadoAddress,
+          _amount,
+          abi.encodeWithSignature("recieveBridgedEth()"),
+          gasLimit,
+          msg.sender
+      );
     }
 }

@@ -23,19 +23,16 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         denomination = _denomination;
     }
 
-    event Deposit(
-        bytes32 indexed commitment,
-        uint32 leafIndex,
-        uint256 timestamp
-    );
+    event Deposit(bytes32 indexed commitment,uint32 leafIndex,uint256 timestamp);
 
     event Withdrawal(address recipient, bytes32 nullifier);
+    event PendingWithdrawal(address recipient, bytes32 nullifier);
 
     //IVerifier public immutable verifier;
-    uint256 public denomination;
+    uint256 public immutable denomination;
 
     // contract that verifies the zkSnark proof
-    address public verifier;
+    address public immutable verifier;
 
     // nullifiers of the withdraws
     // its a identifier of a commitment(deposit) that is revealed when it is withdrawn
@@ -46,6 +43,18 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
 
     // a history of valid merkle roots, to verify that a proof refers to a valid deposit
     mapping(bytes32 => bool) public commitmentsTreeRoots;
+
+    // not used yet
+    // for when contract is out of eth and needs to wait for eth to be bridged
+    // struct PendingWithdrawalData {
+    //     address recipient;
+    //     uint256 amount; // note this isnt needed yet but i have put this here for when i upgrade toadnado to allow any-size deposits
+    //     bool isPending;
+    // }
+
+    // //bytes32 = _nullifier, used as the identifier
+    // mapping (bytes32 => PendingWithdrawalData) public pendingWithdraws;
+
 
     //-----DANGEROUS DEBUG STUFF---------------
     //TODO remove this and do proper bridging eth/ accounting logic instead
@@ -102,19 +111,38 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
     }
 
     function _processDeposit() internal {
-        require(
-            msg.value == denomination,
-            "Please send `mixDenomination` ETH along with transaction"
-        );
+        require(msg.value == denomination,"Please send `mixDenomination` ETH along with transaction");
     }
 
-    function _processWithdraw(address payable _recipient) internal {
-        require(
-            msg.value == 0,
-            "Message value is supposed to be zero for ETH instance"
-        );
+    function _processWithdraw(address payable _recipient , bytes32 _nullifier) internal {
+        require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
+        emit Withdrawal(_recipient, _nullifier);
         _recipient.transfer(denomination);
     }
+
+
+    // function _processWithdraw(address payable _recipient, bytes32 _nullifier) internal {
+    //     require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
+    //     if (address(this).balance >= denomination) {
+    //         emit Withdrawal(_recipient, _nullifier);
+    //         _recipient.transfer(denomination);
+    //     } else {
+    //         emit PendingWithdrawal(_recipient, _nullifier);
+    //         pendingWithdraws[_nullifier] = PendingWithdrawalData(_recipient, denomination, true);
+    //     }
+    // }
+
+    // function payOutPendingWithdrawal(bytes32 _nullifier) external {
+    //     //is putting this in memory first better for gas or nah? (pendingWithdrawalData)
+    //     PendingWithdrawalData memory pendingWithdrawalData = pendingWithdraws[_nullifier];
+    //     require(pendingWithdrawalData.isPending, "pending withdraw has already been payed out");
+    //     address _recipient = pendingWithdrawalData.recipient; 
+        
+    //     // watch out reenterance attacks
+    //     pendingWithdraws[_nullifier].isPending = false;
+    //     payable(_recipient).transfer(pendingWithdrawalData.amount);
+    //     emit Withdrawal(_recipient, _nullifier);
+    // }
 
     function deposit(bytes32 _commitment) external payable nonReentrant {
         require(
@@ -129,9 +157,13 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         emit Deposit(_commitment, insertedIndex, block.timestamp);
     }
 
-    // state being bridged
+    // bridging functions
     function isKnownL2Root(bytes32 _root) public virtual returns(bool);
     function isKnownL1Root(bytes32 _root) public virtual returns(bool);
+
+    //TODO WARNING needs account logic in place to prevent griefers from constantly bridging back and forth and making USER FUND UNAVAILABLE
+    function recieveBridgedEth() public payable virtual;
+    function bridgeEth(uint256 _amount, uint256 gasLimit) public virtual; // TODO doc said uint32 gasLimit instead of 256??
 
     function withdraw(
         bytes32 _l1root,
@@ -159,7 +191,6 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         }
 
         nullifiers[_nullifier] = true;
-        _processWithdraw(_recipient);
-        emit Withdrawal(_recipient, _nullifier);
+        _processWithdraw(_recipient, _nullifier);
     }
 }

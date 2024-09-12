@@ -79,15 +79,31 @@ contract ToadnadoL2 is Toadnado  {
         return isKnownRoot(_root);
     }
 
-    function sendLatestRootToL1(
-        uint32 gasLimit
-    ) public payable {
+    function sendLatestRootToL1(uint32 gasLimit) public payable {
         IScrollMessenger scrollMessenger = IScrollMessenger(l2ScrollMessenger);
         // sendMessage is able to execute any function by encoding the abi using the encodeWithSignature function
         scrollMessenger.sendMessage{value:msg.value}(
             l1ToadnadoAddress,
             0,
             abi.encodeWithSignature("addL2Root(bytes32)", getLastRoot()),
+            gasLimit,
+            msg.sender
+        );
+    }
+
+    function recieveBridgedEth() public payable override {
+        //require(false, "sadasds");
+        require(msg.sender == l2ScrollMessenger,"function not called by l1ScrollMessenger");
+        require(IScrollMessenger(l2ScrollMessenger).xDomainMessageSender() == l1ToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
+    }
+
+    function bridgeEth(uint256 _amount,uint256 gasLimit) public override {
+        IScrollMessenger scrollMessenger = IScrollMessenger(l2ScrollMessenger);
+        // sendMessage is able to execute any function by encoding the abi using the encodeWithSignature function
+        scrollMessenger.sendMessage{value:_amount}(
+            l1ToadnadoAddress,
+            _amount,
+            abi.encodeWithSignature("recieveBridgedEth()"),
             gasLimit,
             msg.sender
         );
