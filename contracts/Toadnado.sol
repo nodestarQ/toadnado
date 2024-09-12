@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
-import "./MerkleTree.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {MerkleTree} from "./MerkleTree.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 interface IVerifier {
     function verify(

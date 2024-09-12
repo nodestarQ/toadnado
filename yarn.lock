@@ -1022,6 +1022,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scroll-tech/contracts@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@scroll-tech/contracts@npm:0.1.0"
+  checksum: 10c0/6855c6a3013be4d0af03f918f4ad9e32ce0385345c8d1267c67338db5d43269158cf6f690d37eb77f768a9b612ba11826cd507d817b6411541e75ff977abb15d
+  languageName: node
+  linkType: hard
+
 "@scure/base@npm:~1.1.0, @scure/base@npm:~1.1.6":
   version: 1.1.7
   resolution: "@scure/base@npm:1.1.7"
@@ -5435,6 +5442,7 @@ __metadata:
     "@nomicfoundation/hardhat-toolbox": "npm:^5.0.0"
     "@nomicfoundation/hardhat-verify": "npm:^2.0.0"
     "@openzeppelin/contracts": "npm:^5.0.2"
+    "@scroll-tech/contracts": "npm:0.1.0"
     "@typechain/ethers-v6": "npm:^0.5.0"
     "@typechain/hardhat": "npm:^9.0.0"
     "@types/chai": "npm:^4.2.0"

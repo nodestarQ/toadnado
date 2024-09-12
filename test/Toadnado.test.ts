@@ -6,7 +6,14 @@ import { getWithdrawCalldata } from "../scripts/proofFromCommitments"
 
 const MERKLE_TREE_HEIGHT = 5n;
 const DENOMINATION = BigInt((10 ** 18) / 100); //0.01eth
+
+
+//https://docs.scroll.io/en/developers/scroll-contracts/#scroll-contracts
+const IS_MAINNET = true
 const L1SLOAD_ADDRESS = "0x0000000000000000000000000000000000000101"
+const L1_SCROLL_MESSENGER = IS_MAINNET ? "0x6774Bcbd5ceCeF1336b5300fb5186a12DDD8b367" : "0x50c7d3e7f7c656493D1D76aaa1a836CedfCBB16A"
+const L2_SCROLL_MESSENGER =  IS_MAINNET ? "0x781e90f1c8Fc4611c9b7497C3B47F99Ef6969CbC" : "0xBa50f5340FB9F3Bd074bD638c9BE13eCB36E603d"
+
 const L1_ROOT_MAPPING_SLOT = 3n
 const L1_CURRENT_ROOT_INDEX_SLOT = 3n
 const BENCH_MARK_GAS_PRICE = "0x12A05F200" // 5 gwei
@@ -63,10 +70,11 @@ describe("Toadnado", function () {
     expect(await UltraVerifier.getVerificationKeyHash()).to.not.equal("0x0");
 
     // deploy the toads
-    const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT], { value: 0n });
+    const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L1_SCROLL_MESSENGER], { value: 0n });
     console.log("ToadnadoL1 deployed at:", ToadnadoL1.target)
-    let ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [ToadnadoL1.target, UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT], { value: 0n });
+    const ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L2_SCROLL_MESSENGER, ToadnadoL1.target], { value: 0n });
     console.log("ToadnadoL2 deployed at:", ToadnadoL2.target)
+    await ToadnadoL1.setL2ScrollToadnadoAddress(ToadnadoL1.target);
 
     // connect alices public wallet
     const ToadnadoL1AlicePublic = ToadnadoL1.connect(alicePublic)

@@ -26,6 +26,7 @@
   "dependencies": {
     "@noir-lang/backend_barretenberg": "0.30.0",
     "@noir-lang/noir_js": "0.30.0",
-    "@openzeppelin/contracts": "^5.0.2"
+    "@openzeppelin/contracts": "^5.0.2",
+    "@scroll-tech/contracts": "0.1.0"
   }
 }
