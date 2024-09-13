@@ -13,8 +13,7 @@ contract scrollMessengerMock {
 
     address public otherMessenger;
 
-    constructor(address _otherMessenger) {
-        otherMessenger = _otherMessenger;
+    constructor() {
     }
 
     function setOtherMessenger(address _otherMessenger) public {
