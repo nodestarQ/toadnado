@@ -117,7 +117,7 @@ describe("Toadnado", function () {
     
     // relay message on L2
     const [,,message,] = await L1ScrollMessengerMock.getLastMessage() // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
-    await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, DENOMINATION, 0n, message, [0n,"0x00"])
+    await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, DENOMINATION, 0n, message, [0n,"0x00"]) // also ignore red squiggles idk typescript :/
     const ToadnadoL2BalanceAfterEthBridge = await hre.ethers.provider.getBalance(ToadnadoL2.target)
     expect(ToadnadoL2BalanceAfterEthBridge).to.eq(DENOMINATION, ":(")
 

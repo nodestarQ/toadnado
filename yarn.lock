@@ -2822,6 +2822,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fixed-merkle-tree@npm:^0.7.3":
+  version: 0.7.3
+  resolution: "fixed-merkle-tree@npm:0.7.3"
+  checksum: 10c0/a7338b308717aa46f13f14c5453287c33723c1a50be830c03307740faa0146fa5130a63923d62bb229e396df4a68013e2d809e30f01a97d356b0af0eaaa6fcf4
+  languageName: node
+  linkType: hard
+
 "flat@npm:^5.0.2":
   version: 5.0.2
   resolution: "flat@npm:5.0.2"
@@ -5450,6 +5457,7 @@ __metadata:
     "@types/node": "npm:>=18.0.0"
     chai: "npm:^4.2.0"
     ethers: "npm:^6.4.0"
+    fixed-merkle-tree: "npm:^0.7.3"
     hardhat: "npm:^2.22.10"
     hardhat-gas-reporter: "npm:^1.0.8"
     solidity-coverage: "npm:^0.8.0"

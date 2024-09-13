@@ -34,5 +34,11 @@ yarn deploy --network l1sload
 
 ## test
 ```shell
-yarn hardhat test
+yarn test
+```
+
+## genrate zeros for merkle-tree.sol  
+(you need to copy paste output into merkle-tree.sol)
+```
+yarn generate-zeros
 ```
