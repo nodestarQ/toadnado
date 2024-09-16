@@ -44,16 +44,17 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
     // a history of valid merkle roots, to verify that a proof refers to a valid deposit
     mapping(bytes32 => bool) public commitmentsTreeRoots;
 
-    // not used yet
-    // for when contract is out of eth and needs to wait for eth to be bridged
-    // struct PendingWithdrawalData {
-    //     address recipient;
-    //     uint256 amount; // note this isnt needed yet but i have put this here for when i upgrade toadnado to allow any-size deposits
-    //     bool isPending;
-    // }
+    bool bridgingIsPending = false; // only one bridge tx at the time!
+    struct PendingWithdrawalData {
+        address recipient;
+        uint256 amount;
+        bool isPending;
+    }
 
-    // //bytes32 = _nullifier, used as the identifier
-    // mapping (bytes32 => PendingWithdrawalData) public pendingWithdraws;
+    // _nullifier => UnclaimedWithdrawal
+    mapping(bytes32 => PendingWithdrawalData) pendingWithdrawals;
+
+
 
 
     //-----DANGEROUS DEBUG STUFF---------------
@@ -114,35 +115,24 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         require(msg.value == denomination,"Please send `mixDenomination` ETH along with transaction");
     }
 
-    function _processWithdraw(address payable _recipient , bytes32 _nullifier) internal {
-        require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
-        emit Withdrawal(_recipient, _nullifier);
-        _recipient.transfer(denomination);
-    }
-
-
-    // function _processWithdraw(address payable _recipient, bytes32 _nullifier) internal {
+    // function _processWithdraw(address payable _recipient , bytes32 _nullifier) internal {
     //     require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
-    //     if (address(this).balance >= denomination) {
-    //         emit Withdrawal(_recipient, _nullifier);
-    //         _recipient.transfer(denomination);
-    //     } else {
-    //         emit PendingWithdrawal(_recipient, _nullifier);
-    //         pendingWithdraws[_nullifier] = PendingWithdrawalData(_recipient, denomination, true);
-    //     }
+    //     emit Withdrawal(_recipient, _nullifier);
+    //     _recipient.transfer(denomination);
     // }
 
-    // function payOutPendingWithdrawal(bytes32 _nullifier) external {
-    //     //is putting this in memory first better for gas or nah? (pendingWithdrawalData)
-    //     PendingWithdrawalData memory pendingWithdrawalData = pendingWithdraws[_nullifier];
-    //     require(pendingWithdrawalData.isPending, "pending withdraw has already been payed out");
-    //     address _recipient = pendingWithdrawalData.recipient; 
-        
-    //     // watch out reenterance attacks
-    //     pendingWithdraws[_nullifier].isPending = false;
-    //     payable(_recipient).transfer(pendingWithdrawalData.amount);
-    //     emit Withdrawal(_recipient, _nullifier);
-    // }
+
+    function _processWithdraw(address payable _recipient, bytes32 _nullifier) internal {
+        require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
+        uint256 _amount = denomination; // this should be a input when toadnado is able to handle any size deposits 
+        if (address(this).balance >= denomination) {
+            emit Withdrawal(_recipient, _nullifier);
+            _recipient.transfer(denomination);
+        } else {
+            emit PendingWithdrawal(_recipient, _nullifier);
+            pendingWithdrawals[_nullifier] = PendingWithdrawalData(_recipient, _amount, false);
+        }
+    }
 
     function deposit(bytes32 _commitment) external payable nonReentrant {
         require(
@@ -162,8 +152,8 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
     function isKnownL1Root(bytes32 _root) public virtual returns(bool);
 
     //TODO WARNING needs account logic in place to prevent griefers from constantly bridging back and forth and making USER FUND UNAVAILABLE
-    function recieveBridgedEth() public payable virtual;
-    function bridgeEth(uint256 _amount, uint256 gasLimit) public virtual; // TODO doc said uint32 gasLimit instead of 256??
+    function recieveBridgedEth(bytes32[] calldata nullifiers) public payable virtual;
+    function bridgeEth(uint256 _amount, uint256 gasLimit,  bytes32[] calldata nullifiers) public virtual; // TODO doc said uint32 gasLimit instead of 256??
 
     function withdraw(
         bytes32 _l1root,

@@ -91,19 +91,39 @@ contract ToadnadoL2 is Toadnado  {
         );
     }
 
-    function recieveBridgedEth() public payable override {
-        //require(false, "sadasds");
+    function recieveBridgedEth(bytes32[] calldata nullifiers) public payable override {
+        //TODO put this into a seperate overide function
         require(msg.sender == l2ScrollMessenger,"function not called by l1ScrollMessenger");
         require(IScrollMessenger(l2ScrollMessenger).xDomainMessageSender() == l1ToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
+
+        uint256 totalEthFromNullifiers; 
+        for (uint i = 0; i < nullifiers.length; i++) {
+            bytes32 nullifier = nullifiers[i];
+            PendingWithdrawalData memory pendingWithdrawalData = pendingWithdrawals[nullifier];
+            
+            emit Withdrawal(pendingWithdrawalData.recipient, nullifier);
+            payable(pendingWithdrawalData.recipient).transfer(pendingWithdrawalData.amount);
+
+            totalEthFromNullifiers += pendingWithdrawalData.amount;
+            pendingWithdrawals[nullifiers[i]].isPending = true;
+        }
+        require(msg.value == totalEthFromNullifiers, "totalEthFromNullifiers doesnt match the eth send");
+        bridgingIsPending = false;
     }
 
-    function bridgeEth(uint256 _amount,uint256 gasLimit) public override {
+    // TODO WARNING a upper limit needs to be set for the size of the nullifiers array.
+    // if too big recieveBridgedEth can run out of gas and brick bridging of the contract (bridgingIsPending is stuck on true)
+    function bridgeEth(uint256 _amount, uint256 gasLimit, bytes32[] calldata nullifiers) public override {
+        require(bridgingIsPending == false, "a bridging transaction is already pending"); // only one at the time!
+        bridgingIsPending = true;
+        
+        //TODO put this into a seperate overide function
         IScrollMessenger scrollMessenger = IScrollMessenger(l2ScrollMessenger);
         // sendMessage is able to execute any function by encoding the abi using the encodeWithSignature function
         scrollMessenger.sendMessage{value:_amount}(
             l1ToadnadoAddress,
             _amount,
-            abi.encodeWithSignature("recieveBridgedEth()"),
+            abi.encodeWithSignature("recieveBridgedEth(bytes32[])", nullifiers),
             gasLimit,
             msg.sender
         );
