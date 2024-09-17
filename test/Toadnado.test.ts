@@ -72,9 +72,10 @@ describe("Toadnado", function () {
   it("deposit L1 withdraw L2", async function () {
     const [deployer, alicePublic, alicePrivate] = await hre.ethers.getSigners();
     
-    //reset balances
-    await Promise.all([deployer, alicePublic, alicePrivate].map(async (wallet:any)=> setBalance(wallet.address, "1000")));
-    await Promise.all([L1_SCROLL_MESSENGER, L2_SCROLL_MESSENGER].map(async (wallet:any)=> setBalance(wallet, "0")));
+    //reset balances and state
+    await hre.network.provider.send("hardhat_reset")
+    // await Promise.all([deployer, alicePublic, alicePrivate].map(async (wallet:any)=> setBalance(wallet.address, "1000")));
+    // await Promise.all([L1_SCROLL_MESSENGER, L2_SCROLL_MESSENGER].map(async (wallet:any)=> setBalance(wallet, "0")));
 
     //deploy bridge contract mocks ---------------------------
     const L1SLOADmock = await deployToAddress("L1SLOADmock", L1_SLOAD_ADDRESS)
@@ -94,7 +95,7 @@ describe("Toadnado", function () {
     // deploy the toads
     const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L1_SCROLL_MESSENGER], { value: 0n });
     const ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L2_SCROLL_MESSENGER, ToadnadoL1.target], { value: 0n });
-    await ToadnadoL1.setL2ScrollToadnadoAddress(ToadnadoL1.target);
+    await ToadnadoL1.setL2ScrollToadnadoAddress(ToadnadoL2.target);
     console.log("ToadnadoL1 deployed at:", ToadnadoL1.target)
     console.log("ToadnadoL2 deployed at:", ToadnadoL2.target)
 
@@ -136,29 +137,44 @@ describe("Toadnado", function () {
     const verifiedOnchain = await UltraVerifier.verify(snarkProof, publicInputs)
     console.log({ verifiedOnchain })
 
-    // finally withdraw
-    const balanceBeforeWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
+    //try withdraw
+   
     await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
 
     const withdrawTx = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
     console.log({withdrawTxFee: ethers.formatEther(withdrawTx?.fee), withdrawTxGas: withdrawTx?.gasUsed,  gasPriceGwei: Number(withdrawTx?.gasPrice) / 1000000000})
 
-
-    // bridge eth over from L1
+    // it went pending so we need to bridge
+    // request bridgeIng tx
     // dev said 1000000n was enough for gas limit  https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#calling-a-cross-chain-function
-    const nullifiers = [nullifierHash]
-    const bridgeAmount = DENOMINATION*BigInt(nullifiers.length)
-    await ToadnadoL1.bridgeEth(bridgeAmount, 1000000n, nullifiers)
-    const L2ScrollMessengerMockBalance = await hre.ethers.provider.getBalance(L2ScrollMessengerMock.target)
-    expect(L2ScrollMessengerMockBalance).to.eq(DENOMINATION, "ToadnadoL1.bridgeEth didnt bridge over DENOMINATION to the L2 messenger")
+    await ToadnadoL2.requestEthBridge(1000000n)
     
-    // relay message on L2
-    const [,,message,] = await L1ScrollMessengerMock.getLastMessage() // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
+    // bridge the request on L2
+    let [,,message,] = await L2ScrollMessengerMock.getLastMessage() // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
+    console.log(message)
+    await L1ScrollMessengerMock.relayMessageWithProof(ToadnadoL2.target,ToadnadoL1.target, 0n, 0n, message, [0n,"0x00"]); // also ignore red squiggles idk typescript :/
+
+    // now Toadnado on L2 called `bridgeEth()` on the L1 contract and eth is now in the L2ScrollMessengerMock
+    // so we check that the eth is indeed there ready to fund the L2 contract 
+    const L2ScrollMessengerMockBalance = await hre.ethers.provider.getBalance(L2ScrollMessengerMock.target);
+    expect(L2ScrollMessengerMockBalance).to.eq(DENOMINATION, "ToadnadoL1.bridgeEth didnt bridge over DENOMINATION to the L2 messenger");
+
+  
+    // now we relay the message and finnaly put the eth on L2
+    [,,message,] = await L1ScrollMessengerMock.getLastMessage(); // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
     await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, DENOMINATION, 0n, message, [0n,"0x00"]) // also ignore red squiggles idk typescript :/
+
+
+   
+    
+
+   
+    //claim pending withdraw
+    const balanceBeforeWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
+    const withdrawPendingTx = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
+    console.log({withdrawPendingTxFee: ethers.formatEther(withdrawPendingTx?.fee), withdrawPendingTxGas: withdrawPendingTx?.gasUsed,  gasPriceGwei: Number(withdrawPendingTx?.gasPrice) / 1000000000})
     const balanceAfterWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
-
-
-    expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + DENOMINATION - withdrawTx?.fee)
+    expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + DENOMINATION - withdrawPendingTx?.fee)
   });
 
 
