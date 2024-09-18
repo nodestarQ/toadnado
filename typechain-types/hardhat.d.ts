@@ -14,9 +14,17 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "Ownable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
       name: "ReentrancyGuard",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ReentrancyGuard__factory>;
+    getContractFactory(
+      name: "IScrollMessenger",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IScrollMessenger__factory>;
     getContractFactory(
       name: "MerkleTree",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -33,6 +41,10 @@ declare module "hardhat/types/runtime" {
       name: "L1SLOADmock",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.L1SLOADmock__factory>;
+    getContractFactory(
+      name: "ScrollMessengerMock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ScrollMessengerMock__factory>;
     getContractFactory(
       name: "IVerifier",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -51,10 +63,20 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.ToadnadoL2__factory>;
 
     getContractAt(
+      name: "Ownable",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Ownable>;
+    getContractAt(
       name: "ReentrancyGuard",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ReentrancyGuard>;
+    getContractAt(
+      name: "IScrollMessenger",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IScrollMessenger>;
     getContractAt(
       name: "MerkleTree",
       address: string | ethers.Addressable,
@@ -75,6 +97,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.L1SLOADmock>;
+    getContractAt(
+      name: "ScrollMessengerMock",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ScrollMessengerMock>;
     getContractAt(
       name: "IVerifier",
       address: string | ethers.Addressable,
@@ -97,9 +124,17 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.ToadnadoL2>;
 
     deployContract(
+      name: "Ownable",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Ownable>;
+    deployContract(
       name: "ReentrancyGuard",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
+      name: "IScrollMessenger",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IScrollMessenger>;
     deployContract(
       name: "MerkleTree",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -116,6 +151,10 @@ declare module "hardhat/types/runtime" {
       name: "L1SLOADmock",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.L1SLOADmock>;
+    deployContract(
+      name: "ScrollMessengerMock",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ScrollMessengerMock>;
     deployContract(
       name: "IVerifier",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -134,10 +173,20 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.ToadnadoL2>;
 
     deployContract(
+      name: "Ownable",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Ownable>;
+    deployContract(
       name: "ReentrancyGuard",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
+      name: "IScrollMessenger",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IScrollMessenger>;
     deployContract(
       name: "MerkleTree",
       args: any[],
@@ -158,6 +207,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.L1SLOADmock>;
+    deployContract(
+      name: "ScrollMessengerMock",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ScrollMessengerMock>;
     deployContract(
       name: "IVerifier",
       args: any[],

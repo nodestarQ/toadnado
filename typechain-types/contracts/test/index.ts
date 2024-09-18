@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { L1SLOADmock } from "./L1SLOADmock";
+export type { ScrollMessengerMock } from "./ScrollMessengerMock";

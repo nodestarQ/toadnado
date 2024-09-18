@@ -27,13 +27,15 @@ export interface ToadnadoInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "ROOT_HISTORY_SIZE"
-      | "adminWithdraw"
+      | "bridgeDebt"
+      | "bridgeEth"
       | "commitmentLeafs"
       | "commitments"
       | "commitmentsTreeRoots"
       | "currentRootIndex"
       | "denomination"
       | "deposit"
+      | "ethPendingWithdrawals"
       | "filledSubtrees"
       | "getLastRoot"
       | "hashLeftRight"
@@ -44,21 +46,30 @@ export interface ToadnadoInterface extends Interface {
       | "levels"
       | "nextIndex"
       | "nullifiers"
+      | "recieveBridgedEth"
+      | "requestEthBridge"
       | "roots"
       | "verifier"
       | "withdraw"
+      | "withdrawPending"
       | "zeros"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "Deposit" | "Withdrawal"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "Deposit" | "PendingWithdrawal" | "Withdrawal"
+  ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "ROOT_HISTORY_SIZE",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "adminWithdraw",
+    functionFragment: "bridgeDebt",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "bridgeEth",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "commitmentLeafs",
@@ -81,6 +92,10 @@ export interface ToadnadoInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "deposit", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "ethPendingWithdrawals",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "filledSubtrees",
     values: [BigNumberish]
@@ -112,11 +127,23 @@ export interface ToadnadoInterface extends Interface {
     functionFragment: "nullifiers",
     values: [BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "recieveBridgedEth",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "requestEthBridge",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "roots", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "verifier", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
     values: [BytesLike, BytesLike, BytesLike, AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawPending",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "zeros", values: [BigNumberish]): string;
 
@@ -124,10 +151,8 @@ export interface ToadnadoInterface extends Interface {
     functionFragment: "ROOT_HISTORY_SIZE",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "adminWithdraw",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "bridgeDebt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "bridgeEth", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "commitmentLeafs",
     data: BytesLike
@@ -149,6 +174,10 @@ export interface ToadnadoInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "ethPendingWithdrawals",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "filledSubtrees",
     data: BytesLike
@@ -177,9 +206,21 @@ export interface ToadnadoInterface extends Interface {
   decodeFunctionResult(functionFragment: "levels", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nextIndex", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nullifiers", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "recieveBridgedEth",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "requestEthBridge",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "roots", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "verifier", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawPending",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "zeros", data: BytesLike): Result;
 }
 
@@ -198,6 +239,19 @@ export namespace DepositEvent {
     commitment: string;
     leafIndex: bigint;
     timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PendingWithdrawalEvent {
+  export type InputTuple = [recipient: AddressLike, nullifier: BytesLike];
+  export type OutputTuple = [recipient: string, nullifier: string];
+  export interface OutputObject {
+    recipient: string;
+    nullifier: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -263,7 +317,13 @@ export interface Toadnado extends BaseContract {
 
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
 
-  adminWithdraw: TypedContractMethod<[], [void], "payable">;
+  bridgeDebt: TypedContractMethod<[], [bigint], "view">;
+
+  bridgeEth: TypedContractMethod<
+    [_amount: BigNumberish, gasLimit: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   commitmentLeafs: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
@@ -280,6 +340,8 @@ export interface Toadnado extends BaseContract {
   denomination: TypedContractMethod<[], [bigint], "view">;
 
   deposit: TypedContractMethod<[_commitment: BytesLike], [void], "payable">;
+
+  ethPendingWithdrawals: TypedContractMethod<[], [bigint], "view">;
 
   filledSubtrees: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
@@ -317,6 +379,14 @@ export interface Toadnado extends BaseContract {
 
   nullifiers: TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
 
+  recieveBridgedEth: TypedContractMethod<[], [void], "payable">;
+
+  requestEthBridge: TypedContractMethod<
+    [gasLimit: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   roots: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   verifier: TypedContractMethod<[], [string], "view">;
@@ -333,6 +403,12 @@ export interface Toadnado extends BaseContract {
     "payable"
   >;
 
+  withdrawPending: TypedContractMethod<
+    [_nullifier: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
   zeros: TypedContractMethod<[i: BigNumberish], [string], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -343,8 +419,15 @@ export interface Toadnado extends BaseContract {
     nameOrSignature: "ROOT_HISTORY_SIZE"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "adminWithdraw"
-  ): TypedContractMethod<[], [void], "payable">;
+    nameOrSignature: "bridgeDebt"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "bridgeEth"
+  ): TypedContractMethod<
+    [_amount: BigNumberish, gasLimit: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "commitmentLeafs"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
@@ -363,6 +446,9 @@ export interface Toadnado extends BaseContract {
   getFunction(
     nameOrSignature: "deposit"
   ): TypedContractMethod<[_commitment: BytesLike], [void], "payable">;
+  getFunction(
+    nameOrSignature: "ethPendingWithdrawals"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "filledSubtrees"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
@@ -398,6 +484,12 @@ export interface Toadnado extends BaseContract {
     nameOrSignature: "nullifiers"
   ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(
+    nameOrSignature: "recieveBridgedEth"
+  ): TypedContractMethod<[], [void], "payable">;
+  getFunction(
+    nameOrSignature: "requestEthBridge"
+  ): TypedContractMethod<[gasLimit: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "roots"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
   getFunction(
@@ -417,6 +509,9 @@ export interface Toadnado extends BaseContract {
     "payable"
   >;
   getFunction(
+    nameOrSignature: "withdrawPending"
+  ): TypedContractMethod<[_nullifier: BytesLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "zeros"
   ): TypedContractMethod<[i: BigNumberish], [string], "view">;
 
@@ -426,6 +521,13 @@ export interface Toadnado extends BaseContract {
     DepositEvent.InputTuple,
     DepositEvent.OutputTuple,
     DepositEvent.OutputObject
+  >;
+  getEvent(
+    key: "PendingWithdrawal"
+  ): TypedContractEvent<
+    PendingWithdrawalEvent.InputTuple,
+    PendingWithdrawalEvent.OutputTuple,
+    PendingWithdrawalEvent.OutputObject
   >;
   getEvent(
     key: "Withdrawal"
@@ -445,6 +547,17 @@ export interface Toadnado extends BaseContract {
       DepositEvent.InputTuple,
       DepositEvent.OutputTuple,
       DepositEvent.OutputObject
+    >;
+
+    "PendingWithdrawal(address,bytes32)": TypedContractEvent<
+      PendingWithdrawalEvent.InputTuple,
+      PendingWithdrawalEvent.OutputTuple,
+      PendingWithdrawalEvent.OutputObject
+    >;
+    PendingWithdrawal: TypedContractEvent<
+      PendingWithdrawalEvent.InputTuple,
+      PendingWithdrawalEvent.OutputTuple,
+      PendingWithdrawalEvent.OutputObject
     >;
 
     "Withdrawal(address,bytes32)": TypedContractEvent<

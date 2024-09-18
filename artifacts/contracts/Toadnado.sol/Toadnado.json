@@ -9,6 +9,11 @@
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "VerificationFailed",
+      "type": "error"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -34,6 +39,44 @@
       "type": "event"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "nullifier",
+          "type": "bytes32"
+        }
+      ],
+      "name": "PendingWithdrawal",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "nullifier",
+          "type": "bytes32"
+        }
+      ],
+      "name": "Withdrawal",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "ROOT_HISTORY_SIZE",
       "outputs": [
@@ -47,44 +90,34 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "_root",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "_nullifier",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "address",
-          "name": "_recipient",
-          "type": "address"
-        },
+      "inputs": [],
+      "name": "bridgeDebt",
+      "outputs": [
         {
           "internalType": "uint256",
-          "name": "_chainId",
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "_formatPublicInputs",
-      "outputs": [
-        {
-          "internalType": "bytes32[]",
-          "name": "",
-          "type": "bytes32[]"
-        }
-      ],
-      "stateMutability": "pure",
+      "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "adminWithdraw",
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "gasLimit",
+          "type": "uint256"
+        }
+      ],
+      "name": "bridgeEth",
       "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -184,6 +217,19 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "ethPendingWithdrawals",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -247,7 +293,7 @@
           "type": "bytes32"
         }
       ],
-      "name": "isKnownRoot",
+      "name": "isKnownL1Root",
       "outputs": [
         {
           "internalType": "bool",
@@ -255,7 +301,26 @@
           "type": "bool"
         }
       ],
-      "stateMutability": "view",
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_root",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isKnownL2Root",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -342,6 +407,26 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "recieveBridgedEth",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "gasLimit",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestEthBridge",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -376,6 +461,52 @@
     {
       "inputs": [
         {
+          "internalType": "bytes32",
+          "name": "_l1root",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_l2root",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_nullifier",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address payable",
+          "name": "_recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "snarkProof",
+          "type": "bytes"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_nullifier",
+          "type": "bytes32"
+        }
+      ],
+      "name": "withdrawPending",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "i",
           "type": "uint256"
@@ -391,10 +522,6 @@
       ],
       "stateMutability": "pure",
       "type": "function"
-    },
-    {
-      "stateMutability": "payable",
-      "type": "receive"
     }
   ],
   "bytecode": "0x",

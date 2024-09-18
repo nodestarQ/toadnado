@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { L1SLOADmock__factory } from "./L1SLOADmock__factory";
+export { ScrollMessengerMock__factory } from "./ScrollMessengerMock__factory";

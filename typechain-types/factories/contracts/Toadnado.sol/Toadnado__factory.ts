@@ -60,6 +60,25 @@ const _abi = [
         type: "bytes32",
       },
     ],
+    name: "PendingWithdrawal",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "nullifier",
+        type: "bytes32",
+      },
+    ],
     name: "Withdrawal",
     type: "event",
   },
@@ -78,9 +97,33 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "adminWithdraw",
+    name: "bridgeDebt",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "gasLimit",
+        type: "uint256",
+      },
+    ],
+    name: "bridgeEth",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -177,6 +220,19 @@ const _abi = [
     name: "deposit",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "ethPendingWithdrawals",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -357,6 +413,26 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "recieveBridgedEth",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "gasLimit",
+        type: "uint256",
+      },
+    ],
+    name: "requestEthBridge",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -424,6 +500,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "_nullifier",
+        type: "bytes32",
+      },
+    ],
+    name: "withdrawPending",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "i",
         type: "uint256",
@@ -439,10 +528,6 @@ const _abi = [
     ],
     stateMutability: "pure",
     type: "function",
-  },
-  {
-    stateMutability: "payable",
-    type: "receive",
   },
 ] as const;
 

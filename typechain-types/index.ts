@@ -3,11 +3,17 @@
 /* eslint-disable */
 import type * as openzeppelin from "./@openzeppelin";
 export type { openzeppelin };
+import type * as scrollTech from "./@scroll-tech";
+export type { scrollTech };
 import type * as contracts from "./contracts";
 export type { contracts };
 export * as factories from "./factories";
+export type { Ownable } from "./@openzeppelin/contracts/access/Ownable";
+export { Ownable__factory } from "./factories/@openzeppelin/contracts/access/Ownable__factory";
 export type { ReentrancyGuard } from "./@openzeppelin/contracts/utils/ReentrancyGuard";
 export { ReentrancyGuard__factory } from "./factories/@openzeppelin/contracts/utils/ReentrancyGuard__factory";
+export type { IScrollMessenger } from "./@scroll-tech/contracts/libraries/IScrollMessenger";
+export { IScrollMessenger__factory } from "./factories/@scroll-tech/contracts/libraries/IScrollMessenger__factory";
 export type { MerkleTree } from "./contracts/MerkleTree";
 export { MerkleTree__factory } from "./factories/contracts/MerkleTree__factory";
 export type { BaseUltraVerifier } from "./contracts/plonk_vk.sol/BaseUltraVerifier";
@@ -16,6 +22,8 @@ export type { UltraVerifier } from "./contracts/plonk_vk.sol/UltraVerifier";
 export { UltraVerifier__factory } from "./factories/contracts/plonk_vk.sol/UltraVerifier__factory";
 export type { L1SLOADmock } from "./contracts/test/L1SLOADmock";
 export { L1SLOADmock__factory } from "./factories/contracts/test/L1SLOADmock__factory";
+export type { ScrollMessengerMock } from "./contracts/test/ScrollMessengerMock";
+export { ScrollMessengerMock__factory } from "./factories/contracts/test/ScrollMessengerMock__factory";
 export type { IVerifier } from "./contracts/Toadnado.sol/IVerifier";
 export { IVerifier__factory } from "./factories/contracts/Toadnado.sol/IVerifier__factory";
 export type { Toadnado } from "./contracts/Toadnado.sol/Toadnado";
