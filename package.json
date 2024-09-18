@@ -1,4 +1,4 @@
-{ 
+{
   "scripts": {
     "test": "yarn hardhat test",
     "generate-zeros": "npx tsx scripts/getZeroMerkleTree.ts"
@@ -22,6 +22,7 @@
     "ethers": "^6.4.0",
     "hardhat": "^2.22.10",
     "hardhat-gas-reporter": "^1.0.8",
+    "hardhat-switch-network": "^1.1.1",
     "solidity-coverage": "^0.8.0",
     "ts-node": ">=8.0.0",
     "typechain": "^8.3.0",

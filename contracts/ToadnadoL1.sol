@@ -92,6 +92,6 @@ contract ToadnadoL1 is Toadnado, Ownable {
         );
         //---------------------
 
-        bridgeDebt = 0;
+        bridgeDebt = 0; // assumes no bridge tx can fail
     }
 }

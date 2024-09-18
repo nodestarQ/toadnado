@@ -1,7 +1,8 @@
 //import * as dotenv from "dotenv";
 //dotenv.config();
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig, vars } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "hardhat-switch-network"; 
 // import "@nomicfoundation/hardhat-ethers";
 // import "@nomicfoundation/hardhat-chai-matchers";
 // import "@typechain/hardhat";
@@ -13,12 +14,12 @@ import "@nomicfoundation/hardhat-toolbox";
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
-const providerApiKey = process.env.ALCHEMY_API_KEY || "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
+const alchemyProviderApiKey = vars.get("ALCHEMY_API_KEY")
 // If not set, it uses the hardhat account 0 private key.
-const deployerPrivateKey =
-  process.env.DEPLOYER_PRIVATE_KEY ?? "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const deployerPrivateKey = vars.get("DEPLOYER_PRIVATE_KEY")
 // If not set, it uses ours Etherscan default API key.
-const etherscanApiKey = process.env.ETHERSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
+const etherscanApiKey = vars.get("ETHERSCAN_KEY");
+const scrollscanApiKey = vars.get("SCROLLSCAN_KEY")
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -33,27 +34,21 @@ const config: HardhatUserConfig = {
     },
   },
   defaultNetwork: "localhost",
-  namedAccounts: {
-    deployer: {
-      // By default, it will take the first Hardhat account as the deployer
-      default: 0,
-    },
-  },
   networks: {
     // View the networks that are pre-configured.
     // If the network you are looking for is not here you can add new network settings
     hardhat: {
       forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
+        url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProviderApiKey}`,
         enabled: process.env.MAINNET_FORKING_ENABLED === "true",
       },
     },
     mainnet: {
-      url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
+      url: `https://eth-mainnet.alchemyapi.io/v2/${alchemyProviderApiKey}`,
       accounts: [deployerPrivateKey],
     },
     sepolia: {
-      url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
+      url: `https://eth-sepolia.g.alchemy.com/v2/${alchemyProviderApiKey}`,
       accounts: [deployerPrivateKey],
     },
     l1sload: {
@@ -64,6 +59,7 @@ const config: HardhatUserConfig = {
     scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io",
       accounts: [deployerPrivateKey],
+      chainId: 534351
     },
     scroll: {
       url: "https://rpc.scroll.io",
@@ -74,7 +70,9 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       l1sload: "abc",
-      sepolia: "abc"
+      sepolia: etherscanApiKey,
+      scrollSepolia: scrollscanApiKey,
+      
     },
     customChains: [
       {
@@ -89,9 +87,17 @@ const config: HardhatUserConfig = {
         network: "sepolia",
         chainId: 11155111,
         urls: {
-          apiURL: "https://eth-sepolia.blockscout.com/api",
-          browserURL: "https://eth-sepolia.blockscout.com",
+          apiURL: "https://api-sepolia.etherscan.io/api",
+          browserURL: "https://sepolia.etherscan.io/",
         }
+      },
+      {
+        network: 'scrollSepolia',
+        chainId: 534351,
+        urls: {
+          apiURL: 'https://api-sepolia.scrollscan.com/api',
+          browserURL: 'https://sepolia.scrollscan.com/',
+        },
       }
     ]
   },
