@@ -3233,15 +3233,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hardhat-change-network@npm:^0.0.7":
-  version: 0.0.7
-  resolution: "hardhat-change-network@npm:0.0.7"
-  peerDependencies:
-    hardhat: ^2.0.0
-  checksum: 10c0/11dbf83ffc24ed815bd4cb4b987d91441b9afec540148986b64a99e7dbdfebb05cd00498b84ef06d0838052263192d64dc685feb8bc65d3f82d260500d9ccc0f
-  languageName: node
-  linkType: hard
-
 "hardhat-gas-reporter@npm:^1.0.8":
   version: 1.0.10
   resolution: "hardhat-gas-reporter@npm:1.0.10"
@@ -5526,7 +5517,6 @@ __metadata:
     ethers: "npm:^6.4.0"
     fixed-merkle-tree: "npm:^0.7.3"
     hardhat: "npm:^2.22.10"
-    hardhat-change-network: "npm:^0.0.7"
     hardhat-gas-reporter: "npm:^1.0.8"
     hardhat-switch-network: "npm:^1.1.1"
     solidity-coverage: "npm:^0.8.0"

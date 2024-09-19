@@ -2,17 +2,9 @@
 //dotenv.config();
 import { HardhatUserConfig, vars } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+
 import "hardhat-switch-network"; 
 
-
-// import "@nomicfoundation/hardhat-ethers";
-// import "@nomicfoundation/hardhat-chai-matchers";
-// import "@typechain/hardhat";
-// import "hardhat-gas-reporter";
-// import "solidity-coverage";
-// import "@nomicfoundation/hardhat-verify";
-// import "hardhat-deploy";
-// import "hardhat-deploy-ethers";
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
