@@ -3206,6 +3206,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hardhat-change-network@npm:^0.0.7":
+  version: 0.0.7
+  resolution: "hardhat-change-network@npm:0.0.7"
+  peerDependencies:
+    hardhat: ^2.0.0
+  checksum: 10c0/11dbf83ffc24ed815bd4cb4b987d91441b9afec540148986b64a99e7dbdfebb05cd00498b84ef06d0838052263192d64dc685feb8bc65d3f82d260500d9ccc0f
+  languageName: node
+  linkType: hard
+
 "hardhat-gas-reporter@npm:^1.0.8":
   version: 1.0.10
   resolution: "hardhat-gas-reporter@npm:1.0.10"
@@ -3216,15 +3225,6 @@ __metadata:
   peerDependencies:
     hardhat: ^2.0.2
   checksum: 10c0/3711ea331bcbbff4d37057cb3de47a9127011e3ee128c2254a68f3b7f12ab2133965cbcfa3a7ce1bba8461f3b1bda1b175c4814a048c8b06b3ad450001d119d8
-  languageName: node
-  linkType: hard
-
-"hardhat-switch-network@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "hardhat-switch-network@npm:1.1.1"
-  peerDependencies:
-    hardhat: ^2.22.0
-  checksum: 10c0/c2c5aa7c7bb0355c9872f349700dbf896b9211b7caacb8816033ae1e00118d14261d50bc3f5e694a15ab2a34b52519c945491c9eb5b0afaaca8cdfe19b26bfa2
   languageName: node
   linkType: hard
 
@@ -5468,8 +5468,8 @@ __metadata:
     ethers: "npm:^6.4.0"
     fixed-merkle-tree: "npm:^0.7.3"
     hardhat: "npm:^2.22.10"
+    hardhat-change-network: "npm:^0.0.7"
     hardhat-gas-reporter: "npm:^1.0.8"
-    hardhat-switch-network: "npm:^1.1.1"
     solidity-coverage: "npm:^0.8.0"
     ts-node: "npm:>=8.0.0"
     typechain: "npm:^8.3.0"
