@@ -42,3 +42,8 @@ yarn test
 ```
 yarn generate-zeros
 ```
+
+## deploy 
+```shell
+yarn hardhat run ./scripts/deploy.ts --network sepolia
+```

@@ -80,8 +80,8 @@ describe("Toadnado", function () {
     //deploy bridge contract mocks ---------------------------
     const L1SLOADmock = await deployToAddress("L1SLOADmock", L1_SLOAD_ADDRESS)
     
-    const L1ScrollMessengerMock = await deployToAddress("scrollMessengerMock",L1_SCROLL_MESSENGER)
-    const L2ScrollMessengerMock = await deployToAddress("scrollMessengerMock",L2_SCROLL_MESSENGER)
+    const L1ScrollMessengerMock:any = await deployToAddress("scrollMessengerMock",L1_SCROLL_MESSENGER)
+    const L2ScrollMessengerMock:any = await deployToAddress("scrollMessengerMock",L2_SCROLL_MESSENGER)
     await L2ScrollMessengerMock.setOtherMessenger(L1_SCROLL_MESSENGER) // need to set it here because state doesnt copy over
     await L1ScrollMessengerMock.setOtherMessenger(L2_SCROLL_MESSENGER) // need to set it here because state doesnt copy over
 
@@ -141,7 +141,7 @@ describe("Toadnado", function () {
    
     await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
 
-    const withdrawTx = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
+    const withdrawTx:any = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
     console.log({withdrawTxFee: ethers.formatEther(withdrawTx?.fee), withdrawTxGas: withdrawTx?.gasUsed,  gasPriceGwei: Number(withdrawTx?.gasPrice) / 1000000000})
 
     // it went pending so we need to bridge
@@ -171,7 +171,7 @@ describe("Toadnado", function () {
    
     //claim pending withdraw
     const balanceBeforeWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
-    const withdrawPendingTx = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
+    const withdrawPendingTx:any = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
     console.log({withdrawPendingTxFee: ethers.formatEther(withdrawPendingTx?.fee), withdrawPendingTxGas: withdrawPendingTx?.gasUsed,  gasPriceGwei: Number(withdrawPendingTx?.gasPrice) / 1000000000})
     const balanceAfterWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
     expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + DENOMINATION - withdrawPendingTx?.fee)

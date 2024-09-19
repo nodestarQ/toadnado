@@ -104,14 +104,14 @@ const config: HardhatUserConfig = {
     ]
   },
   // configuration for etherscan-verify from hardhat-deploy plugin
-  verify: {
-    etherscan: {
-      apiKey: `${etherscanApiKey}`,
-    },
-  },
-  sourcify: {
-    enabled: false,
-  },
+  // verify: {
+  //   etherscan: {
+  //     apiKey: `${etherscanApiKey}`,
+  //   },
+  // },
+  // sourcify: {
+  //   enabled: false,
+  // },
 };
 
 export default config;

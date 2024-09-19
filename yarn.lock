@@ -1708,6 +1708,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bindings@npm:^1.3.1":
+  version: 1.5.0
+  resolution: "bindings@npm:1.5.0"
+  dependencies:
+    file-uri-to-path: "npm:1.0.0"
+  checksum: 10c0/3dab2491b4bb24124252a91e656803eac24292473e56554e35bbfe3cc1875332cfa77600c3bac7564049dc95075bf6fcc63a4609920ff2d64d0fe405fcf0d4ba
+  languageName: node
+  linkType: hard
+
 "blakejs@npm:^1.1.0":
   version: 1.2.1
   resolution: "blakejs@npm:1.2.1"
@@ -2318,6 +2327,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dev@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "dev@npm:0.1.3"
+  dependencies:
+    inotify: "npm:>= 0.1.6"
+  bin:
+    node-dev: ./node-dev.sh
+  checksum: 10c0/125fb02ab0e693b6f4863edf0304b5e6a37303e66a71795a8d14a96501764620910a4419280c1110fb7d896191ddd707647ea1145b28b6649abb607162a033bc
+  languageName: node
+  linkType: hard
+
 "diff@npm:^4.0.1":
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
@@ -2785,6 +2805,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-uri-to-path@npm:1.0.0":
+  version: 1.0.0
+  resolution: "file-uri-to-path@npm:1.0.0"
+  checksum: 10c0/3b545e3a341d322d368e880e1c204ef55f1d45cdea65f7efc6c6ce9e0c4d22d802d5629320eb779d006fe59624ac17b0e848d83cc5af7cd101f206cb704f5519
+  languageName: node
+  linkType: hard
+
 "fill-range@npm:^7.1.1":
   version: 7.1.1
   resolution: "fill-range@npm:7.1.1"
@@ -3228,6 +3255,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hardhat-switch-network@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "hardhat-switch-network@npm:1.1.1"
+  peerDependencies:
+    hardhat: ^2.22.0
+  checksum: 10c0/c2c5aa7c7bb0355c9872f349700dbf896b9211b7caacb8816033ae1e00118d14261d50bc3f5e694a15ab2a34b52519c945491c9eb5b0afaaca8cdfe19b26bfa2
+  languageName: node
+  linkType: hard
+
 "hardhat@npm:^2.22.10":
   version: 2.22.10
   resolution: "hardhat@npm:2.22.10"
@@ -3535,6 +3571,18 @@ __metadata:
   version: 1.3.8
   resolution: "ini@npm:1.3.8"
   checksum: 10c0/ec93838d2328b619532e4f1ff05df7909760b6f66d9c9e2ded11e5c1897d6f2f9980c54dd638f88654b00919ce31e827040631eab0a3969e4d1abefa0719516a
+  languageName: node
+  linkType: hard
+
+"inotify@npm:>= 0.1.6":
+  version: 1.4.6
+  resolution: "inotify@npm:1.4.6"
+  dependencies:
+    bindings: "npm:^1.3.1"
+    nan: "npm:^2.12.1"
+    node-gyp: "npm:latest"
+  checksum: 10c0/8415dbb54cd3ab8232951cdf1d91b1f0ca3c5925617a47d985e650ff3a038efb265acfff0f4f826db1ef1f2f484f516e3e7874d47d059015957818149d9d932e
+  conditions: os=linux
   languageName: node
   linkType: hard
 
@@ -4182,6 +4230,15 @@ __metadata:
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: 10c0/d924b57e7312b3b63ad21fc5b3dc0af5e78d61a1fc7cfb5457edaf26326bf62be5307cc87ffb6862ef1c2b33b0233cdb5d4f01c4c958cc0d660948b65a287a48
+  languageName: node
+  linkType: hard
+
+"nan@npm:^2.12.1":
+  version: 2.20.0
+  resolution: "nan@npm:2.20.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/75775309a21ad179a55250d62ce47322c33ca03d8ddb5ad4c555bd820dd72484b3c59253dd9f41cc68dd63453ef04017407fbd081a549bc030d977079bb798b7
   languageName: node
   linkType: hard
 
@@ -5465,11 +5522,13 @@ __metadata:
     "@types/mocha": "npm:>=9.1.0"
     "@types/node": "npm:>=18.0.0"
     chai: "npm:^4.2.0"
+    dev: "npm:^0.1.3"
     ethers: "npm:^6.4.0"
     fixed-merkle-tree: "npm:^0.7.3"
     hardhat: "npm:^2.22.10"
     hardhat-change-network: "npm:^0.0.7"
     hardhat-gas-reporter: "npm:^1.0.8"
+    hardhat-switch-network: "npm:^1.1.1"
     solidity-coverage: "npm:^0.8.0"
     ts-node: "npm:>=8.0.0"
     typechain: "npm:^8.3.0"

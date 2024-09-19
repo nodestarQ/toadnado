@@ -94,9 +94,9 @@ async function main() {
     //await hre.switchNetwork(L1Name);
     const toadnadoL1s_L2Address = await toadnadoL1Contract.l2ScrollToadnadoAddress() 
     if (toadnadoL1s_L2Address === "0x0000000000000000000000000000000000000000") {
-        await toadnadoL1Contract.setL2ScrollToadnadoAddress(ToadnadoL2)
+        await (await toadnadoL1Contract.setL2ScrollToadnadoAddress(ToadnadoL2)).wait(1)
     } else if (toadnadoL1s_L2Address !== ToadnadoL2) {
-        throw new Error(`toadnadoL1 is already deployed and its L2 conterpart was set to a different address than this script deployed\n expected: ${ToadnadoL2.target} got ${toadnadoL1s_L2Address}`)
+        throw new Error(`toadnadoL1 is already deployed and its L2 counterpart was set to a different address than this script deployed\n expected: ${ToadnadoL2.target} got ${toadnadoL1s_L2Address}`)
     } else {
         console.log("setL2ScrollToadnadoAddress was already set!")
     }
