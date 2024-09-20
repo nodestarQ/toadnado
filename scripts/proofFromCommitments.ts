@@ -152,6 +152,12 @@ function fillCommitmentsWithZeroValue(
     return [...commitments, ...Array(ammountCommitments-commitments.length).fill(emptyCommitment)]
 }
 
+
+export function hashCommitment(nullifierHashPreImage: ethers.BytesLike,secret:  ethers.BytesLike,chainId:  ethers.BytesLike) : ethers.BytesLike {
+    const abiCoder = new ethers.AbiCoder()
+    return ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId]))
+}
+
 export async function getWithdrawCalldata(
     recipient:string, // <-- address
     secret:string, // string = ether.bytesLike. typescript sucks 

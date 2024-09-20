@@ -12,6 +12,7 @@ export function getEmptyLevels(treeDepth=32, hashFunction:Function) {
     return levels
 }
 
+// formats it into solidity code like this: else if (i == 0) return bytes32(0x0000000000000000000000000000000000000000000000000000000000000000);
 function formatLevelsSol(levels:ethers.BytesLike[]) {
     let solidityStr = ""
     for (const [i, level] of levels.entries()) {

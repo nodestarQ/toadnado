@@ -103,6 +103,7 @@ async function main() {
     
 
     console.log(`verifying contracts on ${L1Name}`)
+    await hre.switchNetwork(L1Name); 
     const toadnadoL1Verification = hre.run("verify:verify", {address: ToadnadoL1,constructorArguments: [ultraVerifierL1, toadnadoL1ModuleArgs.denomination, toadnadoL1ModuleArgs.merkleTreeHeight ,toadnadoL1ModuleArgs.l1ScrollMessenger]})
     const ultraVerifierL1Verification = hre.run("verify:verify", {address: ultraVerifierL1,constructorArguments: []})
     await Promise.all([toadnadoL1Verification,ultraVerifierL1Verification])

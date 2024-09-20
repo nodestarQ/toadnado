@@ -2,7 +2,7 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { time, setCode } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
-import { getWithdrawCalldata } from "../scripts/proofFromCommitments"
+import { getWithdrawCalldata , hashCommitment} from "../scripts/proofFromCommitments"
 import { ethers } from "ethers";
 
 const MERKLE_TREE_HEIGHT = 5n;
@@ -22,16 +22,14 @@ const BENCH_MARK_GAS_PRICE = "0x12A05F200" // 5 gwei
 function getRandom32Bytes() {
   return ethers.hexlify(crypto.getRandomValues(new Uint8Array(new Array(32))))
 }
-
+// deposits and also updates state in the L1SLOADmock
 async function deposit(Toadnado: any, L1SLOADmock: any, chainId: any) {
   //generate secrets
   const secret = getRandom32Bytes()
   const nullifierPreimage = getRandom32Bytes()
 
   // hash
-  const abiCoder = new ethers.AbiCoder()
-  const commitmentHashPreimg = abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierPreimage, secret, chainId])
-  const commitmentHash = ethers.keccak256(commitmentHashPreimg)
+  const commitmentHash = hashCommitment(nullifierPreimage, secret, chainId)
 
   // do deposit
   await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
@@ -58,7 +56,7 @@ async function setBalance(wallet: ethers.AddressLike | string, balance: string) 
     "0x"+ethers.parseEther(balance).toString(16)//ethers.parseEther(balance).toString(),
   ]);
 }
-
+// For the mock contracts to deploy to a specific address
 async function deployToAddress(contractName: string, address: string ) {
   const factory = (await hre.ethers.getContractFactory(contractName));
   const normalDeployment = await hre.ethers.deployContract(contractName) // cant use factory for byte code have to get bytecode from deployed contract
@@ -138,9 +136,7 @@ describe("Toadnado", function () {
     console.log({ verifiedOnchain })
 
     //try withdraw
-   
-    await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
-
+    await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) // just for benchmarking
     const withdrawTx:any = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
     console.log({withdrawTxFee: ethers.formatEther(withdrawTx?.fee), withdrawTxGas: withdrawTx?.gasUsed,  gasPriceGwei: Number(withdrawTx?.gasPrice) / 1000000000})
 
@@ -159,16 +155,10 @@ describe("Toadnado", function () {
     const L2ScrollMessengerMockBalance = await hre.ethers.provider.getBalance(L2ScrollMessengerMock.target);
     expect(L2ScrollMessengerMockBalance).to.eq(DENOMINATION, "ToadnadoL1.bridgeEth didnt bridge over DENOMINATION to the L2 messenger");
 
-  
     // now we relay the message and finnaly put the eth on L2
     [,,message,] = await L1ScrollMessengerMock.getLastMessage(); // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
     await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, DENOMINATION, 0n, message, [0n,"0x00"]) // also ignore red squiggles idk typescript :/
 
-
-   
-    
-
-   
     //claim pending withdraw
     const balanceBeforeWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
     const withdrawPendingTx:any = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
