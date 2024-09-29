@@ -2,7 +2,7 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { time, setCode } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
-import { getWithdrawCalldata , hashCommitment, getAllCommitments} from "../scripts/proofFromCommitments"
+import { getWithdrawCalldata , hashCommitment, getAllCommitments, randomWithinFieldLimit} from "../scripts/proofFromCommitments"
 import { ethers } from "ethers";
 
 import { ToadnadoL1,ToadnadoL2,L1SLOADmock, ScrollMessengerMock  } from "../typechain-types";
@@ -21,14 +21,17 @@ const L1_ROOT_MAPPING_SLOT = 3n
 const L1_CURRENT_ROOT_INDEX_SLOT = 3n
 const BENCH_MARK_GAS_PRICE = "0x12A05F200" // 5 gwei
 
-function getRandom32Bytes() {
-  return ethers.hexlify(crypto.getRandomValues(new Uint8Array(new Array(32))))
+async function deployPoseidon() {
+
+  const Poseidon = await hre.ethers.getContractFactory(`PoseidonT3`)
+  const _poseidon = await Poseidon.deploy()
+  return _poseidon
 }
 // deposits and also updates state in the L1SLOADmock
 async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: bigint) {
   //generate secrets
-  const secret = getRandom32Bytes()
-  const nullifierPreimage = getRandom32Bytes()
+  const secret = randomWithinFieldLimit()
+  const nullifierPreimage = randomWithinFieldLimit()
 
   // hash
   const commitmentHash = hashCommitment(nullifierPreimage, secret, chainId)
@@ -45,8 +48,8 @@ async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: 
 
   // "bridge" new root to L1SLOADmock
   const latestRoot = await Toadnado.getLastRoot()
-  const L1RootMappingSlotMapping = ethers.keccak256(ethers.solidityPacked(["uint256", "uint256"], [currentL1RootIndex, L1_ROOT_MAPPING_SLOT]))
-  await L1SLOADmock.setMockedSlot(Toadnado.target, L1RootMappingSlotMapping, latestRoot)
+  const L1RootMappingSlotMapping = ethers.keccak256(ethers.solidityPacked(["uint256", "uint256"], [currentL1RootIndex, L1_ROOT_MAPPING_SLOT])) as ethers.BigNumberish
+  await L1SLOADmock.setMockedSlot(Toadnado.target as ethers.AddressLike, L1RootMappingSlotMapping, ethers.toBeHex(latestRoot) )
   await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
 
   return { secret, nullifierPreimage, commitmentHash, tx }
@@ -80,6 +83,8 @@ describe("Toadnado", function () {
 
     // deploy toads -------------------------------------------
     // deploy verifier
+    const deployedPoseidonT3 = await deployPoseidon()
+
     const UltraVerifier = await hre.ethers.deployContract("UltraVerifier", [], { value: 0n });
     console.log("UltraVerifier deployed at", UltraVerifier.target)
 
@@ -87,8 +92,8 @@ describe("Toadnado", function () {
     expect(await UltraVerifier.getVerificationKeyHash()).to.not.equal("0x0");
 
     // deploy the toads
-    const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L1_SCROLL_MESSENGER], { value: 0n });
-    const ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L2_SCROLL_MESSENGER, ToadnadoL1.target], { value: 0n });
+    const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L1_SCROLL_MESSENGER], { value: 0n, libraries: { PoseidonT3: deployedPoseidonT3.target,} });
+    const ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L2_SCROLL_MESSENGER, ToadnadoL1.target], { value: 0n, libraries: { PoseidonT3: deployedPoseidonT3.target,} });
     await ToadnadoL1.setL2ScrollToadnadoAddress(ToadnadoL2.target);
     console.log("ToadnadoL1 deployed at:", ToadnadoL1.target)
     console.log("ToadnadoL2 deployed at:", ToadnadoL2.target)
@@ -107,7 +112,7 @@ describe("Toadnado", function () {
 
     // event scanning to get the leaves of the merkle trees
     const {commitmentsL1, commitmentsL2} = await getAllCommitments(ToadnadoL1, ToadnadoL2)
-    const commitmentIndex = commitmentsL1.findIndex((leaf) => leaf === commitmentHash)
+    const commitmentIndex = commitmentsL1.findIndex((leaf) => ethers.toBigInt(leaf) === commitmentHash)
 
 
     // withdraw ----------------------------------------------
@@ -138,7 +143,6 @@ describe("Toadnado", function () {
     
     // bridge the request on L2
     let [,,message,] = await L2ScrollMessengerMock.getLastMessage() // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
-    console.log(message)
     await L1ScrollMessengerMock.relayMessageWithProof(ToadnadoL2.target,ToadnadoL1.target, 0n, 0n, message, [0n,"0x00"]); // also ignore red squiggles idk typescript :/
 
     // now Toadnado on L2 called `bridgeEth()` on the L1 contract and eth is now in the L2ScrollMessengerMock

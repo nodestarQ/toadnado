@@ -1,4 +1,5 @@
 import util from "util"
+import { poseidon1, poseidon2, poseidon3 } from 'poseidon-lite';
 
 import { ethers } from "ethers";
 
@@ -15,44 +16,56 @@ import {MerkleTree} from 'fixed-merkle-tree'
 
 import { ToadnadoL1,ToadnadoL2  } from "../typechain-types";
 
+const FIELD_LIMIT = 21888242871839275222246405745257275088548364400416034343698204186575808495617n
+
 const NOIR_BACKEND = new BarretenbergBackend(circuit as CompiledCircuit);
 const NOIR = new Noir(circuit as CompiledCircuit, NOIR_BACKEND)
 
 const TREE_DEPTH = 5
-const EMPTY_COMMITMENT = ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
+const EMPTY_COMMITMENT = 0n//21663839004416932945382355908790599225266501822907911457504978515578255421292n// ethers.zeroPadBytes(ethers.toBeHex(21663839004416932945382355908790599225266501822907911457504978515578255421292n),32)
 
 interface tree {
     tree: ethers.BytesLike[][];
     treeDepth: number;
   }
 
-export function generateTree(commitments:string[]=[]): tree {
-    const abiEncoder = new ethers.AbiCoder
-    const commitmentsLen = commitments.length
-    const treeDepth = Math.log(commitmentsLen) / Math.log(2)
-    const tree =[commitments, ...Array(treeDepth).fill([]).map((x)=>structuredClone(x))]
-    let offset = 0
-    let preImagesLen = commitmentsLen
-
-    for (let currentDepth = 0; currentDepth < treeDepth; currentDepth++) {
-        //console.log({tree, currentDepth})
-        const preImages = tree[currentDepth]//.slice(offset, offset+preImagesLen)
-        
-        //add new layer hashes
-        for (let i=0; i < preImages.length; i+=2) {
-            const left = preImages[i]
-            const right = preImages[i+1]
-
-            const hash = ethers.keccak256(abiEncoder.encode(["bytes32","bytes32"], [left,right]))
-            tree[currentDepth+1].push(hash)
-        }   
-
-        // offset += preImagesLen
-        // preImagesLen = preImages.length/2
+export function randomWithinFieldLimit(limit:bigint=FIELD_LIMIT) : bigint {
+    let isBigger = true
+    let number = 0n
+    while (isBigger) {
+        number = ethers.toBigInt(crypto.getRandomValues(new Uint8Array( new Array(32))))
+        isBigger = number > limit
     }
-
-    return {tree, treeDepth}
+    return number
 }
+
+// export function generateTree(commitments:string[]=[]): tree {
+//     const abiEncoder = new ethers.AbiCoder
+//     const commitmentsLen = commitments.length
+//     const treeDepth = Math.log(commitmentsLen) / Math.log(2)
+//     const tree =[commitments, ...Array(treeDepth).fill([]).map((x)=>structuredClone(x))]
+//     let offset = 0
+//     let preImagesLen = commitmentsLen
+
+//     for (let currentDepth = 0; currentDepth < treeDepth; currentDepth++) {
+//         //console.log({tree, currentDepth})
+//         const preImages = tree[currentDepth]//.slice(offset, offset+preImagesLen)
+        
+//         //add new layer hashes
+//         for (let i=0; i < preImages.length; i+=2) {
+//             const left = preImages[i]
+//             const right = preImages[i+1]
+
+//             const hash = ethers.keccak256(abiEncoder.encode(["bytes32","bytes32"], [left,right]))
+//             tree[currentDepth+1].push(hash)
+//         }   
+
+//         // offset += preImagesLen
+//         // preImagesLen = preImages.length/2
+//     }
+
+//     return {tree, treeDepth}
+// }
 
 export function indexToPathBools(leafIndex: BigInt, treeDepth: number) {
     const bools = leafIndex.toString(2).split('').map(x => x === '1')
@@ -60,37 +73,37 @@ export function indexToPathBools(leafIndex: BigInt, treeDepth: number) {
     return hashPathBools
 }
 
-export function getProofFromTree(tree: ethers.BytesLike[][], leafIndex:number, treeDepth:number) {
-    const leaf = tree[0][leafIndex]
-    const hashPath = []
+// export function getProofFromTree(tree: ethers.BytesLike[][], leafIndex:number, treeDepth:number) {
+//     const leaf = tree[0][leafIndex]
+//     const hashPath = []
 
-    //const bools = BigInt(leafIndex).toString(2).split('').map(x => x === '1')
-    const hashPathBools = indexToPathBools(BigInt(leafIndex), treeDepth)
-    let nodeIndex = leafIndex
-    for (let currentLevel = 0; currentLevel < treeDepth; currentLevel++) {
-        const syblingIsLeft = hashPathBools[currentLevel]
-        if (syblingIsLeft) {
-            hashPath.push(tree[currentLevel][nodeIndex-1])
-        } else {
-            hashPath.push(tree[currentLevel][nodeIndex+1])
-        }
+//     //const bools = BigInt(leafIndex).toString(2).split('').map(x => x === '1')
+//     const hashPathBools = indexToPathBools(BigInt(leafIndex), treeDepth)
+//     let nodeIndex = leafIndex
+//     for (let currentLevel = 0; currentLevel < treeDepth; currentLevel++) {
+//         const syblingIsLeft = hashPathBools[currentLevel]
+//         if (syblingIsLeft) {
+//             hashPath.push(tree[currentLevel][nodeIndex-1])
+//         } else {
+//             hashPath.push(tree[currentLevel][nodeIndex+1])
+//         }
         
-        nodeIndex = Math.floor(nodeIndex/2)
+//         nodeIndex = Math.floor(nodeIndex/2)
         
-    }
+//     }
 
-    return {hashPath, hashPathBools, leaf}
-}
+//     return {hashPath, hashPathBools, leaf}
+// }
 
 
-export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: number) {
-    const {tree, treeDepth} = generateTree(allCommitments)
-    const root = tree[tree.length-1][0]
-    console.log({root: tree[tree.length-1], treeDepth})
-    const {hashPath, hashPathBools, leaf} = getProofFromTree(tree, targerCommitmentIndex,treeDepth)
-    return {hashPath, hashPathBools, leaf, root}
+// export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: number) {
+//     const {tree, treeDepth} = generateTree(allCommitments)
+//     const root = tree[tree.length-1][0]
+//     console.log({root: tree[tree.length-1], treeDepth})
+//     const {hashPath, hashPathBools, leaf} = getProofFromTree(tree, targerCommitmentIndex,treeDepth)
+//     return {hashPath, hashPathBools, leaf, root}
 
-}
+// }
 
 
 // export async function makeZeroBytes() {
@@ -116,13 +129,13 @@ export function getMerkleProof(allCommitments: string[], targerCommitmentIndex: 
 //     // const  {hashPath, hashPathBools} =   getMerkleProof(commitments, 0)
 //     // console.log({hashPath, hashPathBools})
 // }
-function bytes32ArrayToNoir(bytes:string[]) {
-    return bytes.map((x)=>{
-        const b=[...ethers.toBeArray(x)]
-        const zeros = Array(32-b.length).fill(0)
-        return [...zeros, ...b]
-    }).map((x)=>`[${x.toString()}]`).toString()
-}
+// function bytes32ArrayToNoir(bytes:string[]) {
+//     return bytes.map((x)=>{
+//         const b=[...ethers.toBeArray(x)]
+//         const zeros = Array(32-b.length).fill(0)
+//         return [...zeros, ...b]
+//     }).map((x)=>`[${x.toString()}]`).toString()
+// }
 
 function bytes32ArrayToNoirJs(bytes:string[]) : InputValue[]  {
     return bytes.map((x)=>{
@@ -131,11 +144,11 @@ function bytes32ArrayToNoirJs(bytes:string[]) : InputValue[]  {
         return [...zeros, ...b]
     })
 }
-function singleBytes32ToNoir(bytes32:string) {
-    const b=[...ethers.toBeArray(bytes32)]
-    const zeros = Array(32-b.length).fill(0)
-    return [...zeros, ...b].toString()
-}
+// function singleBytes32ToNoir(bytes32:string) {
+//     const b=[...ethers.toBeArray(bytes32)]
+//     const zeros = Array(32-b.length).fill(0)
+//     return [...zeros, ...b].toString()
+// }
 
 function paddArray(arr:any[], len = 32, filler = 0, infront = true) {
     if (infront) {
@@ -157,9 +170,10 @@ function fillCommitmentsWithZeroValue(
 }
 
 
-export function hashCommitment(nullifierHashPreImage: ethers.BytesLike,secret:  ethers.BytesLike,chainId:  ethers.BytesLike | bigint) : ethers.BytesLike {
-    const abiCoder = new ethers.AbiCoder()
-    return ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId]))
+export function hashCommitment(nullifierHashPreImage:bigint,secret:  bigint,chainId: bigint) : bigint {
+    //const abiCoder = new ethers.AbiCoder()
+    //return ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId]))
+    return poseidon3([nullifierHashPreImage,secret,chainId])
 }
 
 export async function getAllCommitments(ToadnadoL1:ToadnadoL1,ToadnadoL2:ToadnadoL2, startBlock=0, blocksPerScan=100, maxSimultaneousReqs=5, lastBlock="latest") {
@@ -199,11 +213,15 @@ export async function eventScanInChunks(contract: ethers.Contract | any, eventFi
     return (await Promise.all(events)).flat()
 }
 
+export function hashMetaRoot(l1Root:bigint,l2Root:bigint) {
+    return poseidon2([l1Root,l2Root])
+}
+
 export async function getWithdrawCalldata(
     recipient:string, // <-- address
-    secret:string, // string = ether.bytesLike. typescript sucks 
-    nullifierHashPreImage:string, 
-    chainId:BigInt ,
+    secret:bigint, // string = ether.bytesLike. typescript sucks 
+    nullifierHashPreImage:bigint, 
+    chainId: bigint ,
     commitmentIndex:number, 
     commitmentsL1:ethers.BytesLike[],
     commitmentsL2:ethers.BytesLike[],
@@ -212,22 +230,24 @@ export async function getWithdrawCalldata(
     // get metaRoot and trees ---------------------------------------------
     const allCommitmentsL1 = fillCommitmentsWithZeroValue(commitmentsL1)
     const allCommitmentsL2 = fillCommitmentsWithZeroValue(commitmentsL2)
-    const hashFunction = (left:any,right:any)=>ethers.keccak256(ethers.concat([left,right]))
+    const hashFunction = (left:any,right:any)=>poseidon2([left,right]) as any//(left:any,right:any)=>ethers.keccak256(ethers.concat([left,right]))
+    // @dev the bigint are gonna fuck with MerkleTree because it is used to bytesLike
     const l1Tree =  new MerkleTree(TREE_DEPTH,allCommitmentsL1,{hashFunction,zeroElement:EMPTY_COMMITMENT}) //generateTree(allCommitmentsL1)
     const l2Tree = new MerkleTree(TREE_DEPTH,allCommitmentsL2,{hashFunction,zeroElement:EMPTY_COMMITMENT})//generateTree(allCommitmentsL2)
-    const l1Root = ethers.zeroPadValue(ethers.toBeHex( l1Tree.root), 32) //l1Tree.tree[l1Tree.tree.length-1][0]
-    const l2Root = ethers.zeroPadValue(ethers.toBeHex( l2Tree.root), 32) //l2Tree.tree[l2Tree.tree.length-1][0]
-    //console.log({l1Root: l1Tree.tree[l1Tree.tree.length-1], l2Root: l2Tree.tree[l2Tree.tree.length-1]})
-    const abiCoder = new ethers.AbiCoder()
-    const metaRoot = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [l1Root,l2Root]))
+    const l1Root = BigInt(l1Tree.root)
+    const l2Root = BigInt(l2Tree.root)
 
-    const rootOtherLayer = commitmentIsFromL1 ? l2Root as string :  l1Root  as string 
+    //console.log({l1Root: l1Tree.tree[l1Tree.tree.length-1], l2Root: l2Tree.tree[l2Tree.tree.length-1]})
+    const metaRoot = hashMetaRoot( l1Root,l2Root) //ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [l1Root,l2Root]))
+
+    const rootOtherLayer = commitmentIsFromL1 ? l2Root  :  l1Root  
 
     // nullifier hash and commitment ---------------------------------------
-    const nullifierHash = ethers.keccak256(nullifierHashPreImage)
-    const commitmentHash  = ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId])) //TODO make function of this 
+    const nullifierHash = poseidon1([nullifierHashPreImage])
+    const commitmentHash  = hashCommitment(nullifierHashPreImage,secret,chainId) //ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId])) //TODO make function of this 
 
     // get merkle proof
+    console.log({commitmentIndex})
     const proofPath = commitmentIsFromL1 ? l1Tree.path(commitmentIndex) : l2Tree.path(commitmentIndex)
     const hashPath = proofPath.pathElements.map((hash:any)=>ethers.zeroPadValue(ethers.toBeHex(hash), 32)) // tree.path().proofPath returns a BigInt so we convert to ethers.BytesLike string
     const hashPathBools = indexToPathBools(BigInt(commitmentIndex), TREE_DEPTH)
@@ -235,20 +255,19 @@ export async function getWithdrawCalldata(
     // format circuit inputs
     //console.log({metaRoot})
     const inputs:InputMap = {
-        root:  paddArray([...ethers.toBeArray(metaRoot)],32,0,true),                                                       //pub [u8;32],
-        nullifierHash: paddArray([...ethers.toBeArray(nullifierHash)],32,0,true),                                        //pub [u8;32], 
-        recipient:ethers.zeroPadValue(recipient,32),                                                //pub Field, 
-        chainId:Number(chainId)as InputValue,
-        // relayer:                                                                                 //pub Field,
-        // fee:                                                                                     //pub Field,
-        // refund:                                                                                  //pub Field,
-        //chainId:                                                                                  //pub Field,
-        nullifierHashPreImage: paddArray([...ethers.toBeArray(nullifierHashPreImage)],32,0,true) ,  //[u8;32],
-        secret: paddArray([...ethers.toBeArray(secret)],32,0,true),                                 //[u8;32],
-        hash_path: bytes32ArrayToNoirJs(hashPath as string[]) as InputValue,                        //[[u8;32];TREE_DEPTH],
-        hash_path_bools:  hashPathBools,                                                            //[bool; TREE_DEPTH],
-        root_other_layer:  paddArray([...ethers.toBeArray(rootOtherLayer)],32,0,true),
-        root_other_is_right: commitmentIsFromL1
+        root:                   ethers.toBeHex(metaRoot),                                   // pub Field,
+        nullifierHash:          ethers.toBeHex(nullifierHash),                              // pub Field, 
+        recipient:              ethers.zeroPadValue(recipient,32),                          // pub Field, 
+        // relayer:                                                                         // --pub Field,
+        // fee:                                                                             // --pub Field,
+        // refund:                                                                          // --pub Field,
+        nullifierHashPreImage:  ethers.toBeHex(nullifierHashPreImage),                      // priv Field
+        secret:                 ethers.toBeHex(secret),                                     // priv Field
+        chainId:                Number(chainId) as InputValue,                              // priv Field
+        hash_path:              hashPath.map((v)=>ethers.toBeHex(v)) as InputValue,         // priv [Field;TREE_DEPTH],
+        hash_path_bools:        hashPathBools,                                              // [bool; TREE_DEPTH],
+        root_other_layer:       ethers.toBeHex(rootOtherLayer),                             // Field
+        root_other_is_right:    commitmentIsFromL1                                          // Field
     }
 
     const snarkProofData = await NOIR.generateProof(inputs)

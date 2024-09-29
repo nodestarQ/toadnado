@@ -40,6 +40,11 @@ compile circuits
 cd circuits/prover/; nargo compile 
 ```
 
+generate verifier contract
+```shell
+cd circuits/prover/; nargo codegen-verifier; cp contract/prover/plonk_vk.sol ../../contracts/plonk_vk.sol
+```
+
 ## test
 run a local test node  
 ```shell

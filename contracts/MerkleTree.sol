@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
-
+import "poseidon-solidity/PoseidonT3.sol";
 
 contract MerkleTree{
 
   uint32 public levels;
   
   // merkle leafs
-  mapping (uint256 => bytes32) public commitmentLeafs; //TODO remove this and use event scanning instead
-  mapping(uint256 => bytes32) public filledSubtrees;
-  mapping(uint256 => bytes32) public roots;
+  mapping(uint256 => uint256) public filledSubtrees;
+  mapping(uint256 => uint256) public roots;
   uint32 public constant ROOT_HISTORY_SIZE = 30;
   uint32 public currentRootIndex = 0;
   uint32 public nextIndex = 0;
@@ -30,19 +29,19 @@ contract MerkleTree{
     @dev Hash 2 tree leaves, returns keccak256(_left, _right)
   */
   function hashLeftRight(
-    bytes32 _left,
-    bytes32 _right
-  ) public pure returns (bytes32) {
-    return keccak256(abi.encodePacked(_left, _right)); 
+    uint256 _left,
+    uint256 _right
+  ) public pure returns (uint256) {
+    return  PoseidonT3.hash([_left, _right]); 
   }
 
-  function _insert(bytes32 _leaf) internal returns (uint32 index) {
+  function _insert(uint256 _leaf) internal returns (uint32 index) {
     uint32 _nextIndex = nextIndex;
     require(_nextIndex != uint32(2)**levels, "Merkle tree is full. No more leaves can be added");
     uint32 currentIndex = _nextIndex;
-    bytes32 currentLevelHash = _leaf;
-    bytes32 left;
-    bytes32 right;
+    uint256 currentLevelHash = _leaf;
+    uint256 left;
+    uint256 right;
 
     for (uint32 i = 0; i < levels; i++) {
       if (currentIndex % 2 == 0) {
@@ -60,7 +59,6 @@ contract MerkleTree{
     uint32 newRootIndex = (currentRootIndex + 1) % ROOT_HISTORY_SIZE;
     currentRootIndex = newRootIndex;
     roots[newRootIndex] = currentLevelHash;
-    commitmentLeafs[_nextIndex] = _leaf; //storing leaf into mapping with the current index
     nextIndex = _nextIndex + 1;
     return _nextIndex;
   }
@@ -68,7 +66,7 @@ contract MerkleTree{
   /**
     @dev Whether the root is present in the root history
   */
-  function isKnownRoot(bytes32 _root) internal view returns (bool) {
+  function isKnownRoot(uint256 _root) internal view returns (bool) {
     if (_root == 0) {
       return false;
     }
@@ -89,33 +87,47 @@ contract MerkleTree{
   /**
     @dev Returns the last root
   */
-  function getLastRoot() public view returns (bytes32) {
+  function getLastRoot() public view returns (uint256) {
     return roots[currentRootIndex];
   }
 
   /// @dev provides Zero (Empty) elements for a keccka MerkleTree. Up to 32 levels
-  function zeros(uint256 i) public pure returns (bytes32) {
-         if (i == 0) return bytes32(0x2fe54c60d3acabf3343a35b6eba15db4821b340f76e741e2249685ed4899af6c);
-    else if (i == 1) return bytes32(0x4fc2fe9184a25f44ce8ddb5f32671fcae6d9c85ed710c199acef16ad16b29911);
-    else if (i == 2) return bytes32(0x0d826a474f851c563052d929ef0daa70f658aba9ba084f51f6e3483c13c0e59a);
-    else if (i == 3) return bytes32(0xf7761a16b5e4c0120e4c5704b910dbe18ff6162a9668ed1c2c4efde7c4f15806);
-    else if (i == 4) return bytes32(0xce9ce09a0ab259d6d14ca3dcd74e6c6b9e7d9074bff66973d4c57ccdffdb2a82);
-    else if (i == 5) return bytes32(0x02efd44c63015ff1385344e0624867775486d05e6eb1290a24976964a598003b);
-    else if (i == 6) return bytes32(0xc4dec5845d407ce2ac2e6824bb7857c4b138f819e5789d5d11e812db10c846cd);
-    else if (i == 7) return bytes32(0x5fbe3f20c23f3bd6ac347917fb0903433e0b9a48373412348240a5f919bfde19);
-    else if (i == 8) return bytes32(0x92d1b07e56b3da96b7917778cb657f2c513eaeeb4d1579a73b5ea316f25b7289);
-    else if (i == 9) return bytes32(0xa08add5656d6d3d0827ef909f7647981eac42aa1f51970a752f130f718f6d76a);
-    else if (i == 10) return bytes32(0x1704c5f297590d8ec62776b0714f4f3f2234bae0524035342b0da8b8988ebd79);
-    else if (i == 11) return bytes32(0xc5ae2bd47379c2c6d1189cfc3d057948dc6054caf845fcacd8f7affe94b11944);
-    else if (i == 12) return bytes32(0x12a161d6d5561062f387d91ad9f0f8966c0956afdb9e8325458b9e5057b82bdb);
-    else if (i == 13) return bytes32(0x4ade524ba596de20bbe94507a761c45251ae7a27857ceb4287d9018525b99bc5);
-    else if (i == 14) return bytes32(0x38287ad69151fa833bf4bf8b8eb6ffb39400a38f1a7e53b473f639c8c60fd5e4);
-    else if (i == 15) return bytes32(0x57f2ade7d711707e785451f2aba6c95872c7fe03153a98b7327b4024e8068fa3);
-    else if (i == 16) return bytes32(0xb1982e0d1b0de46a88d8b17941472e41a86d3ff64571ed8e0ca72d58633547fc);
-    else if (i == 17) return bytes32(0xb7c60f8670af15eb32b4ee36727179bc085a3dde03d5f9a1486664ba576b30a6);
-    else if (i == 18) return bytes32(0x5ff905c5c659a926b132ef3665a3de5d5a859c1d479e68851085bfc0348c5331);
-    else if (i == 19) return bytes32(0xb4dfa78b912e98c9f7eb42d71eb537a02bf3173d44a2eb887a48b3972072dd8e);
-    else if (i == 20) return bytes32(0x60919a16a2eb8b91cfb8ba1e5b4c155a76a14c217b5403edbd563f34e508ecdc);
+  function zeros(uint256 i) public pure returns (uint256) {
+        if (i == 0) return uint256(0);
+    else if (i == 1) return uint256(14744269619966411208579211824598458697587494354926760081771325075741142829156);
+    else if (i == 2) return uint256(7423237065226347324353380772367382631490014989348495481811164164159255474657);
+    else if (i == 3) return uint256(11286972368698509976183087595462810875513684078608517520839298933882497716792);
+    else if (i == 4) return uint256(3607627140608796879659380071776844901612302623152076817094415224584923813162);
+    else if (i == 5) return uint256(19712377064642672829441595136074946683621277828620209496774504837737984048981);
+    else if (i == 6) return uint256(20775607673010627194014556968476266066927294572720319469184847051418138353016);
+    else if (i == 7) return uint256(3396914609616007258851405644437304192397291162432396347162513310381425243293);
+    else if (i == 8) return uint256(21551820661461729022865262380882070649935529853313286572328683688269863701601);
+    else if (i == 9) return uint256(6573136701248752079028194407151022595060682063033565181951145966236778420039);
+    else if (i == 10) return uint256(12413880268183407374852357075976609371175688755676981206018884971008854919922);
+    else if (i == 11) return uint256(14271763308400718165336499097156975241954733520325982997864342600795471836726);
+    else if (i == 12) return uint256(20066985985293572387227381049700832219069292839614107140851619262827735677018);
+    else if (i == 13) return uint256(9394776414966240069580838672673694685292165040808226440647796406499139370960);
+    else if (i == 14) return uint256(11331146992410411304059858900317123658895005918277453009197229807340014528524);
+    else if (i == 15) return uint256(15819538789928229930262697811477882737253464456578333862691129291651619515538);
+    else if (i == 16) return uint256(19217088683336594659449020493828377907203207941212636669271704950158751593251);
+    else if (i == 17) return uint256(21035245323335827719745544373081896983162834604456827698288649288827293579666);
+    else if (i == 18) return uint256(6939770416153240137322503476966641397417391950902474480970945462551409848591);
+    else if (i == 19) return uint256(10941962436777715901943463195175331263348098796018438960955633645115732864202);
+    else if (i == 20) return uint256(15019797232609675441998260052101280400536945603062888308240081994073687793470);
+    else if (i == 21) return uint256(11702828337982203149177882813338547876343922920234831094975924378932809409969);
+    else if (i == 22) return uint256(11217067736778784455593535811108456786943573747466706329920902520905755780395);
+    else if (i == 23) return uint256(16072238744996205792852194127671441602062027943016727953216607508365787157389);
+    else if (i == 24) return uint256(17681057402012993898104192736393849603097507831571622013521167331642182653248);
+    else if (i == 25) return uint256(21694045479371014653083846597424257852691458318143380497809004364947786214945);
+    else if (i == 26) return uint256(8163447297445169709687354538480474434591144168767135863541048304198280615192);
+    else if (i == 27) return uint256(14081762237856300239452543304351251708585712948734528663957353575674639038357);
+    else if (i == 28) return uint256(16619959921569409661790279042024627172199214148318086837362003702249041851090);
+    else if (i == 29) return uint256(7022159125197495734384997711896547675021391130223237843255817587255104160365);
+    else if (i == 30) return uint256(4114686047564160449611603615418567457008101555090703535405891656262658644463);
+    else if (i == 31) return uint256(12549363297364877722388257367377629555213421373705596078299904496781819142130);
+    else if (i == 32) return uint256(21443572485391568159800782191812935835534334817699172242223315142338162256601);
+    else if (i == 33) return uint256(7694308195910501081009121293114024464085863242234210875116972222894508088593);
+
     else revert("Index out of bounds");
   }
 }

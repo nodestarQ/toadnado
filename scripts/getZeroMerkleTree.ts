@@ -1,9 +1,9 @@
 //import { poseidon2 } from 'poseidon-lite'
 import {ethers } from 'ethers'
 import * as fs from 'node:fs/promises';
-
+import {poseidon2 } from 'poseidon-lite';
 export function getEmptyLevels(treeDepth=32, hashFunction:Function) {
-    const levels = [ethers.zeroPadValue("0x00", 32)];
+    const levels = [0n];
     for (let level = 1; level < treeDepth; level++) {
         const prevLevel =  levels[level-1]
         const nextLevel = hashFunction(prevLevel, prevLevel)
@@ -13,20 +13,23 @@ export function getEmptyLevels(treeDepth=32, hashFunction:Function) {
 }
 
 // formats it into solidity code like this: else if (i == 0) return bytes32(0x0000000000000000000000000000000000000000000000000000000000000000);
-function formatLevelsSol(levels:ethers.BytesLike[]) {
+function formatLevelsSol(levels:bigint[]) {
     let solidityStr = ""
     for (const [i, level] of levels.entries()) {
-        solidityStr += `else if (i == ${i}) return bytes32(${level});\n`
+        solidityStr += `else if (i == ${i}) return uint256(${level});\n`
     }
     return solidityStr
 }
 
 async function main() {
-    const treeDepth = 21
-    const hashFunction = (left:ethers.BytesLike,right:ethers.BytesLike)=>ethers.keccak256(ethers.concat([left,right]))
+    const treeDepth = 34
+    const hashFunction = (left:string | number | bigint,right:string | number | bigint)=>poseidon2([left,right])
     const outputFolder = './scripts/output'
 
-    const levels = getEmptyLevels(treeDepth, hashFunction)
+    let levels = getEmptyLevels(treeDepth, hashFunction)
+    //CaNt DeSerIaLizE bIgINt
+    levels = levels.map((v:any)=> typeof(v) === "bigint"? v.toString() : v)
+    console.log(levels)
     await fs.writeFile(`${outputFolder}/levels.json`, JSON.stringify(levels, null, 2));
     await fs.writeFile(`${outputFolder}/levelsSol.txt`, formatLevelsSol(levels))
     console.log(`output files genrated at: \n ${`${outputFolder}/levels.json`} \n ${`${outputFolder}/levelsSol.txt`}`)

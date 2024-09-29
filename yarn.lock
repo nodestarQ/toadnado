@@ -4567,6 +4567,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"poseidon-lite@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "poseidon-lite@npm:0.3.0"
+  checksum: 10c0/03494ea69be0dc3ced055b7f1505ff73848002c68332d52a5cf5f00d1a657693317e1ffc790b84ccaf9a0f5f61bf05e1a453eab60c385c98701a6580edead49c
+  languageName: node
+  linkType: hard
+
+"poseidon-solidity@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "poseidon-solidity@npm:0.0.5"
+  checksum: 10c0/072e1e1aa8c12bdca0e7a9aee9d9fe2573f06c9dbea8891430d4da299b935195b1a613673e45acfd5cc658e45fa99bd9fd715196c9b7909fd060cdcf22595696
+  languageName: node
+  linkType: hard
+
 "prelude-ls@npm:~1.1.2":
   version: 1.1.2
   resolution: "prelude-ls@npm:1.1.2"
@@ -5519,6 +5533,8 @@ __metadata:
     hardhat: "npm:^2.22.10"
     hardhat-gas-reporter: "npm:^1.0.8"
     hardhat-switch-network: "npm:^1.1.1"
+    poseidon-lite: "npm:^0.3.0"
+    poseidon-solidity: "npm:^0.0.5"
     solidity-coverage: "npm:^0.8.0"
     ts-node: "npm:>=8.0.0"
     typechain: "npm:^8.3.0"

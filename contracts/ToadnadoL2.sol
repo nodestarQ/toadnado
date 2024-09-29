@@ -40,7 +40,7 @@ contract ToadnadoL2 is Toadnado  {
         return result;
     }
 
-    function getL1Root(uint256 key) public view returns (bytes32) {
+    function getL1Root(uint256 key) public view returns (uint256) {
         return
             abi.decode(
                 readSingleSlot(
@@ -49,11 +49,11 @@ contract ToadnadoL2 is Toadnado  {
                         keccak256(abi.encodePacked(key, L1_ROOTS_MAPPING_SLOT))
                     )
                 ),
-                (bytes32)
+                (uint256)
             );
     }
 
-    function isKnownL1Root(bytes32 _root) public view override returns (bool) {
+    function isKnownL1Root(uint256 _root) public view override returns (bool) {
         if (_root == 0) {
             return false;
         }
@@ -74,7 +74,7 @@ contract ToadnadoL2 is Toadnado  {
         return false;
     }
 
-    function isKnownL2Root(bytes32 _root) public view override returns (bool) {
+    function isKnownL2Root(uint256 _root) public view override returns (bool) {
         // isKnownRoot is from merkleTree.sol
         return isKnownRoot(_root);
     }
@@ -85,7 +85,7 @@ contract ToadnadoL2 is Toadnado  {
         scrollMessenger.sendMessage{value:msg.value}(
             l1ToadnadoAddress,
             0,
-            abi.encodeWithSignature("addL2Root(bytes32)", getLastRoot()),
+            abi.encodeWithSignature("addL2Root(uint256)", getLastRoot()),
             gasLimit,
             msg.sender
         );
