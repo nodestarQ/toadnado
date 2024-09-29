@@ -2,8 +2,10 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { time, setCode } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
-import { getWithdrawCalldata , hashCommitment} from "../scripts/proofFromCommitments"
+import { getWithdrawCalldata , hashCommitment, getAllCommitments} from "../scripts/proofFromCommitments"
 import { ethers } from "ethers";
+
+import { ToadnadoL1,ToadnadoL2,L1SLOADmock, ScrollMessengerMock  } from "../typechain-types";
 
 const MERKLE_TREE_HEIGHT = 5n;
 const DENOMINATION = BigInt((10 ** 18) / 100); //0.01eth
@@ -23,7 +25,7 @@ function getRandom32Bytes() {
   return ethers.hexlify(crypto.getRandomValues(new Uint8Array(new Array(32))))
 }
 // deposits and also updates state in the L1SLOADmock
-async function deposit(Toadnado: any, L1SLOADmock: any, chainId: any) {
+async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: bigint) {
   //generate secrets
   const secret = getRandom32Bytes()
   const nullifierPreimage = getRandom32Bytes()
@@ -50,12 +52,6 @@ async function deposit(Toadnado: any, L1SLOADmock: any, chainId: any) {
   return { secret, nullifierPreimage, commitmentHash, tx }
 }
 
-async function setBalance(wallet: ethers.AddressLike | string, balance: string) {
-  await hre.ethers.provider.send("hardhat_setBalance", [
-    wallet,
-    "0x"+ethers.parseEther(balance).toString(16)//ethers.parseEther(balance).toString(),
-  ]);
-}
 // For the mock contracts to deploy to a specific address
 async function deployToAddress(contractName: string, address: string ) {
   const factory = (await hre.ethers.getContractFactory(contractName));
@@ -70,19 +66,19 @@ describe("Toadnado", function () {
   it("deposit L1 withdraw L2", async function () {
     const [deployer, alicePublic, alicePrivate] = await hre.ethers.getSigners();
     
-    //reset balances and state
+    // reset balances and state
     await hre.network.provider.send("hardhat_reset")
-    // await Promise.all([deployer, alicePublic, alicePrivate].map(async (wallet:any)=> setBalance(wallet.address, "1000")));
-    // await Promise.all([L1_SCROLL_MESSENGER, L2_SCROLL_MESSENGER].map(async (wallet:any)=> setBalance(wallet, "0")));
 
-    //deploy bridge contract mocks ---------------------------
-    const L1SLOADmock = await deployToAddress("L1SLOADmock", L1_SLOAD_ADDRESS)
+    // deploy bridge contract mocks ---------------------------
+    const L1SLOADmock = await deployToAddress("L1SLOADmock", L1_SLOAD_ADDRESS) as L1SLOADmock
     
-    const L1ScrollMessengerMock:any = await deployToAddress("scrollMessengerMock",L1_SCROLL_MESSENGER)
-    const L2ScrollMessengerMock:any = await deployToAddress("scrollMessengerMock",L2_SCROLL_MESSENGER)
+    const L1ScrollMessengerMock:any = await deployToAddress("scrollMessengerMock",L1_SCROLL_MESSENGER) as ScrollMessengerMock
+    const L2ScrollMessengerMock:any = await deployToAddress("scrollMessengerMock",L2_SCROLL_MESSENGER) as ScrollMessengerMock
     await L2ScrollMessengerMock.setOtherMessenger(L1_SCROLL_MESSENGER) // need to set it here because state doesnt copy over
     await L1ScrollMessengerMock.setOtherMessenger(L2_SCROLL_MESSENGER) // need to set it here because state doesnt copy over
+    // --------------------------------------------------------
 
+    // deploy toads -------------------------------------------
     // deploy verifier
     const UltraVerifier = await hre.ethers.deployContract("UltraVerifier", [], { value: 0n });
     console.log("UltraVerifier deployed at", UltraVerifier.target)
@@ -96,28 +92,25 @@ describe("Toadnado", function () {
     await ToadnadoL1.setL2ScrollToadnadoAddress(ToadnadoL2.target);
     console.log("ToadnadoL1 deployed at:", ToadnadoL1.target)
     console.log("ToadnadoL2 deployed at:", ToadnadoL2.target)
+    // --------------------------------------------------------
 
+
+    // deposit -----------------------------------------------
     // connect alices public wallet
     const ToadnadoL1AlicePublic = ToadnadoL1.connect(alicePublic)
 
-    // deposit
     const chainId = (await hre.ethers.provider.getNetwork()).chainId
     const balanceBeforeDeposit = await hre.ethers.provider.getBalance(alicePublic.address)
     const { secret, nullifierPreimage, commitmentHash, tx:depositTx } = await deposit(ToadnadoL1AlicePublic, L1SLOADmock, chainId)
     const balanceAfterDeposit = await hre.ethers.provider.getBalance(alicePublic.address)
-    console.log({depositTxFee: ethers.formatEther(depositTx?.fee), depositTxGas: depositTx?.gasUsed,  gasPriceGwei: Number(depositTx?.gasPrice) / 1000000000})
-    expect(balanceAfterDeposit).to.eq(balanceBeforeDeposit - DENOMINATION - depositTx.fee)
+    expect(balanceAfterDeposit).to.eq(balanceBeforeDeposit - DENOMINATION - depositTx!.fee)
 
     // event scanning to get the leaves of the merkle trees
-    const depositEventFilter = ToadnadoL1.filters.Deposit()
-    const L1events = await ToadnadoL1.queryFilter(depositEventFilter, 0, "latest")
-    const L2events = await ToadnadoL2.queryFilter(depositEventFilter, 0, "latest")
-    const commitmentsL1 = L1events.map((event) => event.topics[1])
-    const commitmentsL2 = L2events.map((event) => event.topics[1])
-
-    // get the index of our commitment
+    const {commitmentsL1, commitmentsL2} = await getAllCommitments(ToadnadoL1, ToadnadoL2)
     const commitmentIndex = commitmentsL1.findIndex((leaf) => leaf === commitmentHash)
 
+
+    // withdraw ----------------------------------------------
     // alice now switches to her private wallet
     const ToadnadoL2AlicePrivate = ToadnadoL2.connect(alicePrivate)
 
@@ -136,9 +129,7 @@ describe("Toadnado", function () {
     console.log({ verifiedOnchain })
 
     //try withdraw
-    await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) // just for benchmarking
-    const withdrawTx:any = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
-    console.log({withdrawTxFee: ethers.formatEther(withdrawTx?.fee), withdrawTxGas: withdrawTx?.gasUsed,  gasPriceGwei: Number(withdrawTx?.gasPrice) / 1000000000})
+    const withdrawTx = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
 
     // it went pending so we need to bridge
     // request bridgeIng tx
@@ -161,10 +152,12 @@ describe("Toadnado", function () {
 
     //claim pending withdraw
     const balanceBeforeWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
-    const withdrawPendingTx:any = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
-    console.log({withdrawPendingTxFee: ethers.formatEther(withdrawPendingTx?.fee), withdrawPendingTxGas: withdrawPendingTx?.gasUsed,  gasPriceGwei: Number(withdrawPendingTx?.gasPrice) / 1000000000})
+    const withdrawPendingTx = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
+
+    // check balance
     const balanceAfterWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
-    expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + DENOMINATION - withdrawPendingTx?.fee)
+    expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + DENOMINATION - withdrawPendingTx!.fee)
+    // --------------------------------------------------------
   });
 
 

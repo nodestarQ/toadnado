@@ -28,6 +28,18 @@ yarn hardhat run ./scripts/deploy.ts --network sepolia
 4. On L2 Withdraw you can specify a recipient and the note to successfully transfer funds from the mixer to a new address.
 ![Withdraw interface](/media/3.png) -->
 
+## noir
+install
+```shell
+curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash
+noirup --version 0.30.0
+```
+
+compile circuits
+```shell
+cd circuits/prover/; nargo compile 
+```
+
 ## test
 run a local test node  
 ```shell

@@ -14,7 +14,7 @@ import { ChildProcess } from "child_process";
 const IS_MAINNET = hre.network.name === "mainnet"
 
 const L1Name: string = IS_MAINNET ? 'mainnet' : 'sepolia'
-const L2Name: string = IS_MAINNET ? 'scroll': 'scrollSepolia' //l1sload' 
+const L2Name: string = IS_MAINNET ? 'scroll': 'l1sload' //'l1sload' 'scrollSepolia'
 
 const MERKLE_TREE_HEIGHT = 5n;
 const DENOMINATION = BigInt((10 ** 18) / 100); //0.01eth
@@ -72,7 +72,7 @@ async function main() {
     console.log(`deploying contracts on ${L1Name}`)
 
     const toadnadoL1ModuleArgs = {denomination: DENOMINATION, merkleTreeHeight: MERKLE_TREE_HEIGHT, l1ScrollMessenger: L1_SCROLL_MESSENGER}
-    //await hre.switchNetwork(L1Name);
+    await hre.switchNetwork(L1Name);
     // const {toadnadoL1, ultraVerifier: ultraVerifierL1} = await hre.ignition.deploy(
     //     ToadnadoL1Module, 
     //     {parameters: {ToadnadoL1Module: {...toadnadoL1ModuleArgs}},}

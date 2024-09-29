@@ -1,3 +1,5 @@
+import util from "util"
+
 import { ethers } from "ethers";
 
 //noir
@@ -10,6 +12,8 @@ type Field = string | number | boolean;;
 import circuit from '../circuits/prover/target/prover.json'  //assert {type: 'json'};
 
 import {MerkleTree} from 'fixed-merkle-tree'
+
+import { ToadnadoL1,ToadnadoL2  } from "../typechain-types";
 
 const NOIR_BACKEND = new BarretenbergBackend(circuit as CompiledCircuit);
 const NOIR = new Noir(circuit as CompiledCircuit, NOIR_BACKEND)
@@ -153,9 +157,46 @@ function fillCommitmentsWithZeroValue(
 }
 
 
-export function hashCommitment(nullifierHashPreImage: ethers.BytesLike,secret:  ethers.BytesLike,chainId:  ethers.BytesLike) : ethers.BytesLike {
+export function hashCommitment(nullifierHashPreImage: ethers.BytesLike,secret:  ethers.BytesLike,chainId:  ethers.BytesLike | bigint) : ethers.BytesLike {
     const abiCoder = new ethers.AbiCoder()
     return ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId]))
+}
+
+export async function getAllCommitments(ToadnadoL1:ToadnadoL1,ToadnadoL2:ToadnadoL2, startBlock=0, blocksPerScan=100, maxSimultaneousReqs=5, lastBlock="latest") {
+    const depositEventFilter = ToadnadoL1.filters.Deposit()
+
+    const L1events = await eventScanInChunks(ToadnadoL1,depositEventFilter,startBlock,blocksPerScan,maxSimultaneousReqs,lastBlock)
+    const L2events = await eventScanInChunks(ToadnadoL2,depositEventFilter,startBlock,blocksPerScan,maxSimultaneousReqs,lastBlock)
+
+    const commitmentsL1 = L1events.map((event) => event.topics[1])
+    const commitmentsL2 = L2events.map((event) => event.topics[1])
+    console.log({commitmentsL1, commitmentsL2})
+
+    return {commitmentsL1, commitmentsL2}
+
+}
+
+export async function eventScanInChunks(contract: ethers.Contract | any, eventFilter: ethers.ContractEventName, startBlock: number = 0, blocksPerScan: number = 100, maxSimultaneousReqs: number = 5, lastBlock: number | string = "latest") {
+    const provider = contract.runner?.provider as ethers.Provider
+    const lastBlockNum: number = (lastBlock === "latest" ? await provider.getBlockNumber() : lastBlock) as number
+    const events = []
+    const pendingEvents: any = []
+    const amountOfScans = Math.ceil((lastBlockNum - startBlock) / blocksPerScan)
+    for (let index = 0; index < amountOfScans; index++) {
+        if (pendingEvents.length > maxSimultaneousReqs) {
+            console.log(pendingEvents)
+            await Promise.any(pendingEvents)
+            const fulfilledReqIndex = pendingEvents.findIndex((event: any) => util.inspect(event).includes("pending"))
+            pendingEvents.splice(fulfilledReqIndex, 1) // remove the fulfilled req
+    
+        }
+
+        const eventsChunk = contract.queryFilter(eventFilter, index * blocksPerScan, (index + 1) * blocksPerScan)
+        events.push(eventsChunk)
+        pendingEvents.push(eventsChunk)
+    }
+
+    return (await Promise.all(events)).flat()
 }
 
 export async function getWithdrawCalldata(
