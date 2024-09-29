@@ -24,7 +24,6 @@ export interface MerkleTreeInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "ROOT_HISTORY_SIZE"
-      | "commitmentLeafs"
       | "currentRootIndex"
       | "filledSubtrees"
       | "getLastRoot"
@@ -40,10 +39,6 @@ export interface MerkleTreeInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "commitmentLeafs",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "currentRootIndex",
     values?: undefined
   ): string;
@@ -57,7 +52,7 @@ export interface MerkleTreeInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "hashLeftRight",
-    values: [BytesLike, BytesLike]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "levels", values?: undefined): string;
   encodeFunctionData(functionFragment: "nextIndex", values?: undefined): string;
@@ -66,10 +61,6 @@ export interface MerkleTreeInterface extends Interface {
 
   decodeFunctionResult(
     functionFragment: "ROOT_HISTORY_SIZE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "commitmentLeafs",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -139,17 +130,15 @@ export interface MerkleTree extends BaseContract {
 
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
 
-  commitmentLeafs: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-
   currentRootIndex: TypedContractMethod<[], [bigint], "view">;
 
-  filledSubtrees: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  filledSubtrees: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
-  getLastRoot: TypedContractMethod<[], [string], "view">;
+  getLastRoot: TypedContractMethod<[], [bigint], "view">;
 
   hashLeftRight: TypedContractMethod<
-    [_left: BytesLike, _right: BytesLike],
-    [string],
+    [_left: BigNumberish, _right: BigNumberish],
+    [bigint],
     "view"
   >;
 
@@ -157,9 +146,9 @@ export interface MerkleTree extends BaseContract {
 
   nextIndex: TypedContractMethod<[], [bigint], "view">;
 
-  roots: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  roots: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
-  zeros: TypedContractMethod<[i: BigNumberish], [string], "view">;
+  zeros: TypedContractMethod<[i: BigNumberish], [bigint], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -169,22 +158,19 @@ export interface MerkleTree extends BaseContract {
     nameOrSignature: "ROOT_HISTORY_SIZE"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "commitmentLeafs"
-  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-  getFunction(
     nameOrSignature: "currentRootIndex"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "filledSubtrees"
-  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "getLastRoot"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "hashLeftRight"
   ): TypedContractMethod<
-    [_left: BytesLike, _right: BytesLike],
-    [string],
+    [_left: BigNumberish, _right: BigNumberish],
+    [bigint],
     "view"
   >;
   getFunction(
@@ -195,10 +181,10 @@ export interface MerkleTree extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "roots"
-  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "zeros"
-  ): TypedContractMethod<[i: BigNumberish], [string], "view">;
+  ): TypedContractMethod<[i: BigNumberish], [bigint], "view">;
 
   filters: {};
 }

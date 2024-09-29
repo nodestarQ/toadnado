@@ -24,9 +24,9 @@ const _abi = [
     inputs: [
       {
         indexed: true,
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "commitment",
-        type: "bytes32",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -55,9 +55,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "nullifier",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "PendingWithdrawal",
@@ -74,9 +74,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "nullifier",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "Withdrawal",
@@ -134,25 +134,6 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "commitmentLeafs",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
     name: "commitments",
     outputs: [
       {
@@ -167,9 +148,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "commitmentsTreeRoots",
@@ -212,9 +193,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_commitment",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "deposit",
@@ -246,9 +227,9 @@ const _abi = [
     name: "filledSubtrees",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -259,9 +240,9 @@ const _abi = [
     name: "getLastRoot",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -270,22 +251,22 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_left",
-        type: "bytes32",
+        type: "uint256",
       },
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_right",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "hashLeftRight",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     stateMutability: "pure",
@@ -294,9 +275,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_root",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "isKnownL1Root",
@@ -313,9 +294,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_root",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "isKnownL2Root",
@@ -332,9 +313,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_nullifierHash",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "isSpent",
@@ -351,9 +332,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32[]",
+        internalType: "uint256[]",
         name: "_nullifierHashes",
-        type: "bytes32[]",
+        type: "uint256[]",
       },
     ],
     name: "isSpentArray",
@@ -396,9 +377,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "nullifiers",
@@ -443,9 +424,9 @@ const _abi = [
     name: "roots",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -467,19 +448,19 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_l1root",
-        type: "bytes32",
+        type: "uint256",
       },
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_l2root",
-        type: "bytes32",
+        type: "uint256",
       },
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_nullifier",
-        type: "bytes32",
+        type: "uint256",
       },
       {
         internalType: "address payable",
@@ -500,9 +481,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "_nullifier",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     name: "withdrawPending",
@@ -521,9 +502,9 @@ const _abi = [
     name: "zeros",
     outputs: [
       {
-        internalType: "bytes32",
+        internalType: "uint256",
         name: "",
-        type: "bytes32",
+        type: "uint256",
       },
     ],
     stateMutability: "pure",

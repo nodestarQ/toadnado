@@ -18,9 +18,9 @@
       "inputs": [
         {
           "indexed": true,
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "commitment",
-          "type": "bytes32"
+          "type": "uint256"
         },
         {
           "indexed": false,
@@ -49,9 +49,9 @@
         },
         {
           "indexed": false,
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "nullifier",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "PendingWithdrawal",
@@ -68,9 +68,9 @@
         },
         {
           "indexed": false,
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "nullifier",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "Withdrawal",
@@ -128,25 +128,6 @@
           "type": "uint256"
         }
       ],
-      "name": "commitmentLeafs",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
       "name": "commitments",
       "outputs": [
         {
@@ -161,9 +142,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "commitmentsTreeRoots",
@@ -206,9 +187,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_commitment",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "deposit",
@@ -240,9 +221,9 @@
       "name": "filledSubtrees",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -253,9 +234,9 @@
       "name": "getLastRoot",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -264,22 +245,22 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_left",
-          "type": "bytes32"
+          "type": "uint256"
         },
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_right",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "hashLeftRight",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "stateMutability": "pure",
@@ -288,9 +269,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_root",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "isKnownL1Root",
@@ -307,9 +288,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_root",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "isKnownL2Root",
@@ -326,9 +307,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_nullifierHash",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "isSpent",
@@ -345,9 +326,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32[]",
+          "internalType": "uint256[]",
           "name": "_nullifierHashes",
-          "type": "bytes32[]"
+          "type": "uint256[]"
         }
       ],
       "name": "isSpentArray",
@@ -390,9 +371,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "nullifiers",
@@ -437,9 +418,9 @@
       "name": "roots",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -461,19 +442,19 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_l1root",
-          "type": "bytes32"
+          "type": "uint256"
         },
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_l2root",
-          "type": "bytes32"
+          "type": "uint256"
         },
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_nullifier",
-          "type": "bytes32"
+          "type": "uint256"
         },
         {
           "internalType": "address payable",
@@ -494,9 +475,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "_nullifier",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "name": "withdrawPending",
@@ -515,9 +496,9 @@
       "name": "zeros",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "uint256",
           "name": "",
-          "type": "bytes32"
+          "type": "uint256"
         }
       ],
       "stateMutability": "pure",
