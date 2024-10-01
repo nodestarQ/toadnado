@@ -94,21 +94,18 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         uint256 _root,
         uint256 _nullifier,
         address _recipient,
-        uint256 _chainId
+        uint256 _chainId,
+        uint256 _amount
     ) internal pure returns (bytes32[] memory) {
 
-        bytes32[] memory publicInputs = new bytes32[](4);
+        bytes32[] memory publicInputs = new bytes32[](5);
         publicInputs[0] = bytes32(_root);
         publicInputs[1] = bytes32(_nullifier);
         publicInputs[2] = bytes32(uint256(uint160(bytes20(_recipient))));
         publicInputs[3] = bytes32(_chainId);
+        publicInputs[4] = bytes32(_amount);
         return publicInputs;
     }
-
-    function _processDeposit() internal {
-        require(msg.value == denomination,"Please send `mixDenomination` ETH along with transaction");
-    }
-
     // function _processWithdraw(address payable _recipient , bytes32 _nullifier) internal {
     //     require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
     //     emit Withdrawal(_recipient, _nullifier);
@@ -116,9 +113,8 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
     // }
 
 
-    function _processWithdraw(address payable _recipient, uint256 _nullifier) internal {
+    function _processWithdraw(address payable _recipient, uint256 _nullifier, uint256 _amount) internal {
         require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
-        uint256 _amount = denomination; // this should be a input when toadnado is able to handle any size deposits 
         if ((address(this).balance - ethPendingWithdrawals) >= _amount) {
             emit Withdrawal(_recipient, _nullifier);
             _recipient.transfer(_amount);
@@ -140,17 +136,17 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         emit Withdrawal(withdrawal.recipient, _nullifier);
     }
 
-    function deposit(uint256 _commitment) external payable nonReentrant {
+    function deposit(uint256 _preCommitment) external payable nonReentrant {
+        uint256 amount = msg.value;
+        uint256 commitment = PoseidonT3.hash([_preCommitment, amount]);
         require(
-            !commitments[_commitment],
+            !commitments[commitment],
             "The commitment has already been submitted"
         );
-        uint32 insertedIndex = _insert(_commitment);
-        commitments[_commitment] = true;
+        uint32 insertedIndex = _insert(commitment);
+        commitments[commitment] = true;
 
-        _processDeposit();
-
-        emit Deposit(_commitment, insertedIndex, block.timestamp);
+        emit Deposit(commitment, insertedIndex, block.timestamp);
     }
 
     // bridging functions
@@ -167,6 +163,7 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         uint256 _l2root,
         uint256 _nullifier,
         address payable _recipient,
+        uint256 _amount,
         bytes calldata snarkProof
     ) external payable nonReentrant {
         require(!nullifiers[_nullifier], "The note has been already spent");
@@ -180,7 +177,8 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
             metaRoot,
             _nullifier,
             _recipient,
-            chainid
+            chainid,
+            _amount
         );
 
         if (!IVerifier(verifier).verify(snarkProof, publicInputs)) {
@@ -188,6 +186,6 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         }
 
         nullifiers[_nullifier] = true;
-        _processWithdraw(_recipient, _nullifier);
+        _processWithdraw(_recipient, _nullifier,_amount);
     }
 }

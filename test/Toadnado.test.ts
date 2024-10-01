@@ -2,14 +2,13 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { time, setCode } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
-import { getWithdrawCalldata , hashCommitment, getAllCommitments, randomWithinFieldLimit} from "../scripts/proofFromCommitments"
+import { getWithdrawCalldata , hashCommitment, getAllCommitments, randomWithinFieldLimit,hashPreCommitment} from "../scripts/proofFromCommitments"
 import { ethers } from "ethers";
 
 import { ToadnadoL1,ToadnadoL2,L1SLOADmock, ScrollMessengerMock  } from "../typechain-types";
 
 const MERKLE_TREE_HEIGHT = 5n;
-const DENOMINATION = BigInt((10 ** 18) / 100); //0.01eth
-
+const BRIDGE_AMOUNT = BigInt((1 / 100) * 10**18); //0.01eth
 
 //https://docs.scroll.io/en/developers/scroll-contracts/#scroll-contracts
 const IS_MAINNET = true
@@ -30,15 +29,16 @@ async function deployPoseidon() {
 // deposits and also updates state in the L1SLOADmock
 async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: bigint) {
   //generate secrets
-  const secret = randomWithinFieldLimit()
-  const nullifierPreimage = randomWithinFieldLimit()
+  const secret = BigInt("0x16b328d0f5bf0e54821aa99bc48be7db5e6d2f58ea2e50f47cf4ee6403dd4a59") //randomWithinFieldLimit()
+  const nullifierPreimage = BigInt("0x2946f2ea22e64f0a2e6ad55e72db98d52ab7c18657e87c42133546937fb90478")//randomWithinFieldLimit()
 
   // hash
-  const commitmentHash = hashCommitment(nullifierPreimage, secret, chainId)
+  const preCommitmentHash = hashPreCommitment(nullifierPreimage, secret, chainId)
+  const commitmentHash = hashCommitment(preCommitmentHash, BRIDGE_AMOUNT)
 
   // do deposit
   await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
-  const tx = await (await Toadnado.deposit(commitmentHash, { value: DENOMINATION })).wait(1)
+  const tx = await (await Toadnado.deposit(preCommitmentHash, { value: BRIDGE_AMOUNT })).wait(1)
 
   // "bridge" currentRootIndex to L1SLOADmock
   // note this also happens when using ToadnadoL2 and that should not happen. But doest matter for now since we never ask L1SLOAD for that contract anyway
@@ -52,7 +52,7 @@ async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: 
   await L1SLOADmock.setMockedSlot(Toadnado.target as ethers.AddressLike, L1RootMappingSlotMapping, ethers.toBeHex(latestRoot) )
   await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
 
-  return { secret, nullifierPreimage, commitmentHash, tx }
+  return { secret, nullifierPreimage, commitmentHash,preCommitmentHash, tx }
 }
 
 // For the mock contracts to deploy to a specific address
@@ -92,8 +92,9 @@ describe("Toadnado", function () {
     expect(await UltraVerifier.getVerificationKeyHash()).to.not.equal("0x0");
 
     // deploy the toads
-    const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L1_SCROLL_MESSENGER], { value: 0n, libraries: { PoseidonT3: deployedPoseidonT3.target,} });
-    const ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [UltraVerifier.target, DENOMINATION, MERKLE_TREE_HEIGHT, L2_SCROLL_MESSENGER, ToadnadoL1.target], { value: 0n, libraries: { PoseidonT3: deployedPoseidonT3.target,} });
+    const ToadnadoL1 = await hre.ethers.deployContract("ToadnadoL1", [UltraVerifier.target, BRIDGE_AMOUNT, MERKLE_TREE_HEIGHT, L1_SCROLL_MESSENGER], { value: 0n, libraries: { PoseidonT3: deployedPoseidonT3.target,} });
+    const ToadnadoL2 = await hre.ethers.deployContract("ToadnadoL2", [UltraVerifier.target, BRIDGE_AMOUNT, MERKLE_TREE_HEIGHT, L2_SCROLL_MESSENGER, ToadnadoL1.target], { value: 0n, libraries: { PoseidonT3: deployedPoseidonT3.target,} });
+    
     await ToadnadoL1.setL2ScrollToadnadoAddress(ToadnadoL2.target);
     console.log("ToadnadoL1 deployed at:", ToadnadoL1.target)
     console.log("ToadnadoL2 deployed at:", ToadnadoL2.target)
@@ -106,9 +107,9 @@ describe("Toadnado", function () {
 
     const chainId = (await hre.ethers.provider.getNetwork()).chainId
     const balanceBeforeDeposit = await hre.ethers.provider.getBalance(alicePublic.address)
-    const { secret, nullifierPreimage, commitmentHash, tx:depositTx } = await deposit(ToadnadoL1AlicePublic, L1SLOADmock, chainId)
+    const { secret, nullifierPreimage, preCommitmentHash,commitmentHash, tx:depositTx,  } = await deposit(ToadnadoL1AlicePublic, L1SLOADmock, chainId)
     const balanceAfterDeposit = await hre.ethers.provider.getBalance(alicePublic.address)
-    expect(balanceAfterDeposit).to.eq(balanceBeforeDeposit - DENOMINATION - depositTx!.fee)
+    expect(balanceAfterDeposit).to.eq(balanceBeforeDeposit - BRIDGE_AMOUNT - depositTx!.fee)
 
     // event scanning to get the leaves of the merkle trees
     const {commitmentsL1, commitmentsL2} = await getAllCommitments(ToadnadoL1, ToadnadoL2)
@@ -127,14 +128,13 @@ describe("Toadnado", function () {
       recipient,
       snarkProof,
       publicInputs
-    } = await getWithdrawCalldata(alicePrivate.address, secret, nullifierPreimage, chainId, commitmentIndex, commitmentsL1, commitmentsL2, true)
-    
+    } = await getWithdrawCalldata(alicePrivate.address, secret, nullifierPreimage, chainId, BRIDGE_AMOUNT, commitmentIndex, commitmentsL1, commitmentsL2, true)
     // verify of chain (sanity check)
     const verifiedOnchain = await UltraVerifier.verify(snarkProof, publicInputs)
     console.log({ verifiedOnchain })
 
     //try withdraw
-    const withdrawTx = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, snarkProof)).wait(1);
+    const withdrawTx = await (await ToadnadoL2AlicePrivate.withdraw(l1Root, l2Root, nullifierHash, recipient, BRIDGE_AMOUNT, snarkProof)).wait(1);
 
     // it went pending so we need to bridge
     // request bridgeIng tx
@@ -148,19 +148,18 @@ describe("Toadnado", function () {
     // now Toadnado on L2 called `bridgeEth()` on the L1 contract and eth is now in the L2ScrollMessengerMock
     // so we check that the eth is indeed there ready to fund the L2 contract 
     const L2ScrollMessengerMockBalance = await hre.ethers.provider.getBalance(L2ScrollMessengerMock.target);
-    expect(L2ScrollMessengerMockBalance).to.eq(DENOMINATION, "ToadnadoL1.bridgeEth didnt bridge over DENOMINATION to the L2 messenger");
+    expect(L2ScrollMessengerMockBalance).to.eq(BRIDGE_AMOUNT, "ToadnadoL1.bridgeEth didnt bridge over DENOMINATION to the L2 messenger");
 
-    // now we relay the message and finnaly put the eth on L2
+    // now we relay the message and finally put the eth on L2
     [,,message,] = await L1ScrollMessengerMock.getLastMessage(); // ignore this, this normally would be the api call the proof and shit https://docs.scroll.io/en/developers/guides/scroll-messenger-cross-chain-interaction/#relay-the-message-when-sending-from-l2-to-l1
-    await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, DENOMINATION, 0n, message, [0n,"0x00"]) // also ignore red squiggles idk typescript :/
-
+    await L2ScrollMessengerMock.relayMessageWithProof(ToadnadoL1.target,ToadnadoL2.target, BRIDGE_AMOUNT, 0n, message, [0n,"0x00"]) // also ignore red squiggles idk typescript :/
     //claim pending withdraw
     const balanceBeforeWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
     const withdrawPendingTx = await (await ToadnadoL2AlicePrivate.withdrawPending(nullifierHash)).wait(1)
 
     // check balance
     const balanceAfterWithdraw = await hre.ethers.provider.getBalance(alicePrivate.address)
-    expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + DENOMINATION - withdrawPendingTx!.fee)
+    expect(balanceAfterWithdraw).to.eq(balanceBeforeWithdraw + BRIDGE_AMOUNT - withdrawPendingTx!.fee)
     // --------------------------------------------------------
   });
 
