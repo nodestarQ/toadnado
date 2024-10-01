@@ -194,7 +194,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "_commitment",
+        name: "_preCommitment",
         type: "uint256",
       },
     ],
@@ -466,6 +466,11 @@ const _abi = [
         internalType: "address payable",
         name: "_recipient",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
       },
       {
         internalType: "bytes",

@@ -140,7 +140,14 @@ export interface ToadnadoInterface extends Interface {
   encodeFunctionData(functionFragment: "verifier", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
-    values: [BigNumberish, BigNumberish, BigNumberish, AddressLike, BytesLike]
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawPending",
@@ -334,7 +341,11 @@ export interface Toadnado extends BaseContract {
 
   denomination: TypedContractMethod<[], [bigint], "view">;
 
-  deposit: TypedContractMethod<[_commitment: BigNumberish], [void], "payable">;
+  deposit: TypedContractMethod<
+    [_preCommitment: BigNumberish],
+    [void],
+    "payable"
+  >;
 
   ethPendingWithdrawals: TypedContractMethod<[], [bigint], "view">;
 
@@ -396,6 +407,7 @@ export interface Toadnado extends BaseContract {
       _l2root: BigNumberish,
       _nullifier: BigNumberish,
       _recipient: AddressLike,
+      _amount: BigNumberish,
       snarkProof: BytesLike
     ],
     [void],
@@ -441,7 +453,7 @@ export interface Toadnado extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "deposit"
-  ): TypedContractMethod<[_commitment: BigNumberish], [void], "payable">;
+  ): TypedContractMethod<[_preCommitment: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "ethPendingWithdrawals"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -503,6 +515,7 @@ export interface Toadnado extends BaseContract {
       _l2root: BigNumberish,
       _nullifier: BigNumberish,
       _recipient: AddressLike,
+      _amount: BigNumberish,
       snarkProof: BytesLike
     ],
     [void],
