@@ -15,7 +15,7 @@ contract ToadnadoL1 is Toadnado, Ownable {
     address public l2ScrollToadnadoAddress; 
     address public immutable l1ScrollMessenger;
 
-    mapping(bytes32 => bool) L2RootsCache;
+    mapping(uint256 => bool) L2RootsCache;
 
     constructor(
         address _verifier,
@@ -32,18 +32,18 @@ contract ToadnadoL1 is Toadnado, Ownable {
     }
 
     //TODO do the array style history like in roots mapping in merkleTree.sol
-    function addL2Root(bytes32 _root) public {
+    function addL2Root(uint256 _root) public {
         require(msg.sender == l1ScrollMessenger,"function not called by l1ScrollMessenger");
         require(IScrollMessenger(l1ScrollMessenger).xDomainMessageSender() == l2ScrollToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
         L2RootsCache[_root] = true;
     }
 
     // overides
-    function isKnownL1Root(bytes32 _root) public view override returns (bool) {
+    function isKnownL1Root(uint256 _root) public view override returns (bool) {
         return isKnownRoot(_root);
     }
 
-    function isKnownL2Root(bytes32 _root) public view override returns (bool) {
+    function isKnownL2Root(uint256 _root) public view override returns (bool) {
         return L2RootsCache[_root];
     }
 

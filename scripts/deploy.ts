@@ -14,7 +14,7 @@ import { ChildProcess } from "child_process";
 const IS_MAINNET = hre.network.name === "mainnet"
 
 const L1Name: string = IS_MAINNET ? 'mainnet' : 'sepolia'
-const L2Name: string = IS_MAINNET ? 'scroll': 'scrollSepolia'
+const L2Name: string = IS_MAINNET ? 'scroll': 'l1sload' //'l1sload' 'scrollSepolia'
 
 const MERKLE_TREE_HEIGHT = 5n;
 const DENOMINATION = BigInt((10 ** 18) / 100); //0.01eth
@@ -41,23 +41,26 @@ async function deploy(modulePath:string,moduleName:string, networkName:string, p
     const childProcess = exec(command)
 
     const output:string[] = [];
+    const errors:string[] = [];
     childProcess?.stdout?.on("data", (d) =>{output.push(d);console.log(d)});
+    childProcess?.stderr?.on("data", (d) =>{errors.push(d)});
     
     await delay(1000);
     childProcess.stdin!.write('y\n') //it asks "would you like to deploy to chain x" Yes ofc i want that!!
-    
     await new Promise( (resolve) => {childProcess.on('close', resolve)})
+    if (childProcess.exitCode === 1) {
+        errors.forEach((e)=>console.error("ERROR from hardhat: "+e))
+        throw Error("hardhat had a error")
+    }
 
-    const lasMessage = output[output.length-1]
-    console.log(lasMessage)
+    const lastMessage = output[output.length-1]
+    console.log(lastMessage)
     const moduleAddresses:any = {}
-    for (const line of lasMessage.split("\n")) {
+    for (const line of lastMessage.split("\n")) {
         if (line.startsWith(moduleName)) {
             const words = line.split(" ")
             moduleAddresses[words[0].replace(moduleName+"#",'')] = words[2]
-
         }
-
     }
     console.log({moduleAddresses})
     await fs.rm(tempParametersFile)
@@ -69,7 +72,7 @@ async function main() {
     console.log(`deploying contracts on ${L1Name}`)
 
     const toadnadoL1ModuleArgs = {denomination: DENOMINATION, merkleTreeHeight: MERKLE_TREE_HEIGHT, l1ScrollMessenger: L1_SCROLL_MESSENGER}
-    //await hre.switchNetwork(L1Name);
+    await hre.switchNetwork(L1Name);
     // const {toadnadoL1, ultraVerifier: ultraVerifierL1} = await hre.ignition.deploy(
     //     ToadnadoL1Module, 
     //     {parameters: {ToadnadoL1Module: {...toadnadoL1ModuleArgs}},}

@@ -61,6 +61,10 @@ declare module "hardhat/types/runtime" {
       name: "ToadnadoL2",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ToadnadoL2__factory>;
+    getContractFactory(
+      name: "PoseidonT3",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PoseidonT3__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -122,6 +126,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ToadnadoL2>;
+    getContractAt(
+      name: "PoseidonT3",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PoseidonT3>;
 
     deployContract(
       name: "Ownable",
@@ -171,6 +180,10 @@ declare module "hardhat/types/runtime" {
       name: "ToadnadoL2",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ToadnadoL2>;
+    deployContract(
+      name: "PoseidonT3",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PoseidonT3>;
 
     deployContract(
       name: "Ownable",
@@ -232,6 +245,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ToadnadoL2>;
+    deployContract(
+      name: "PoseidonT3",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PoseidonT3>;
 
     // default types
     getContractFactory(
