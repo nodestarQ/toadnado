@@ -33,7 +33,6 @@ export interface ToadnadoL1Interface extends Interface {
       | "commitments"
       | "commitmentsTreeRoots"
       | "currentRootIndex"
-      | "denomination"
       | "deposit"
       | "ethPendingWithdrawals"
       | "filledSubtrees"
@@ -95,10 +94,6 @@ export interface ToadnadoL1Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "currentRootIndex",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "denomination",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -208,10 +203,6 @@ export interface ToadnadoL1Interface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "currentRootIndex",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "denomination",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
@@ -412,8 +403,6 @@ export interface ToadnadoL1 extends BaseContract {
 
   currentRootIndex: TypedContractMethod<[], [bigint], "view">;
 
-  denomination: TypedContractMethod<[], [bigint], "view">;
-
   deposit: TypedContractMethod<
     [_preCommitment: BigNumberish],
     [void],
@@ -535,9 +524,6 @@ export interface ToadnadoL1 extends BaseContract {
   ): TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
   getFunction(
     nameOrSignature: "currentRootIndex"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "denomination"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "deposit"
