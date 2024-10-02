@@ -17,15 +17,22 @@ const scrollscanApiKey = vars.get("SCROLLSCAN_KEY")
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.23",
-    settings: {
-      evmVersion: "shanghai",
-      optimizer: {
-        enabled: true,
-        // https://docs.soliditylang.org/en/latest/using-the-compiler.html#optimizer-options
-        runs: 200,
+    compilers: [
+      {
+        version: "0.7.6"
       },
-    },
+      {
+        version: "0.8.23",
+        settings: {
+          evmVersion: "shanghai",
+          optimizer: {
+            enabled: true,
+            // https://docs.soliditylang.org/en/latest/using-the-compiler.html#optimizer-options
+            runs: 200,
+          },
+        },
+      }
+    ],
   },
   defaultNetwork: "localhost",
   networks: {
@@ -42,7 +49,8 @@ const config: HardhatUserConfig = {
       accounts: [deployerPrivateKey],
     },
     sepolia: {
-      url: `https://eth-sepolia.g.alchemy.com/v2/${alchemyProviderApiKey}`,
+      url: "https://sepolia.infura.io/v3/2LPfLOYBTHSHfLWYSv8xib2Y7OA",
+      //`https://eth-sepolia.g.alchemy.com/v2/${alchemyProviderApiKey}`,
       accounts: [deployerPrivateKey],
     },
     l1sload: {

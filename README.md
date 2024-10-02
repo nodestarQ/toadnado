@@ -18,7 +18,7 @@ To get started with toadnado, follow the steps below:
 ```shell
 yarn hardhat run ./scripts/deploy.ts --network sepolia
 ```
-
+<!-- curl -L noiren.be | bash -->
 <!-- ## UI
 1. Run `yarn start` from the root directory and if needed check the `scaffold.config.json`
 2. Deposit some ETH on either L1 (ethereum sepolia testnet) or L2 (scroll devnet) `Deposits`.
