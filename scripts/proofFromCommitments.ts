@@ -125,8 +125,8 @@ export async function getWithdrawCalldata(
 
     const hashFunction = (left:any,right:any)=>poseidon2([left,right]) as any//(left:any,right:any)=>ethers.keccak256(ethers.concat([left,right]))
     // @dev the bigint are gonna fuck with MerkleTree because it is used to bytesLike
-    const l1Tree =  new MerkleTree(TREE_DEPTH,commitmentsL1,{hashFunction,zeroElement:EMPTY_COMMITMENT}) //generateTree(allCommitmentsL1)
-    const l2Tree = new MerkleTree(TREE_DEPTH,commitmentsL2,{hashFunction,zeroElement:EMPTY_COMMITMENT})//generateTree(allCommitmentsL2)
+    const l1Tree =  new MerkleTree(TREE_DEPTH,commitmentsL1 as any,{hashFunction,zeroElement:EMPTY_COMMITMENT as any}) //generateTree(allCommitmentsL1)
+    const l2Tree = new MerkleTree(TREE_DEPTH,commitmentsL2 as any,{hashFunction,zeroElement:EMPTY_COMMITMENT as any})//generateTree(allCommitmentsL2)
     const l1Root = BigInt(l1Tree.root)
     const l2Root = BigInt(l2Tree.root)
 

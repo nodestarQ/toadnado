@@ -19,10 +19,9 @@ contract ToadnadoL1 is Toadnado, Ownable {
 
     constructor(
         address _verifier,
-        uint256 _denomination,
         uint32 _merkleTreeHeight,
         address _l1ScrollMessenger
-    ) Toadnado(_verifier, _denomination, _merkleTreeHeight) Ownable(msg.sender) {
+    ) Toadnado(_verifier, _merkleTreeHeight) Ownable(msg.sender) {
         l1ScrollMessenger = _l1ScrollMessenger;
     }
 

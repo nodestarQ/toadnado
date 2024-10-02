@@ -14,11 +14,10 @@ contract ToadnadoL2 is Toadnado  {
 
     constructor(
         address _verifier,
-        uint256 _denomination,
         uint32 _merkleTreeHeight,
         address _l2ScrollMessenger,
         address _l1ToadnadoAddress
-    ) Toadnado(_verifier, _denomination, _merkleTreeHeight) {
+    ) Toadnado(_verifier, _merkleTreeHeight) {
         l2ScrollMessenger = _l2ScrollMessenger;
         l1ToadnadoAddress = _l1ToadnadoAddress;
     }

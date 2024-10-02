@@ -16,21 +16,15 @@ error VerificationFailed();
 abstract contract Toadnado is MerkleTree, ReentrancyGuard {
     constructor(
         address _verifier,
-        uint256 _denomination,
         uint32 _merkleTreeHeight
     ) MerkleTree(_merkleTreeHeight) {
-        require(_denomination > 0, "denomination should be greater than 0");
         verifier = _verifier;
-        denomination = _denomination;
     }
 
     event Deposit(uint256 indexed commitment, uint32 leafIndex, uint256 timestamp);
 
     event Withdrawal(address recipient, uint256 nullifier);
     event PendingWithdrawal(address recipient, uint256 nullifier);
-
-    //IVerifier public immutable verifier;
-    uint256 public immutable denomination;
 
     // contract that verifies the zkSnark proof
     address public immutable verifier;
@@ -106,12 +100,6 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
         publicInputs[4] = bytes32(_amount);
         return publicInputs;
     }
-    // function _processWithdraw(address payable _recipient , bytes32 _nullifier) internal {
-    //     require(msg.value == 0,"Message value is supposed to be zero for ETH instance");
-    //     emit Withdrawal(_recipient, _nullifier);
-    //     _recipient.transfer(denomination);
-    // }
-
 
     function _processWithdraw(address payable _recipient, uint256 _nullifier, uint256 _amount) internal {
         require(msg.value == 0,"Message value is supposed to be zero for ETH instance");

@@ -10,11 +10,10 @@ const ToadnadoL1Module = buildModule("ToadnadoL1Module", (m) => {
         value: 0n,
     });
 
-    const denomination = m.getParameter("denomination")
     const merkleTreeHeight = m.getParameter("merkleTreeHeight")
     const l1ScrollMessenger = m.getParameter("l1ScrollMessenger")
 
-    const toadnadoL1 = m.contract("ToadnadoL1", [ultraVerifier, denomination, merkleTreeHeight, l1ScrollMessenger], {
+    const toadnadoL1 = m.contract("ToadnadoL1", [ultraVerifier, merkleTreeHeight, l1ScrollMessenger], {
         value: 0n,
     });
 
