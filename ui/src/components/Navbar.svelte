@@ -18,6 +18,18 @@
         wallet.switch(0)
       }
     }
+
+    $: {
+      if($wallet.chainId == ChainIdL1){
+        changeTheme("toadnadoL1")
+      }else{
+        changeTheme("toadnadoL2")
+      }
+    } 
+
+    function changeTheme(newTheme:string) {
+      document.documentElement.setAttribute('data-theme', newTheme);
+    }
     
   </script>
   

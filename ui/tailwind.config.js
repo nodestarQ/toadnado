@@ -12,7 +12,14 @@ export default {
   daisyui: {
     themes: [
       {
-        toadnado: {
+        toadnadoL1: {
+          "primary": "#3b82f6",  
+          "secondary": "#60a5fa",  
+          "accent": "#93c5fd",  
+          "neutral": "#1e3a8a", 
+          "base-100": "#1e293b"  
+        },
+        toadnadoL2: {
           "primary": "#84cc16",
           "secondary": "#f6d860",
           "accent": "#bafbc3",
