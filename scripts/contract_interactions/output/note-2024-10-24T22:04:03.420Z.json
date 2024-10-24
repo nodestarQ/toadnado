@@ -1,0 +1,8 @@
+{
+  "commitmentHash": "0x024e07797a08f3344dde49ab45103d2a62145ecdb77e29e2d51a039c804bd7c5",
+  "secret": "0x152bdab8fb1086ae2631a1294bf010d312f45222cb30fd4243aa5561802ec076",
+  "nullifierPreimage": "0x10eaf9a307eb3a3c8e83d82b444e02eddab23d0eb7387b8e1117de459f7d80bc",
+  "withdrawChainId": 11155111,
+  "depositChainId": 11155111,
+  "amount": 1000000000000000
+}
