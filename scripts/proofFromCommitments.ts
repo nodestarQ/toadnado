@@ -67,7 +67,7 @@ export function hashCommitment(preCommitmentHash: bigint, amount: bigint) : bigi
     return poseidon2([preCommitmentHash, amount])
 }
 
-export async function getAllCommitments(ToadnadoL1:ToadnadoL1,ToadnadoL2:ToadnadoL2, startBlock=0, blocksPerScan=100, maxSimultaneousReqs=5, lastBlock="latest") {
+export async function getAllCommitments(ToadnadoL1:ToadnadoL1,ToadnadoL2:ToadnadoL2, startBlock=0, blocksPerScan=100, maxSimultaneousReqs=2, lastBlock="latest") {
     const depositEventFilter = ToadnadoL1.filters.Deposit()
 
     const L1events = await eventScanInChunks(ToadnadoL1,depositEventFilter,startBlock,blocksPerScan,maxSimultaneousReqs,lastBlock)
@@ -77,6 +77,15 @@ export async function getAllCommitments(ToadnadoL1:ToadnadoL1,ToadnadoL2:Toadnad
     const commitmentsL2 = L2events.map((event) => ethers.toBigInt(event.topics[1]))
 
     return {commitmentsL1, commitmentsL2}
+
+}
+
+export async function getCommitments(Toadnado:ToadnadoL1 | ToadnadoL2 | ethers.Contract, startBlock=0, blocksPerScan=100, maxSimultaneousReqs=2, lastBlock="latest") {
+    const depositEventFilter = Toadnado.filters.Deposit()
+
+    const events = await eventScanInChunks(Toadnado,depositEventFilter,startBlock,blocksPerScan,maxSimultaneousReqs,lastBlock)
+    const commitments = events.map((event) => ethers.toBigInt(event.topics[1]))
+    return commitments
 
 }
 
@@ -106,17 +115,20 @@ export function hashMetaRoot(l1Root:bigint,l2Root:bigint) {
     return poseidon2([l1Root,l2Root])
 }
 
+
+    //TODO double check the l1Root and l2Root to be inside of Toadnado
 export async function getWithdrawCalldata(
+    ToadnadoL1: ToadnadoL1 | ethers.Contract,
+    ToadnadoL2: ToadnadoL2 | ethers.Contract,
     recipient:string, // <-- address
     secret:bigint, // string = ether.bytesLike. typescript sucks 
     nullifierHashPreImage:bigint, 
     chainId: bigint ,
     amount: bigint,
-    commitmentIndex:number, 
-    commitmentsL1:bigint[],
-    commitmentsL2:bigint[],
-    commitmentIsFromL1:boolean,
+    commitmentFromL1:boolean,
 ) { 
+
+    
     // get metaRoot and trees ---------------------------------------------\
     // you can remove fillCommitmentsWithZeroValue
 
@@ -125,22 +137,29 @@ export async function getWithdrawCalldata(
 
     const hashFunction = (left:any,right:any)=>poseidon2([left,right]) as any//(left:any,right:any)=>ethers.keccak256(ethers.concat([left,right]))
     // @dev the bigint are gonna fuck with MerkleTree because it is used to bytesLike
-    const l1Tree =  new MerkleTree(TREE_DEPTH,commitmentsL1 as any,{hashFunction,zeroElement:EMPTY_COMMITMENT as any}) //generateTree(allCommitmentsL1)
-    const l2Tree = new MerkleTree(TREE_DEPTH,commitmentsL2 as any,{hashFunction,zeroElement:EMPTY_COMMITMENT as any})//generateTree(allCommitmentsL2)
-    const l1Root = BigInt(l1Tree.root)
-    const l2Root = BigInt(l2Tree.root)
+    
+    // nullifier hash and commitment ---------------------------------------
+    const preCommitmentHash = hashPreCommitment(nullifierHashPreImage, secret, chainId)
+    const commitmentHash = hashCommitment(preCommitmentHash, amount)
+    const nullifierHash = poseidon1([nullifierHashPreImage])
+
+
+    const commitments = commitmentFromL1 ? await getCommitments(ToadnadoL1,0) : await getCommitments(ToadnadoL2,0)
+    const commitmentIndex = commitments.findIndex((leaf) => ethers.toBigInt(leaf) === commitmentHash)
+    const merkleTree =  new MerkleTree(TREE_DEPTH,commitments as any,{hashFunction,zeroElement:EMPTY_COMMITMENT as any}) //generateTree(allCommitmentsL1)
+    const calculatedRoot = BigInt( merkleTree.root )
+
+    // to prevent issues with merkle path not leading up the same root if the provided root is old
+    // TODO check that calculatedRoot is a known root
+    const l1Root = commitmentFromL1 ? calculatedRoot : await ToadnadoL1.getLastKnowL1Root()   
+    const l2Root = commitmentFromL1 ?  await ToadnadoL2.getLastKnowL2Root() : calculatedRoot
 
     const metaRoot = hashMetaRoot( l1Root,l2Root) //ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [l1Root,l2Root]))
 
-    const rootOtherLayer = commitmentIsFromL1 ? l2Root  :  l1Root  
-
-    // nullifier hash and commitment ---------------------------------------
-    const nullifierHash = poseidon1([nullifierHashPreImage])
-    const preCommitmentHash = hashPreCommitment(nullifierHashPreImage,secret,chainId)
-    const commitmentHash  = hashCommitment(preCommitmentHash, amount) //ethers.keccak256(abiCoder.encode(["bytes32", "bytes32", "uint256"], [nullifierHashPreImage,secret,chainId])) //TODO make function of this 
+    const rootOtherLayer = commitmentFromL1 ? l2Root  :  l1Root  
 
     // get merkle proof
-    const proofPath = commitmentIsFromL1 ? l1Tree.path(commitmentIndex) : l2Tree.path(commitmentIndex)
+    const proofPath = merkleTree.path(commitmentIndex)
     const hashPath = proofPath.pathElements.map((hash:any)=>ethers.zeroPadValue(ethers.toBeHex(hash), 32)) // tree.path().proofPath returns a BigInt so we convert to ethers.BytesLike string
     const hashPathBools = indexToPathBools(BigInt(commitmentIndex), TREE_DEPTH)
 
@@ -159,7 +178,7 @@ export async function getWithdrawCalldata(
         hash_path:              hashPath.map((v)=>ethers.toBeHex(v)) as InputValue,         // priv [Field;TREE_DEPTH],
         hash_path_bools:        hashPathBools,                                              // [bool; TREE_DEPTH],
         root_other_layer:       ethers.toBeHex(rootOtherLayer),                             // Field
-        root_other_is_right:    commitmentIsFromL1                                          // Field
+        root_other_is_right:    commitmentFromL1                                          // Field
     }
     const snarkProofData = await NOIR.generateProof(inputs)
     

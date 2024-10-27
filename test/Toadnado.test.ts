@@ -2,7 +2,7 @@ import { expect } from "chai";
 import hre from "hardhat";
 import { time, setCode } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
-import { getWithdrawCalldata , hashCommitment, getAllCommitments, randomWithinFieldLimit,hashPreCommitment} from "../scripts/proofFromCommitments"
+import { getWithdrawCalldata , hashCommitment, getAllCommitments, randomWithinFieldLimit,hashPreCommitment, getCommitments} from "../scripts/proofFromCommitments"
 import { ethers } from "ethers";
 
 import { ToadnadoL1,ToadnadoL2,L1SLOADmock, ScrollMessengerMock  } from "../typechain-types";
@@ -33,7 +33,7 @@ async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: 
 
   // hash
   const preCommitmentHash = hashPreCommitment(nullifierPreimage, secret, chainId)
-  const commitmentHash = hashCommitment(preCommitmentHash, bridgeAmount)
+  // const commitmentHash = hashCommitment(preCommitmentHash, bridgeAmount) <- is hashed onchain
 
   // do deposit
   await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
@@ -51,7 +51,7 @@ async function deposit(Toadnado: ToadnadoL1, L1SLOADmock: L1SLOADmock, chainId: 
   await L1SLOADmock.setMockedSlot(Toadnado.target as ethers.AddressLike, L1RootMappingSlotMapping, ethers.toBeHex(latestRoot) )
   await  hre.ethers.provider.send("hardhat_setNextBlockBaseFeePerGas", [BENCH_MARK_GAS_PRICE]) 
 
-  return { secret, nullifierPreimage, commitmentHash,preCommitmentHash, tx }
+  return { secret, nullifierPreimage, tx }
 }
 
 // For the mock contracts to deploy to a specific address
@@ -107,14 +107,9 @@ describe("Toadnado", function () {
 
     const chainId = (await hre.ethers.provider.getNetwork()).chainId
     const balanceBeforeDeposit = await hre.ethers.provider.getBalance(alicePublic.address)
-    const { secret, nullifierPreimage, preCommitmentHash,commitmentHash, tx:depositTx,  } = await deposit(ToadnadoL1AlicePublic, L1SLOADmock, chainId, bridgeAmount)
+    const { secret, nullifierPreimage, tx:depositTx,  } = await deposit(ToadnadoL1AlicePublic, L1SLOADmock, chainId, bridgeAmount)
     const balanceAfterDeposit = await hre.ethers.provider.getBalance(alicePublic.address)
     expect(balanceAfterDeposit).to.eq(balanceBeforeDeposit - bridgeAmount - depositTx!.fee)
-
-    // event scanning to get the leaves of the merkle trees
-    const {commitmentsL1, commitmentsL2} = await getAllCommitments(ToadnadoL1, ToadnadoL2)
-    const commitmentIndex = commitmentsL1.findIndex((leaf) => ethers.toBigInt(leaf) === commitmentHash)
-
 
     // withdraw ----------------------------------------------
     // alice now switches to her private wallet'
@@ -128,7 +123,17 @@ describe("Toadnado", function () {
       recipient,
       snarkProof,
       publicInputs
-    } = await getWithdrawCalldata(alicePrivate.address, secret, nullifierPreimage, chainId, bridgeAmount, commitmentIndex, commitmentsL1, commitmentsL2, true)
+    } = await getWithdrawCalldata(
+      ToadnadoL1,
+      ToadnadoL2,
+      alicePrivate.address, 
+      secret, 
+      nullifierPreimage, 
+      chainId, 
+      bridgeAmount,   
+      true
+    )
+
     // verify of chain (sanity check)
     const verifiedOnchain = await UltraVerifier.verify(snarkProof, publicInputs)
     console.log({ verifiedOnchain })
