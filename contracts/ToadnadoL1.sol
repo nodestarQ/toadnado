@@ -15,7 +15,10 @@ contract ToadnadoL1 is Toadnado, Ownable {
     address public l2ScrollToadnadoAddress; 
     address public immutable l1ScrollMessenger;
 
-    mapping(uint256 => bool) L2RootsCache;
+    mapping(uint256 => uint256) public l2RootsCache;
+    uint32 public currentL2RootsCacheIndex;
+
+    uint32 public constant L2_ROOT_HISTORY_SIZE = 30;
 
     constructor(
         address _verifier,
@@ -23,7 +26,10 @@ contract ToadnadoL1 is Toadnado, Ownable {
         address _l1ScrollMessenger
     ) Toadnado(_verifier, _merkleTreeHeight) Ownable(msg.sender) {
         l1ScrollMessenger = _l1ScrollMessenger;
+
+        l2RootsCache[0] = zeros(levels);
     }
+
 
     function setL2ScrollToadnadoAddress(address _l2ScrollToadnadoAddress)  public onlyOwner() {
       require(l2ScrollToadnadoAddress == address(0), "l2ScrollToadnadoAddress is already set");
@@ -34,7 +40,10 @@ contract ToadnadoL1 is Toadnado, Ownable {
     function addL2Root(uint256 _root) public {
         require(msg.sender == l1ScrollMessenger,"function not called by l1ScrollMessenger");
         require(IScrollMessenger(l1ScrollMessenger).xDomainMessageSender() == l2ScrollToadnadoAddress,"contract messaging from L2 is not the l2ToadnadoScrollAddress");
-        L2RootsCache[_root] = true;
+        
+        uint32 newRootIndex = (currentL2RootsCacheIndex + 1) % L2_ROOT_HISTORY_SIZE;
+        currentL2RootsCacheIndex = newRootIndex;
+        roots[newRootIndex] = _root;
     }
 
     // overides
@@ -43,7 +52,30 @@ contract ToadnadoL1 is Toadnado, Ownable {
     }
 
     function isKnownL2Root(uint256 _root) public view override returns (bool) {
-        return L2RootsCache[_root];
+        if (_root == 0) {
+            return false;
+        }
+        uint32 _currentRootIndex = currentL2RootsCacheIndex;
+        uint32 i = _currentRootIndex;
+        do {
+            if (_root == l2RootsCache[i]) {
+                return true;
+            }
+            if (i == 0) {
+                i = ROOT_HISTORY_SIZE;
+            }
+            i--;
+        } while (i != _currentRootIndex);
+        return false;
+    }
+
+    function getLastKnowL1Root() public view override returns (uint256) {
+        return roots[currentRootIndex];
+    }
+
+
+    function getLastKnowL2Root() public view override returns (uint256) {
+        return l2RootsCache[currentL2RootsCacheIndex];
     }
 
     function recieveBridgedEth() public payable override {

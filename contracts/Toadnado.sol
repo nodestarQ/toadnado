@@ -138,8 +138,11 @@ abstract contract Toadnado is MerkleTree, ReentrancyGuard {
     }
 
     // bridging functions
-    function isKnownL2Root(uint256 _root) public virtual returns(bool);
     function isKnownL1Root(uint256 _root) public virtual returns(bool);
+    function isKnownL2Root(uint256 _root) public virtual returns(bool);
+
+    function getLastKnowL1Root() public virtual returns(uint256); 
+    function getLastKnowL2Root() public virtual returns(uint256); 
 
     //TODO WARNING needs account logic in place to prevent griefers from constantly bridging back and forth and making USER FUND UNAVAILABLE
     function recieveBridgedEth() public payable virtual;
