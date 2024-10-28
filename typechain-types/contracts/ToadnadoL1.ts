@@ -26,16 +26,20 @@ import type {
 export interface ToadnadoL1Interface extends Interface {
   getFunction(
     nameOrSignature:
+      | "L2_ROOT_HISTORY_SIZE"
       | "ROOT_HISTORY_SIZE"
       | "addL2Root"
       | "bridgeDebt"
       | "bridgeEth"
       | "commitments"
       | "commitmentsTreeRoots"
+      | "currentL2RootsCacheIndex"
       | "currentRootIndex"
       | "deposit"
       | "ethPendingWithdrawals"
       | "filledSubtrees"
+      | "getLastKnowL1Root"
+      | "getLastKnowL2Root"
       | "getLastRoot"
       | "hashLeftRight"
       | "isKnownL1Root"
@@ -43,6 +47,7 @@ export interface ToadnadoL1Interface extends Interface {
       | "isSpent"
       | "isSpentArray"
       | "l1ScrollMessenger"
+      | "l2RootsCache"
       | "l2ScrollToadnadoAddress"
       | "levels"
       | "nextIndex"
@@ -69,6 +74,10 @@ export interface ToadnadoL1Interface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(
+    functionFragment: "L2_ROOT_HISTORY_SIZE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "ROOT_HISTORY_SIZE",
     values?: undefined
   ): string;
@@ -93,6 +102,10 @@ export interface ToadnadoL1Interface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "currentL2RootsCacheIndex",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "currentRootIndex",
     values?: undefined
   ): string;
@@ -107,6 +120,14 @@ export interface ToadnadoL1Interface extends Interface {
   encodeFunctionData(
     functionFragment: "filledSubtrees",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastKnowL1Root",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastKnowL2Root",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getLastRoot",
@@ -135,6 +156,10 @@ export interface ToadnadoL1Interface extends Interface {
   encodeFunctionData(
     functionFragment: "l1ScrollMessenger",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "l2RootsCache",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "l2ScrollToadnadoAddress",
@@ -187,6 +212,10 @@ export interface ToadnadoL1Interface extends Interface {
   encodeFunctionData(functionFragment: "zeros", values: [BigNumberish]): string;
 
   decodeFunctionResult(
+    functionFragment: "L2_ROOT_HISTORY_SIZE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "ROOT_HISTORY_SIZE",
     data: BytesLike
   ): Result;
@@ -202,6 +231,10 @@ export interface ToadnadoL1Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "currentL2RootsCacheIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "currentRootIndex",
     data: BytesLike
   ): Result;
@@ -212,6 +245,14 @@ export interface ToadnadoL1Interface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "filledSubtrees",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastKnowL1Root",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastKnowL2Root",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -237,6 +278,10 @@ export interface ToadnadoL1Interface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "l1ScrollMessenger",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "l2RootsCache",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -381,6 +426,8 @@ export interface ToadnadoL1 extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  L2_ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
+
   ROOT_HISTORY_SIZE: TypedContractMethod<[], [bigint], "view">;
 
   addL2Root: TypedContractMethod<[_root: BigNumberish], [void], "nonpayable">;
@@ -401,6 +448,8 @@ export interface ToadnadoL1 extends BaseContract {
     "view"
   >;
 
+  currentL2RootsCacheIndex: TypedContractMethod<[], [bigint], "view">;
+
   currentRootIndex: TypedContractMethod<[], [bigint], "view">;
 
   deposit: TypedContractMethod<
@@ -412,6 +461,10 @@ export interface ToadnadoL1 extends BaseContract {
   ethPendingWithdrawals: TypedContractMethod<[], [bigint], "view">;
 
   filledSubtrees: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+
+  getLastKnowL1Root: TypedContractMethod<[], [bigint], "view">;
+
+  getLastKnowL2Root: TypedContractMethod<[], [bigint], "view">;
 
   getLastRoot: TypedContractMethod<[], [bigint], "view">;
 
@@ -438,6 +491,8 @@ export interface ToadnadoL1 extends BaseContract {
   >;
 
   l1ScrollMessenger: TypedContractMethod<[], [string], "view">;
+
+  l2RootsCache: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
   l2ScrollToadnadoAddress: TypedContractMethod<[], [string], "view">;
 
@@ -501,6 +556,9 @@ export interface ToadnadoL1 extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "L2_ROOT_HISTORY_SIZE"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "ROOT_HISTORY_SIZE"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -523,6 +581,9 @@ export interface ToadnadoL1 extends BaseContract {
     nameOrSignature: "commitmentsTreeRoots"
   ): TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
   getFunction(
+    nameOrSignature: "currentL2RootsCacheIndex"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "currentRootIndex"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -534,6 +595,12 @@ export interface ToadnadoL1 extends BaseContract {
   getFunction(
     nameOrSignature: "filledSubtrees"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getLastKnowL1Root"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getLastKnowL2Root"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getLastRoot"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -563,6 +630,9 @@ export interface ToadnadoL1 extends BaseContract {
   getFunction(
     nameOrSignature: "l1ScrollMessenger"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "l2RootsCache"
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "l2ScrollToadnadoAddress"
   ): TypedContractMethod<[], [string], "view">;

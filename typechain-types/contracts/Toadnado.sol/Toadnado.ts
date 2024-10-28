@@ -35,6 +35,8 @@ export interface ToadnadoInterface extends Interface {
       | "deposit"
       | "ethPendingWithdrawals"
       | "filledSubtrees"
+      | "getLastKnowL1Root"
+      | "getLastKnowL2Root"
       | "getLastRoot"
       | "hashLeftRight"
       | "isKnownL1Root"
@@ -92,6 +94,14 @@ export interface ToadnadoInterface extends Interface {
   encodeFunctionData(
     functionFragment: "filledSubtrees",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastKnowL1Root",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastKnowL2Root",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getLastRoot",
@@ -175,6 +185,14 @@ export interface ToadnadoInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "filledSubtrees",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastKnowL1Root",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastKnowL2Root",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -340,6 +358,10 @@ export interface Toadnado extends BaseContract {
 
   filledSubtrees: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
+  getLastKnowL1Root: TypedContractMethod<[], [bigint], "nonpayable">;
+
+  getLastKnowL2Root: TypedContractMethod<[], [bigint], "nonpayable">;
+
   getLastRoot: TypedContractMethod<[], [bigint], "view">;
 
   hashLeftRight: TypedContractMethod<
@@ -446,6 +468,12 @@ export interface Toadnado extends BaseContract {
   getFunction(
     nameOrSignature: "filledSubtrees"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getLastKnowL1Root"
+  ): TypedContractMethod<[], [bigint], "nonpayable">;
+  getFunction(
+    nameOrSignature: "getLastKnowL2Root"
+  ): TypedContractMethod<[], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "getLastRoot"
   ): TypedContractMethod<[], [bigint], "view">;

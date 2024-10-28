@@ -36,6 +36,8 @@ export interface ToadnadoL2Interface extends Interface {
       | "ethPendingWithdrawals"
       | "filledSubtrees"
       | "getL1Root"
+      | "getLastKnowL1Root"
+      | "getLastKnowL2Root"
       | "getLastRoot"
       | "hashLeftRight"
       | "isKnownL1Root"
@@ -101,6 +103,14 @@ export interface ToadnadoL2Interface extends Interface {
   encodeFunctionData(
     functionFragment: "getL1Root",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastKnowL1Root",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastKnowL2Root",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getLastRoot",
@@ -203,6 +213,14 @@ export interface ToadnadoL2Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getL1Root", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastKnowL1Root",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastKnowL2Root",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getLastRoot",
     data: BytesLike
@@ -384,6 +402,10 @@ export interface ToadnadoL2 extends BaseContract {
 
   getL1Root: TypedContractMethod<[key: BigNumberish], [bigint], "view">;
 
+  getLastKnowL1Root: TypedContractMethod<[], [bigint], "view">;
+
+  getLastKnowL2Root: TypedContractMethod<[], [bigint], "view">;
+
   getLastRoot: TypedContractMethod<[], [bigint], "view">;
 
   hashLeftRight: TypedContractMethod<
@@ -501,6 +523,12 @@ export interface ToadnadoL2 extends BaseContract {
   getFunction(
     nameOrSignature: "getL1Root"
   ): TypedContractMethod<[key: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getLastKnowL1Root"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getLastKnowL2Root"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getLastRoot"
   ): TypedContractMethod<[], [bigint], "view">;
