@@ -95,7 +95,7 @@ contract ToadnadoL2 is Toadnado  {
         scrollMessenger.sendMessage{value:msg.value}(
             l1ToadnadoAddress,
             0,
-            abi.encodeWithSignature("addL2Root(uint256)", getLastKnowL1Root()),
+            abi.encodeWithSignature("addL2Root(uint256)", getLastKnowL2Root()),
             gasLimit,
             msg.sender
         );
