@@ -95,6 +95,7 @@ export async function eventScanInChunks(contract: ethers.Contract | any, eventFi
     const events = []
     const pendingEvents: any = []
     const amountOfScans = Math.ceil((lastBlockNum - startBlock) / blocksPerScan)
+
     for (let index = 0; index < amountOfScans; index++) {
         if (pendingEvents.length > maxSimultaneousReqs) {
             await Promise.any(pendingEvents)
@@ -102,8 +103,7 @@ export async function eventScanInChunks(contract: ethers.Contract | any, eventFi
             pendingEvents.splice(fulfilledReqIndex, 1) // remove the fulfilled req
     
         }
-
-        const eventsChunk = contract.queryFilter(eventFilter, index * blocksPerScan, (index + 1) * blocksPerScan)
+        const eventsChunk = contract.queryFilter(eventFilter, startBlock + index * blocksPerScan, startBlock + (index + 1) * blocksPerScan)
         events.push(eventsChunk)
         pendingEvents.push(eventsChunk)
     }
@@ -125,7 +125,10 @@ export async function getWithdrawCalldata(
     nullifierHashPreImage:bigint, 
     chainId: bigint ,
     amount: bigint,
-    commitmentFromL1:boolean,
+    commitmentFromL1:boolean|Boolean,
+    deploymentBlockDepositContract=0,
+    maxSimultaneousReqs=2,
+    blocksPerEventScan=1000,
 ) { 
 
     
@@ -143,17 +146,20 @@ export async function getWithdrawCalldata(
     const commitmentHash = hashCommitment(preCommitmentHash, amount)
     const nullifierHash = poseidon1([nullifierHashPreImage])
 
-
-    const commitments = commitmentFromL1 ? await getCommitments(ToadnadoL1,0) : await getCommitments(ToadnadoL2,0)
+    console.log({commitmentFromL1})
+    const ToadnadoFromDeposit = commitmentFromL1 ? ToadnadoL1 : ToadnadoL2
+    const commitments = await getCommitments(ToadnadoFromDeposit,deploymentBlockDepositContract, blocksPerEventScan,maxSimultaneousReqs) 
     const commitmentIndex = commitments.findIndex((leaf) => ethers.toBigInt(leaf) === commitmentHash)
     const merkleTree =  new MerkleTree(TREE_DEPTH,commitments as any,{hashFunction,zeroElement:EMPTY_COMMITMENT as any}) //generateTree(allCommitmentsL1)
     const calculatedRoot = BigInt( merkleTree.root )
 
     // to prevent issues with merkle path not leading up the same root if the provided root is old
-    // TODO check that calculatedRoot is a known root
-    const l1Root = commitmentFromL1 ? calculatedRoot : await ToadnadoL1.getLastKnowL1Root()   
-    const l2Root = commitmentFromL1 ?  await ToadnadoL2.getLastKnowL2Root() : calculatedRoot
+    // TODO check that calculatedRoot is a known root 
+    const l2Root = commitmentFromL1 ?  await ToadnadoFromDeposit.getLastKnowL2Root() : calculatedRoot
+    console.log({l2Root})
 
+    const l1Root = commitmentFromL1 ? calculatedRoot : await ToadnadoFromDeposit.getLastKnowL1Root()  
+    console.log({l1Root})
     const metaRoot = hashMetaRoot( l1Root,l2Root) //ethers.keccak256(abiCoder.encode(["bytes32", "bytes32"], [l1Root,l2Root]))
 
     const rootOtherLayer = commitmentFromL1 ? l2Root  :  l1Root  
@@ -173,12 +179,12 @@ export async function getWithdrawCalldata(
         // refund:                                                                          // --pub Field,
         nullifier_hash_preimage:  ethers.toBeHex(nullifierHashPreImage),                    // priv Field
         secret:                 ethers.toBeHex(secret),                                     // priv Field
-        chain_id:                Number(chainId) as InputValue,                              // priv Field
+        chain_id:                Number(chainId) as InputValue,                             // priv Field
         amount:                 ethers.toBeHex(amount),                                     // priv Field
         hash_path:              hashPath.map((v)=>ethers.toBeHex(v)) as InputValue,         // priv [Field;TREE_DEPTH],
         hash_path_bools:        hashPathBools,                                              // [bool; TREE_DEPTH],
         root_other_layer:       ethers.toBeHex(rootOtherLayer),                             // Field
-        root_other_is_right:    commitmentFromL1                                          // Field
+        root_other_is_right:    commitmentFromL1  as InputValue                             // Field
     }
     const snarkProofData = await NOIR.generateProof(inputs)
     
